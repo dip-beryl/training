@@ -1,0 +1,61 @@
+Package Name	: nano
+
+Version 	: 4.8
+
+Description 	: Nano is a simple text editor that can run inside a terminal window.
+		  It can create text files, edit already available text files and have other features of a regular text editor.
+		
+Installation	: Nano can be install through 'apt' command in the terminal.
+
+Installation Command :
+
+			$ sudo apt install nano
+
+Launch		: There are several ways we can launch nano editor in terminal window.
+
+		-> Launching 'nano' with empty text file :
+	
+			$ nano
+
+		-> Launching 'nano' with an already avilable text file :
+	
+			$ nano [file_name / file_path]
+		
+		*If the file is not present at the specified path nano will create an empty file with the same name there.
+
+
+Options	: There are many [options] for 'nano' command.
+
+		  The following are some main and frequently used options for nano :
+
+		-V, --version		: Shows version information and exists
+		-h, --help		: Shows the help page of options
+		-m, --mouse		: Enable the use of mouse in editor
+		-l, --linenumbers	: Shows line numbers in front of text
+		-u, --unix		: Save a file by default in UNIX Format
+		
+		
+Shortcuts 	: There are various shortcuts when working inside the text editor. Some of the main are mention below :
+
+	ctrl + G  (f1) ---> Shows the shortcut menu.
+
+	ctrl + X  (f2) ---> Exit / Close the nano editor
+
+	ctrl + S  (--) ---> Save the file
+
+	ctrl + O  (f3) ---> Save 'As' the file
+
+	ctrl + R  (f2) ---> Open new file in new tab
+
+	ctrl + W  (f2) ---> Search a string or regular expression (forward in file)
+
+	ctrl + Q  (f2) ---> Search a string or regular expression (backward in file)
+
+	ctrl + C  (f2) ---> Display the position of the cursor
+
+	alt  + U  (f2) ---> Undo
+	
+	alt  + E  (f2) ---> Redo
+	
+	
+------------------------------------------------------------EOF------------------------------------------------------------------------------
