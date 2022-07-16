@@ -1,0 +1,287 @@
+Git :	Git is a version control system. It is used my programmers world wide to track the development of their projects 
+	and manage history of project development.
+	
+Installation : 
+			$ sudo apt install git
+			
+		
+Checkig git and its version :
+			$ git
+			$ git --version
+			
+		You can also use the help command:
+			
+		[-help]  : Options help with their short description
+		[--help] : Opens complete Git manual of the specific command
+			
+			$ git -help, --help
+			
+			$ git [command] -help
+			$ git [command] --help
+
+			$ git help --all (Advanced)
+		
+Configuring git :
+			$ git config --global user.name "your_name"
+			$ git config --global user.email "your_email"
+		
+		* You can verify the configuration changes
+	
+			$  git config --list
+		
+		Scope Levels in Git:
+		
+		1.project  : project / local	-> Only available for the current project and stored in .git/config in the project's directory.
+		2 global   : Current user	-> For all projects of the current user and stored in ~/.gitconfig.
+		3 system   : All users 	-> FOR all the users/projects and stored in /etc/gitconfig.
+
+Initializing a git repository :
+			$ git init
+
+		
+I		Initialize Git on a folder, making it a Repository
+		Git now creates a hidden folder (.git) to keep track of changes in that folder
+			
+Work Flow of git :
+	There are 3 stages for a file in git work flow.
+	
+	Local File system ---> staged / indexed area ---> git repository
+	
+		1. Local File System 	: It is the local storage of the system where files are generated and first stored.
+	
+		2. Staging Area	: When we try to add any files to git repository they first go to staging area 
+				  and on commit (confirmation) they get added to the repository
+	
+		3. Git repository	: This is the repository.
+
+Adding files to stage area :
+			$ git add [file1] [file2] .. [fileN]
+			
+		1. Tracked Files	: Files that have been created within your repo's working directory 
+					  but have not yet been added to the staged area.
+		
+		2. Tracked Files	: Files that were once added or in the staging area will get tracked for any changes.
+					  Any type of modification will trigger the status change for these files.
+					  In short, tracked files are files that Git knows about.
+					  
+		* adding all new, modified and deleted files at once.
+			
+			$ git add -A
+			
+			
+			
+Removing a file from staging area :
+			$ git rm --cached [file_name]
+			
+			*If a file is removed from staged area it should also be removed from main repo
+			 or you have to use ".gitignore"
+			 
+Ignoring files from git :
+		Any file name or path added in ".gitignore" file will not be tracked by git or even considerd to get track.
+		
+Git Status :
+			$ git status
+			
+		This command is used to get the status of current work flow of the complete repo.
+		This will show the tracked files, non-tracked files, changes need to be commited, deleted files etc.
+
+			$ git status -s, --short
+			
+		With -s option we get a sort version of status report.
+		Flags used in -s, --short:
+		
+			?? - Untracked files
+			A - Files added to stage
+			M - Modified files
+			D - Deleted files
+		
+
+Git Commit :
+			$ git commit
+			
+		This is the commit command. In Git commit means finalize changes and transfer & store the file in repository.
+		When we run this command all the files and changes in staging area will get transfered and permanent in repository.
+		
+			$ git commit -m "your_message"
+			
+		-m :-	This option is used to include message with your every commit that describe the commit purpose.
+			A commit is not accepted without the "message" of the description of the commit.
+			
+			$ git commit -a -m "message"	(skip the stagging step)
+		
+		* Each commit works like a checkpoint. You go back to the version of file you commited.
+		
+		
+Git log :
+
+			$ git log
+			
+		To view the history of commits for a repository, you can use the log command.
+		
+		
+Branching :
+	In Git, a branch is a new/separate version of the main repository.
+			
+	Lets say you want to change the design of the project or have any big modification.
+	It is not recommended to work big changes on the main project directly.
+	
+	That's why we use branches.
+
+	Branches allow you to work on different parts of a project without impacting the main branch.
+	When the work is complete, a branch can be merged with the main project.
+	We can even switch between branches.
+
+		* creating a branch :
+			
+			$ git branch [new_branch_name]
+			
+		* viewing all the branches :
+			
+			$ git branch
+			
+			$ git branch -a [all local and remote branch]
+			$ git branch -r [all remote branch]
+			
+		* switching between branches :
+		
+			$ git checkout [valid_branch_name]
+			
+		* switcing and creating new branch in one step :
+		
+			$ git checkout -b [new_branch_name]
+			
+		* deleting a branch
+		
+			$ git branch -d [valid_branch_name]
+			
+			
+Merging :			
+	When we are done with the changes in the new branch we can merge the both branches.
+	
+	While merging remember to switch to the parent or main branch.
+	
+		* merging current branch with mentioned branch:
+	
+			$ git merge [valid_branch_name]  	* (while you are in parent / main / master branch)
+			
+		** we can now delete the merged branch.
+		
+		
+	-- Conflicts while merging :	Sometimes when we have changes in our main branch after we had a seperate branch from it.
+					In these type of situations merging gets conflicted as there are two versions of same file.
+					
+					In this type of situation git will let you know about the conflicted files.
+					You can check the conflicted files through "$ git status"
+					
+					Then you have to edit the files manually to get the conflics resolved.
+
+
+Github :
+	Github is a website the provides gui interface of the git commands and make tools based on git.
+	
+	Programmers worldwide use github to collaborate and track their projects.
+	
+	You can have public and private repositories on github. There are many more features.
+	
+	To remotely control repositories from github and use github with your system's local git. We neet to set a remote link between them.
+	
+		* adding remote url :
+		
+			$ git remote add [remote_name] [URL of online repository]
+			
+				# remote_name is usually 'origin'
+				# You can get repo URL(HTTPs and SSH) from Github
+
+			$ git remote -v (view all the available remotes)
+			
+			
+HTTPs and SSH :
+	There are 2 types of remote connection that you can create :
+	
+	HTTPs	: Hyper Text Transfer Protocol Secure
+	SSH	: Secure Socket Shell
+
+	Https is a secure connection in itself. But when the connection is between two untrusted hosts over an insecure network,
+	 working through SSH provides us an encrypted connection based on public and private key.
+
+	Both the connections have different remote links for the same repository.
+	It is always reccomended that the main "origin" remote link for your repo should be SSH.
+
+		* generating/creating public and private keys for your system :
+		
+			$ ssh-keygen -t rsa -b 4096 -C "email_id"
+			
+				-t : type of alogrithm used (here : rsa)
+				-b : no. of bits in the key (here : 4096)
+				-C : comment, any personal string u want to add to the key (here : email id of user)
+				
+	As the next step:
+		 Find the folder ".ssh"
+		 Copy the data from "id_rsa.pub" that is your public key.
+		 Add this public key in your github account inside settings.
+			
+			
+Push :
+	'push' command is used to send the commited files in the repo to the github repo
+
+		* pushing the master branch to github :
+
+			$ git push -u [remote_name] [branch_name]
+
+		Eg:	$ git push -u origin master
+		
+			[option]
+			
+			-u, --set-upstream :	set up stream for git pull/status
+
+	- As now our upstream is set. we can use the following commands for further push(es) :
+			
+		* push master branch :
+			
+			$ git push [remote_name]
+			
+		* push a specific branch :
+			
+			$ git push [remote_name] [branch_name]
+			
+		* push all branches at once:
+		
+			$ git push --all [remote_name]
+			$ git push [remote_name] --all
+
+Pull :
+	'Pull' is used when there are changes in online repo and we need update our local records of that repo.
+	
+	Pull is a combination of 'fetch' and 'merge' command.
+	
+	- fetch :
+		Fetch command fetches the changes from remote and show them in status :
+		
+			$ git fetch [remote_name]
+			
+			$ git status			(shows the changes remote had in repo)
+			
+			$ git log [remote_name/branch] (log of specific remote branch - can be used only after fetch)
+			
+	- merge :
+		To complete the updation of local repo we merge the local branch with remote/branch :
+		
+			$ git merge [remote/branch]
+			
+	* but all the above commands i.e., updation / syncing of local repo with remote repo can be done through :
+	
+			$ git pull [remote]		( 'fetch' +  'merge' if had changes)
+			
+
+Pulling Branches: 
+		To pull branches first you have to :
+		
+		1. $ git pull
+		2. $ git branche -a 	('-a' is needed unless you will not be able to see remote branches)
+		3. $ git checkout [remote branch]
+		4. $ git pull 		
+		5. $ git branch	(now the remote branch should be in local repo)
+		
+		
+		
+		
