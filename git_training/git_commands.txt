@@ -295,5 +295,8 @@ Git Flow :
 		5. Deploy	(testing)
 		6. Merge
 		
-		
-		
+
+Clone :
+	A clone is a full copy of a repository, including all logging and versions of files.
+
+		$ git clone [remote_url]
