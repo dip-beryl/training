@@ -281,7 +281,19 @@ Pulling Branches:
 		3. $ git checkout [remote branch]
 		4. $ git pull 		
 		5. $ git branch	(now the remote branch should be in local repo)
+
+
+Git Flow :
+		The GitHub flow is a workflow designed to work well with Git and GitHub.
 		
+		The GitHub flow works like this:
+
+		1. Create a new Branch
+		2. Make changes and add Commits
+		3. Open a Pull Request	(Request to merge branch)
+		4. Review
+		5. Deploy	(testing)
+		6. Merge
 		
 		
 		
