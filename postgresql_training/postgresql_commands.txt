@@ -1,0 +1,126 @@
+File Name       : postgresql_commands.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+------------------- PostgreSQL--------------------------
+
+About :
+    
+    PostgreSQL is a free and open-source object-relational database management system 
+    emphasizing extensibility and SQL compliance.
+    
+    It supports Advanced data types such as arrays.
+
+    PgAdmin is the GUI tool of PostgreSQL.
+
+
+Installation (Linux - Debian) :
+
+            $ sudo apt install postgresql
+
+        * to install extensions and additions that are distributed along with the PostgreSQL sources :
+
+            $ sudo apt install postgresql postgresql-contrib
+
+        * to check if the service of PostgreSQL is active or not :
+
+            $ sudo systemctl is-active postgresql
+            $ sudo systemctl is-enabled postgresql
+            $ sudo systemctl status postgresql
+        
+        * Postgresql server is ready to accept connections from clients or not :
+
+            $ sudo pg_isready
+
+        ** START and STOP PostgreSQL Service :
+
+            $ systemctl start postgresql
+            $ systemctl stop postgresql
+
+PostgreSQL Shell (psql):
+
+    PostgreSQL Shell also known as psql is the shell
+    where you can run SQL commands to manage databases.
+
+        * Enter psql shell:
+
+            $ sudo -su postgresql
+            $ psql
+
+            OR,
+
+            $ sudo -su postgres psql
+
+               { OUTPUT : postgres-# }
+
+    ** To run a SQL you can directly write the query in the shell terminal.
+
+    - This Shell also have shortcuts of their own, some frequently use shortcuts are :
+
+        \l  = list all databases
+
+        \d  [table name] = describe table
+
+        \du = list all users / roles
+        \dt = list tables
+        \dT = list data types
+        \dv = list views
+        
+        \?  = help
+        \q  = quit psql shell
+
+        \i  [file]  = execute commands from file
+        \o  [file]  = send all query results to file or |pipe
+    
+        \conninfo               = display information about current connection
+        \password [username]    = securely change the password of a user
+        
+    
+PgAdmin :
+
+    PgAdmin is a GUI Application for PostgreSQL.
+
+    Installation :
+
+        We need to install it from the pgAdmin4 APT repository.
+        Start by setting up the repository. 
+        
+        *Add the public key for the repository and create the repository configuration file.
+
+            1. $ sudo curl https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo apt-key add -
+
+            2. $ sudo sh -c 'echo "deb [arch=amd64] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) 
+                    pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
+
+            3. $ sudo apt update
+
+            4. $ sudo install pgadmin4
+
+
+    Setting up pgAdmin :
+
+        * This command will run the configuration of pgAdmin :
+            
+            $ sudo /usr/pgadmin4/bin/setup-web.sh
+
+        - After the process is finished you can run the GUI of pgAdmin 
+            or can launch in browser mode through http://127.0.0.1/pgadmin4 :
+
+            1. Click on "Add New Server"
+            2. Enter a name for Server in "General" Tab
+            3. Enter "localhost" in hostname in "Connection" Tab
+            4. Enter the user name and password.
+            
+                * You can get user names through "\du" in "psql shel".
+
+                * to reset password of any user use this command in "psql shell" :
+            
+                    $ ALTER USER [user name] PASSWORD 'new_password';
+
+            
+
+-------------------------------------E.O.F.--------------------------------------------------
+
+
+
