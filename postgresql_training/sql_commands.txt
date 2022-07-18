@@ -1,0 +1,37 @@
+File Name       : sql_commands.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+CREATE
+UPDATE
+DELETE
+ALTER
+UPSERT
+
+SELECT & FROM
+ORDER BY
+GROUP BY
+LIKE
+WHERE
+
+SUM
+MAX
+AVG
+COUNT
+
+CASE & WHEN
+
+Subquery and types
+
+JOINS
+
+VIEWS
+
+Stored Procedure
+
+IF statement
+
+variables
+
+functions
