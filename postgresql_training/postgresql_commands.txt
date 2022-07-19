@@ -2,6 +2,7 @@ File Name       : postgresql_commands.txt
 Author          : Dipanshu Ranga (@dip-beryl)
 Organization    : Beryl Systems Pvt. Ltd.
 
+Version         : 12.11
 
 ------------------- PostgreSQL--------------------------
 
