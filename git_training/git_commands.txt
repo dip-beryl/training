@@ -1,3 +1,9 @@
+File Name		: git_commands.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+
 Git :	Git is a version control system. It is used my programmers world wide to track the development of their projects 
 	and manage history of project development.
 	

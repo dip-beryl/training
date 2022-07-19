@@ -1,15 +1,25 @@
+File Name		: nano_commands.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+
 Package Name	: nano
 
 Version 	: 4.8
 
+
 Description 	: Nano is a simple text editor that can run inside a terminal window.
 		  It can create text files, edit already available text files and have other features of a regular text editor.
-		
+
+
 Installation	: Nano can be install through 'apt' command in the terminal.
+
 
 Installation Command :
 
 			$ sudo apt install nano
+
 
 Launch		: There are several ways we can launch nano editor in terminal window.
 
