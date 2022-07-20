@@ -1,0 +1,523 @@
+File Name       : sql_queries.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+Data Types (PosgreSQL) :
+
+    - Numeric Types :
+
+        smallint    -> 2 bytes
+        integer     -> 4 bytes
+        bigint      -> 8 bytes
+
+        decimal     -> variable
+        numeric     -> variable
+
+
+    - Monetary Types :
+
+        money       -> 8 bytes
+
+
+    - Charachter Types :
+
+        varying(n), 
+        varchar(n)
+                    -> variable length with limit
+
+        character(n), 
+        char(n)
+                    -> fixed-length, blank padded
+
+        text
+                    -> variable unlimited length
+
+
+    - Binary Data Type :
+
+        byte    
+                    -> 1 to 4 byte + size of binary string
+                    -> variable length binary string
+
+
+    - Boolean :
+
+        boolean      -> 1 byte, state true or false
+
+
+    - Date / Time Types :
+
+        timestamp [(p)]             -> 8 bytes, both date and time (no time zone)
+
+        date                        -> 4 bytes, date (no time of day)
+
+        interval [fields] [(p)]     -> 12 bytes, time interval
+
+
+    - Enum :
+       
+        Enumerated (enum) types are data types that comprise a static, ordered set of values.
+
+        Unlike other types, Enumerated Types need to be created using CREATE TYPE command
+
+            * CREATE TYPE week AS ENUM ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun');
+
+
+
+---------------------------  PostgreSQL Queries  ------------------------------------
+
+[ ';' -> this is used as a delimiter and query ending symbal.] 
+
+
+CREATE DATABASE :
+
+        * using sql query :
+
+            CREATE DATABASE [databse_name];
+
+
+-----Connecting / Selecting DATABASE : -----
+
+        * from psql shell :
+            
+            \c [databse_name]
+
+        * directly form terminal window :
+            
+            psql -h [HOST] -p [PORT] -U [USER] [DATABASE]
+            
+                Eg. sudo -su postgres psql -h localhost -p 5432 -U postgres testdb
+
+
+DROP DATABASE :
+
+        * SQL Query :
+
+            DROP DATABASE [databse_name];
+
+
+CREATE TABLE :
+
+            CREATE TABLE [table_name]
+                        (   column1 datatype,
+                            column2 datatype,
+                            .....
+                            columnN datatype
+                            );
+
+        * Create table from another table :
+
+            CREATE TABLE [new_table_name]
+                AS
+            SELECT column1, column2 ... columnN
+                FROM [table_name];
+
+
+DROP TABLE :
+
+            DROP TABLE [table_name];
+
+
+TRUNCATE TABLE :
+    This command is used to delete complete data from an existing table.
+
+    It is different from DROP TABLE command as DROP will also delete the structure of the table.
+    But, IN TRUNCATE you have the column names but all the column gets empty.
+
+            TRUNCATE TABLE [table_name];
+
+
+SCHEMA :
+
+    A schema is a named collection of tables.
+    A schema can also contain views, indexes, sequences, data types, operators, and functions.
+    A schema is like a directory, except that it cannot be nested.
+
+    A database can contain one or multiple schemas and each schema belongs to only one database.
+    Two schemas can have different objects that share the same name.
+
+    PostgreSQL automatically creates a schema called public for every new database.
+    Whatever object you create without specifying the schema name, PostgreSQL will place it into this public schema
+
+        * PosgreSQL command for schema creation :
+
+            CREATE SCHEMA [schema_name];
+
+        * access a table from specific schema :
+
+            CREATE TABLE [schema_name.table_name];
+
+            SELECT * FROM [schema_name.table_name] ;
+
+        * drop a schema :
+
+            DROP SCHEMA schema_name ;
+
+            DROP SCHEMA schema_name CASCADE ;   (including all contained objects)
+
+        * current_schema() function will return current schema :
+
+            SELECT current_schema()
+
+
+INSERT INTO (VALUES):
+
+        * when column names are mentioned or you want to put values to specific column only :
+
+            INSERT INTO [table_name] 
+                    (   column1,
+                        column2,
+                        .
+                        .
+                        columnN )
+            VALUES
+                    (
+                        value1,
+                        value2,
+                        .
+                        .
+                        valueN );
+
+        * when you are providing values for each column :
+
+            INSERT INTO [table_name]
+            VALUES
+                    (
+                        value1,
+                        value2,
+                        .
+                        .
+                        valueN );
+
+        * taing values from other tables :
+
+            INSERT INTO [table_name] 
+                    (   column1,
+                        column2, ... columnN)
+            SELECT column1, column2, ... columnN
+            FROM (table_name_2)
+            WHERE [condition];
+
+
+UPDATE (SET):
+    The UPDATE statement is used to modify the existing records in a table.
+
+    You can use WHERE clause with UPDATE query to update the selected rows.
+    Otherwise, all the rows would be updated.
+
+        * Basic Syntax :
+
+            UPDATE [table_name]
+            SET [column1 = value1, column2 = value2, .. columnN = valueN]
+            WHERE [condition]
+
+
+DELETE FROM:
+    The DELETE Query is used to delete the existing records from a table.
+
+    Be Cautious and use WHERE command.
+
+        * Basic Syntax
+
+            DELETE FROM [table_name]
+            WHERE [condition]
+
+
+SELECT :
+    Returns the selected table or specific rows.
+
+        * Selecting the complete table :
+
+            SELECT * FROM [table_name];
+
+        * Selecting specific columns from any table :
+
+            SELECT [column1, column2 .. columnN ] 
+            FROM [table_name];
+
+SELECT DISTINCT:
+        Selects the unique record :
+
+            SELECT DISTINCT [column_name]
+            FROM [table_name]
+
+
+----- Operators -----
+
+    Airthmetic Operators :
+
+        +   |   Addition
+        -   |   Subtraction
+        *   |   Multiplication
+        /   |   Division (returns Quotient)
+        %   |   Division (returns Remainder)
+        
+        ^   |   Exponention (a ^ b)
+        |/  |   Square Root (|/ 25 => 5)
+        ||/ |   Cube Root (|/ 27 => 3)
+        
+        !   |   Factorial (5! => 120)
+        !!  |   Factorial Prefix (!!5 => 120)
+
+    Comparison Operators :
+
+        =   | True if Equal
+        !=  | True if Not-Equal
+        <>  | True if Not-Equal
+        >   | True if Left side is greater
+        <   | True if Right side is greater
+        >=  | True if Left side is greater or Equal
+        <=  | True if Right side is greater or Equal
+
+    Logical Operators :
+
+        AND -> used with WHERE to create logics / expressions
+        OR  -> used with WHERE to create logics / expressions
+        NOT -> used with various commands to Reverse their meaning : NOT EXIST, NOT BETWEEN, NOT IN etc
+
+    Bitwise Operators :
+
+        &   |   Bitwise AND
+        |   |   Bitwise OR
+        ~   |   Bitwise Once Compliment
+        <<  |   Bitwise Left Shift
+        >>  |   Bitwise Right Shift
+        #   |   Bitwise XOR
+
+
+----- Expressions -----
+
+            SELECT (15 + 1) AS Addition;
+
+
+            SELECT name FROM table WHERE salary = 10000;
+
+
+WHERE :
+
+            SELECT column1, column2, .. columnN
+            FROM [table_name]
+            WHERE [search_condition] ;
+
+    In Search condition you can use Operators, LIKE, REGEXP, EXISTS, BETWEEN etc
+
+        * More Examples:
+
+            WHERE age = 25;
+            WHERE age IN (25,27);  (Same as above but when you have to compare with more than one)
+            WHERE age IS NOT NULL;
+            WHERE age BETWEEN 25 and 35;
+            WHERE age > 20 AND salary < 30000
+
+
+EXISTS :
+    The EXISTS operator is used to test for the existence of any record in a subquery.
+    The EXISTS operator returns TRUE if the subquery returns one or more records in WHERE.
+        
+        * The Sub-Query Will return a value that EXISTS take as "True", So all the AGE rows will be printed
+            
+            SELECT AGE FROM COMPANY
+            WHERE EXISTS 
+                (   SELECT AGE 
+                    FROM COMPANY 
+                    WHERE SALARY > 65000);
+
+                    
+LIKE & REGEXP :
+    They are used to search a sppecific pattrern :
+
+            SELECT column1, column2, .. columnN
+            FROM [table_name]
+            WHERE [column_name] LIKE [patern] ;
+
+                %   | Any string of zero of more charachters ('t%' will select al the records starting with 't')
+                _   | Any Single Character
+                []  | Any single character within range [a-g] or [abcd] )
+                ^   | Any single character not within the specified range [^a-g]
+
+
+            SELECT column1, column2, .. columnN
+            FROM [table_name]
+            WHERE [column_name] REGEXP [regular_expression_patern] ;
+
+    
+LIMIT :
+    The LIMIT clause is used to limit the data amount returned by the SELECT statement.
+
+        * Basic Syntax
+
+            SELECT *
+            FROM [table_name]
+            LIMIT [number_of_rows]
+
+
+        * With the OFSET Command : 
+            OFFSET commands leaves the records mentioned in it
+
+            SELECT *
+            FROM [table_name]
+            LIMIT 3 OFFSET 2
+                (in the result first 2 records will be skipped from the output because of the OFFSET and after that 3 records will be printed that are asked in the LIMIT)
+
+
+ORDER BY :
+    Use to sort the results.
+
+        * Basic Syntax
+
+            SELECT *
+            FROM [table_name]
+            ORDER BY [column_name]
+
+        * To sort in descendig order :
+
+            SELECT *
+            FROM [table_name]
+            ORDER BY [column_name] DESC
+
+            (You can also specify ASC for Ascending but the default order fis already Ascending)
+
+
+Aggregate Functions :
+    These are most common functions used in any SQL Database for different aggregating tasks of data.
+
+        MIN()   |   returns Minimum Record
+        MAX()   |   returns Maximum Record
+        SUM()   |   return Total of Records
+        AVG()   |   returns Average of Records
+        COUNT() |   returns the Count of records
+
+        * Basic Syntax :
+
+            SELECT Aggregate_Function(* OR column_name)
+
+
+GROUP BY :
+    The GROUP BY statement groups rows that have the same values into summary rows.
+    The GROUP BY statement is often used with aggregate functions 
+    (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+        * Basic Syntax :
+
+            SELECT [column_name(s)]
+            FROM [table_name]
+            WHERE [condition]
+            GROUP BY [column_name(s)]
+            ORDER BY [column_name(s)];
+
+        * Example With the Aggregate Function :
+
+            SELECT CITY, COUNT(emp_id)
+            FROM [employees]
+            GROUP BY [CITY]
+
+        (This Query will produce a table showing the numbers of employee from Each city)
+
+
+Having :
+    The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+
+    The WHERE clause places conditions on the selected columns, 
+        whereas the HAVING clause places conditions on groups created by the GROUP BY clause.
+
+        *[IMP] Basic Syntax :
+
+            SELECT [column_name(s)] OR Aggregate_Function
+            FROM [table_name]
+            WHERE [condition]
+            GROUP BY [column_name(s)]
+            HAVING [condition]
+            ORDER BY [column_name(s)];
+
+        * Example :
+
+            SELECT city, count(emp_id) as emp_count
+            FROM employee
+            GROUP BY city
+            HAVING emp_count > 5
+
+        (You do not need to put Aggregate_Function in the SELECT clause to put it in the HAVING clause)
+        (Below query is also a valid query)
+
+            SELECT city
+            FROM employee
+            GROUP BY city
+            HAVING count(emp_id) > 5
+
+
+UNION :
+    The UNION operator is used to combine the result-set of two or more SELECT statements.
+
+    - Conditons for a UNION command to successfully Execute:
+        1. Every SELECT statement within UNION must have the same number of columns
+        2. The columns must also have similar data types
+        3. The columns in every SELECT statement must also be in the same order
+
+        * Basic Syntax :
+
+            SELECT column_name(s) FROM table1
+            UNION
+            SELECT column_name(s) FROM table2;
+
+        * UNION ALL :
+
+            The UNION ALL clause is used to combine the results of two SELECT statements including duplicate rows. 
+            The same rules that apply to UNION apply to the UNION ALL operator as well.
+
+
+CASE :
+    It is like a IF-ELSEIF-ELSE statement in SQL :
+
+        * Basic Syntax :
+        
+            CASE
+                WHEN condition1 THEN result1
+                WHEN condition2 THEN result2
+                WHEN conditionN THEN resultN
+                
+                ELSE result
+            END;
+
+        * Example #1 :
+
+            SELECT emp_id, salary
+            
+            CASE 
+                WHEN salary < 15000 THEN "Intern"
+                WHEN salary BETWEEN 15000 AND 35000 THEN "Executive"
+                WHEN salary > 35000 THEN "SR. Executive"
+
+                ELSE "Director Board"
+            END AS emp_post
+
+            FROM employee;
+
+        * Example #2 :
+
+        SELECT CustomerName, City, Country
+        FROM Customers
+        ORDER BY
+        (CASE
+            WHEN City IS NULL THEN Country
+            ELSE City
+        END);
+
+
+COALESCE() Function :
+    It is used to replace NULL values.
+
+        * Basic Syntax :
+
+            COALESCE(expression, replacement)
+
+                - returns expression --> If the expression is NOT-NULL
+                - returns replacement --> If the expression is NULL
+
+
+
+
+NOTE :
+
+1. With every DROP command you can use IF EXISTS to tackle errors.
+        DROP [TABLE, DATABASE ....] IF EXISTS [name];
+
