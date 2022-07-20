@@ -1,0 +1,107 @@
+File Name       : sql_joins.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+JOINS:
+
+    A JOIN clause is used to combine records from two or more tables, based on a related column between them.
+
+    Types of JOINS :
+
+        The CROSS JOIN
+        The INNER JOIN
+        The LEFT OUTER JOIN
+        The RIGHT OUTER JOIN
+        The FULL OUTER JOIN
+
+
+
+CROSS JOIN :
+    A CROSS JOIN matches EVERY ROW of the first table with EVERY ROW of the second table.
+
+    If the input tables have x and y columns, respectively, the resulting table will have x+y columns
+    If the input tables have x and y rows, respectively, the resulting table will have x*y rows
+
+        * Basic Synatx :
+
+            SELECT [column(s)] 
+            FROM [table1]
+            CROSS JOIN [table2];
+
+
+INNER JOIN :
+    A INNER JOIN creates a new result table by combining column values of two tables (table1 and table2) based upon the 'join-predicate'. 
+    The query compares each row of table1 with each row of table2 to find all pairs of rows, which satisfy the 'join-predicate'. 
+    When the join-predicate is satisfied, column values for each matched pair of rows of table1 and table2 are combined into a result row.
+
+        * Basic Syntax :
+
+            SELECT [column(s)]
+            FROM [table1]
+            INNER JOIN [table2]
+                ON [table1.join_predicate_column = table2.join_predicate_column] ;
+
+        (INNER keyword is optional)
+
+
+LEFT OUTER JOIN :
+    In case of LEFT OUTER JOIN, an inner join is performed first. 
+    Then, for each row in table T1 that does not satisfy the join condition with any row in table T2, 
+    a joined row(from T1) is added with null values in columns of T2. 
+    
+    Thus, the joined table always has at least one row for each row in T1.
+
+    In short : INNER JOIN + All the Rows of LEFT TABLE
+
+        * BASIC SYNTAX :
+
+            SELECT [t1.column1, t2.column1, .... t1.columnN, t2.columnN]
+            FROM [t1]
+            LEFT OUTER JOIN [t2]
+                ON [t1.join_predicate_column = t2.join_predicate_column] ;
+
+
+RIGHT OUTER JOIN :
+    It is completely similar to LEFT JOIN except that the the inclusion is of RIGHT TABLE in thois case 
+    
+    Thus, the joined table always has at least one row for each row in T2.
+
+    In short : INNER JOIN + All the Rows of RIGHT TABLE
+
+        * BASIC SYNTAX :
+
+            SELECT [t1.column1, t2.column1, .... t1.columnN, t2.columnN]
+            FROM [t1]
+            RIGHT OUTER JOIN [t2]
+                ON [t1.join_predicate_column = t2.join_predicate_column] ;
+
+
+FULL OUTER JOIN :
+    First, an inner join is performed. 
+    Then, for each row in table T1 that does not satisfy the join condition with any row in table T2, 
+        a joined row is added with null values in columns of T2. 
+    In addition, for each row of T2 that does not satisfy the join condition with any row in T1, 
+        a joined row with null values in the columns of T1 is added.
+
+        * Basic Synatx :
+
+            SELECT ... 
+            FROM [table1 ]
+            FULL OUTER JOIN [table2 ]
+                ON [conditional_expression ...]
+
+        (OUTER keyword is optional)
+
+
+NOTE:
+        If the join predicate column names are identicle in both the tables.
+        Then you can we USING clause instead of ON clause.
+
+            ON [t1.join_predicate_column = t2.join_predicate_column] ;
+
+             -->   {will be replaced by}
+
+            USING (join_predicate_column)
+
+
