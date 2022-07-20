@@ -95,8 +95,8 @@ FULL OUTER JOIN :
 
 
 NOTE:
-        If the join predicate column names are identicle in both the tables.
-        Then you can we USING clause instead of ON clause.
+        If the join predicate column names are identical in both the tables.
+        Then USING clause can be used instead of ON clause.
 
             ON [t1.join_predicate_column = t2.join_predicate_column] ;
 
