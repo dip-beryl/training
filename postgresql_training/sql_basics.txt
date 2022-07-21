@@ -158,7 +158,19 @@ SCHEMA :
         * current_schema() function will return current schema :
 
             SELECT current_schema()
+            
+        * current search path for schema :
+            
+            SHOW search_path; (deafult to public schema)
+            
+        * change or add search path :
 
+            SET search_path TO [schema_name_1], [schema_name_2] .... ;
+            
+        (You neet to add schema to search path to view tables from "\dt" psql command)
+        
+        "\dn" in psql to view all schemas.
+        
 
 INSERT INTO (VALUES):
 
