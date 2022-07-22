@@ -1,0 +1,237 @@
+File Name       : sql_advance_concepts.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+Constraints :
+
+    Constraints are the rules enforced on data columns on table. 
+    These are used to prevent invalid data from being entered into the database. 
+
+    Constraints could be column level or table level.
+
+    Defining a data type for a column is a constraint in itself
+
+
+    - NOT NULL    : that column cannot have NULL value
+
+    - UNIQUE      : that column must have a unique value
+
+    - Primary Key :
+                The PRIMARY KEY constraint uniquely identifies each record in a table.
+
+                Primary keys must contain UNIQUE values, and cannot contain NULL values.
+
+                A table can have only ONE primary key; and in the table, 
+                    this primary key can consist of single or multiple columns (fields).
+
+    - Foreign Key :
+                A FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
+                A foreign key constraint specifies that the values in a column (or a group of columns) must match the values appearing in some row of another table.
+                The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables.
+                
+                The table with the foreign key is called the child table, and the table with the primary key is called the referenced or parent table.
+        
+    - CHECK       :
+                The CHECK Constraint enables a condition to check the value being entered into a record. 
+                If the condition evaluates to false, the record violates the constraint and is not entered into the table.
+
+    - Auto- Increment /
+      SERIAL      :
+                PostgreSQL has the data types smallserial, serial and bigserial.
+                These are similar to AUTO_INCREMENT property supported by some other databases.
+
+                The type name serial creates an integer columns. That will auto increment and can be primary key.
+
+                * Example :
+
+                    CREATE TABLE TEMP (
+                        STD_ID  INT     Primary Key NOT NULL    UNIQUE,
+                        NAME    TEXT                NOT NULL,
+                        CONTACT INT                 NOT NULL    UNIQUE,
+                        SALARY  MONEY               NOT NULL    CHECK (SALARY > 0)
+                    );
+
+                    CREATE TABLE TEMP_2 (
+                        EMP_ID  SERIAL  Primary Key,
+                        ADDRESS TEXT,
+                        ID      INT     references TEMP(STD_ID)
+
+                    );
+
+-----------------------------------------------------------------------------------------------------
+
+ALTER TABLE :
+
+    With ALTER TABLE command we can modify / edit the structure, data, contraints of a table.
+
+    To view constrain names use "\d [table name]" in psql shell.
+
+        * Basic Syntax :
+
+            ALTER TABLE [table_name] ADD [column_name] {datatype};
+
+            ALTER TABLE [table_name] DROP COLUMN [column_name];
+
+            ALTER TABLE [table_name] ALTER COLUMN [column_name] TYPE {datatype};
+
+            ALTER TABLE [table_name] MODIFY [column_name] {datatype} NOT NULL;
+
+            ALTER TABLE [table_name] RENAME TO [new_table_name];
+
+
+            ALTER TABLE [table_name]
+                ADD CONSTRAINT [unique_constraint_name] UNIQUE (column1, column2...);
+
+            ALTER TABLE [table_name]
+                ADD CONSTRAINT [check_constraint_name] CHECK (CONDITION);
+
+            ALTER TABLE [table_name]
+                ADD CONSTRAINT [primary_key_name] PRIMARY KEY (column1, column2...);
+
+        { NOTE : in ADD CONSTRAINT command in last column_name should always be in (brackets) }
+
+
+            ALTER TABLE [table_name]
+                DROP CONSTRAINT [constraint_name];
+
+--------------------------------------------------------------------------------------------------------------------
+
+----- Privilages -----
+
+    Whenever an object is created in PostgreSQL an user is assigned to it. It is usually the user who made the object.
+
+    Through Privilage commands we can give or take privilages from any user.
+
+ Types of Privilages in PostgreSQL :
+
+    SELECT,
+    INSERT,                                     
+    UPDATE,                                     
+    DELETE,                                     
+    TRUNCATE,                                   
+    REFERENCES,                                 
+    TRIGGER,                                    
+    CREATE,                                     
+    CONNECT,                                     
+    TEMPORARY,                                     
+    EXECUTE,                                     
+    USAGE, and                                     
+    ALL                                 
+
+
+Types of Objects in PosgreSQL :
+
+    Aggregate
+    Collation
+    Conversion
+    Database
+    Domain
+    Event trigger
+    Foreign data wrapper
+    Foreign table
+    Function
+    Language
+    Large Object
+    Materialized view
+    Operator
+    Operator class
+    Operator family
+    Schema
+    Sequence
+    Server
+    Table
+    Tablespace
+    Text search configuration
+    Text search dictionary
+    Type
+    View
+    List item
+
+
+    - Privilege   : values could be: SELECT, INSERT, UPDATE, DELETE, RULE, ALL.
+
+    - Object      : The name of an object to which to grant access. The possible objects are: table, view, sequence etc
+
+    - PUBLIC      : A short form representing all users.
+
+    - GROUP group : A group to whom to grant privileges.
+
+    - Username    : The name of a user to whom to grant privileges. PUBLIC is a short form representing all users.
+
+
+CREATE USER :
+
+        * Basic Syntax:
+
+            CREATE USER manisha WITH PASSWORD 'password';
+
+
+GRANT :
+    This statement is used to give privilages.
+
+
+        * Basic Syntax :
+
+            GRANT [privilege(s)]
+            ON [object(s)]
+            TO { PUBLIC | GROUP group | username }
+
+        * Example :
+
+            GRANT ALL
+            ON company_table
+            TO manish ;
+
+REVOKE :
+    Used to delete the privilages.
+
+        * Basic Syntax :
+
+            REVOKE [privilage(s)]
+            ON [object(s)]
+            FROM { PUBLIC | GROUP group | username }
+
+DROP USER :
+
+            DROP USER manisha;
+
+
+--------------------------------------------------------------------------------------------------------------------------
+
+
+INDEX :
+
+    Indexes are special lookup tables that the database search engine can use to speed up data retrieval. 
+    Simply put, an index is a pointer to data in a table
+
+    An index helps to speed up SELECT queries and WHERE clauses
+    However, it slows down data input, with UPDATE and INSERT statements. 
+    
+    Indexes can be created or dropped with no effect on the data
+
+        * Basic Synatx :
+
+            CREATE INDEX [index_name] ON [table_name];
+
+        * Index on specific columns instead of whole table :
+
+            CREATE INDEX [index_name] ON [table_name] (column_1, column_2...);
+
+
+    PostgreSQL provides several index types: B-tree, Hash, GiST, SP-GiST and GIN. 
+    Each Index type uses a different algorithm that is best suited to different types of queries. 
+    By default, the CREATE INDEX command creates B-tree indexes.
+
+    Indexes can also be unique, similar to the UNIQUE constraint, 
+        in that the index prevents duplicate entries in the column or combination of columns on which there's an index.
+
+        * UNIQUE Index Syntax :
+
+            CREATE UNIQUE INDEX [index_name] ON [table_name] (column_name(s));
+
+        * Deleting an Index :
+
+            DROP INDEX [index_name];
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
