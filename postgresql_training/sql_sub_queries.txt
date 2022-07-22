@@ -1,0 +1,175 @@
+File Name       : sql_sub_queries.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+----- Sub-Query -----
+
+    Basicly Subquery means - Query in a Query. Also known as Inner Query or Nested Query.
+
+    A subquery may occur in :
+    
+    - SELECT Clause
+    - FROM Clause
+    - WHERE Clause
+    - HAVING Clause
+
+    A Subquery can be used with :
+       - SELECT, 
+       - INSERT, 
+       - UPDATE, and 
+       - DELETE staements
+
+    A subquery must be enclosed in parentheses. 
+
+    The subquery generally executes first, and its output is used to complete the query condition for the main or outer query
+
+    A subquery can have only one column in the SELECT clause, 
+        unless multiple columns are in the main query for the subquery to compare its selected columns. (Multiple Column Subquery)
+
+
+TYPES of Sub-QUERIES :
+
+    1. Single Row Subqueries :
+            Subqueries that can return only one or zero rows to the outer statement are called "single-row subqueries".
+            You can use the comparison operators, such as >, <, or =
+
+    2. Multiple Row Subqueries :
+            Subqueries that can return more than one row (but only one column) to the outer statement are called multiple-row subqueries
+            The comparison operator can also be a multiple-row operator, such as IN, EXISTS, ANY, SOME, or ALL.
+
+    3. Multiple Column Subqueries :
+            Returns one or more columns.
+
+    4. Correlated Subqueries :
+            Reference one or more columns in the outer SQL statement. 
+            The subquery is known as a correlated subquery because the subquery is related to the outer SQL statement.
+
+    5. Nested Subqueries : 
+            Subqueries are placed within another subquery.
+
+
+
+WHERE Clause :
+
+- SELECT (Sub-Query):
+
+        * Basic Synatx :
+
+            SELECT [column(s)]
+            FROM [table]
+            WHERE condition.. (Subquery)
+
+            SELECT [column(s)]
+            FROM [table]
+            WHERE [column_1] OPERATOR 
+                            (   SELECT [column_1]
+                                FROM [table]
+                                WHERE [condition] );
+
+        * Example (Single ROW Subquery) :
+
+            SELECT Name, Description
+            FROM Products 
+            WHERE 
+                Quantity <  2 * (SELECT AVG(Quantity)
+                                 FROM SalesOrderItems );
+
+        * Example (Multiple ROW Subquery) :
+
+            SELECT *
+            FROM COMPANY
+            WHERE 
+                ID IN (SELECT ID
+                         FROM COMPANY
+                         WHERE SALARY > 45000) ;
+
+        (The subquery returns a set of rows, but only a single column. 
+            The IN keyword treats each value as a member of a [set] and tests whether each row in the main query is a member of the set.)
+
+
+- INSERT INTO (Sub-Query):
+    
+    Subqueries also can be used with INSERT statements. 
+    The INSERT statement uses the data returned from the subquery to insert into another table.
+
+            INSERT INTO [table_name] (column1, column2 )
+                SELECT [ column1, column2 ]
+                FROM [table1 , table2.... ]
+            WHERE VALUE OPERATOR 
+
+        * Example:
+
+            INSERT INTO compay_bkp
+                SELECT * FROM company
+            WHERE id IN (SELECT id
+                        FROM company) ;
+
+
+- UPDATE (SET) [Sub-Query] :
+
+        * Basic Syntax :
+
+            UPDATE [table_name]
+            SET [column_name = new_value]
+            WHERE condition OPERATOR (
+                                    SELECT [column_name]
+                                    FROM [table_name]
+                                    WHERE [condition] );
+
+        * Example :
+
+            UPDATE company
+            SET salary = salary * 0.50
+            WHERE age IN (
+                        SELECT age FROM company_bkp
+                        WHERE age >= 27 );
+
+
+- DELETE FROM (Sub-Query) :
+
+        * Basic Syntax :
+
+            DELETE FROM [table_name]
+            WHERE condition OPERATOR (
+                                        SELECT [column(s)]
+                                        FROM [table]
+                                        WHERE [codition] );
+
+
+        * Example :
+
+            DELETE FROM company
+            WHERE age IN (
+                        SELECT age FROM company_bkp
+                        WHERE age > 27 );
+
+
+SELECT Clause :
+        When subquery is used in select the result is considered as a column.
+
+            SELECT
+                [column1],
+                (subquery),
+                ...
+            FROM [table1]
+
+        * Example :
+
+            SELECT
+                invoices_id,
+                invoice_total,
+                (SELECT AVG(invoice_total) FROM invoices) AS invoice_avg
+            FROM invoices
+
+
+FROM Clause :
+        When a subquery is used in FROM clause the result produced by subquery is used as a new relation/table.
+
+            SELECT [column(s)]
+            FROM (
+                subquery...
+                ) AS [new_table_name], [tables(s)]
+            WHERE [condition..]
+
+        (Sub-Query in FROM must have an Alias)
