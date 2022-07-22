@@ -1,4 +1,4 @@
-File Name       : sql_advance_concepts.txt
+File Name       : sql_contraints_&_privilages.txt
 Author          : Dipanshu Ranga (@dip-beryl)
 Organization    : Beryl Systems Pvt. Ltd.
 
