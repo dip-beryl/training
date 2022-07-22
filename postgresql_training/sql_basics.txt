@@ -50,8 +50,13 @@ Data Types (PosgreSQL) :
         timestamp [(p)]             -> 8 bytes, both date and time (no time zone)
 
         date                        -> 4 bytes, date (no time of day)
+        
+        time [(p)]                  -> 8 bytes, time of day only
 
         interval [fields] [(p)]     -> 12 bytes, time interval
+        
+     (time, timestamp, and interval accept an optional precision value p which specifies the number of fractional digits retained in the seconds field.
+        By default, there is no explicit bound on precision. The allowed range of p is from 0 to 6 for the timestamp and interval types.)
 
 
     - Enum :
@@ -66,8 +71,8 @@ Data Types (PosgreSQL) :
 
 ---------------------------  PostgreSQL Queries  ------------------------------------
 
-[ ';' -> this is used as a delimiter and query ending symbal.] 
-
+[ ';'  -> this is used as a delimiter and query ending symbal.] 
+[ '--' -> is used to start a comment ]
 
 CREATE DATABASE :
 
