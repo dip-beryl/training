@@ -1,0 +1,128 @@
+File Name       : sql_advance_concepts.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+VIEWS :
+
+    A view is a virtual table based on the result-set of an SQL statement.
+
+    A view contains rows and columns, just like a real table. 
+    The fields in a view are from one or more real tables in the database.
+
+    You can perform SELECT Statement and functions and many more on views.
+
+    Since views are not ordinary tables, you may not be able to execute a DELETE, INSERT, or UPDATE statement on a view.
+
+    The PostgreSQL views can be created from a single table, multiple tables, or another view.
+
+        * Creating a View Basic Syntax :
+
+            CREATE VIEW [view_name] AS
+            [SELECT ........... ];
+
+        * Selecting a View Basic Syntax :
+
+            SELECT * FROM [view_name];
+
+        * Dropping View :
+
+            DROP VIEW [view_name];
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+TRANSACTION :
+
+    A transaction is a unit of work that is performed against a database.
+    For example, if you are creating a record, updating a record, or deleting a record from the table, then you are performing transaction on the table.
+
+    It is important to control transactions to ensure data integrity and to handle database errors.
+
+    Properties of Transactions :
+
+    ACID :
+
+    Atomicity   : a transaction must be completed; if not it should be rollbackable.
+    Consistancy : database should properly change states on successful transactions.
+    Isolation   : transactions should be independent and transparent from each other.
+    Durability  : result of effects from a commited transaction must persist in case of a system failure.
+
+
+    - TRANSACTION CONTROl :
+
+        BEGIN; or BEGIN TRANSACTION;
+                                    this comand marks the beggining of the transation.
+
+        COMMIT; or END TRANSACTION;
+                                    while the transation is going on this comand is used to save the changes.
+
+        ROLLBACK;                   
+                                    in case of error or can be used manualy to rollback to the last commited state.
+
+        * Example :
+
+            BEGIN;
+            DELETE FROM company WHERE age = 25;
+            ROLLBACK;
+
+            * (will not make any changes in the table)
+
+
+            BEGIN;
+            DELETE FROM company WHERE age = 25;
+            COMMIT;
+
+            * (will delete the rows which satisfies the condition)
+
+NOTE :
+        - Transactional control commands are only used with the DML commands INSERT, UPDATE and DELETE only.
+        - Because CREATE and DROP commands are automatically commited in database.
+        
+        - SET TRANSACTION for more advanced options on transaction characteristics.
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+LOCK :
+
+    Locks or Exclusive Locks or Write Locks prevent users from modifying a row or an entire table.
+    They work with the Transactions. When a trnsaction is going on users must wait to modify that row. (SELECT queries never have to wait.)
+
+    Rows modified by UPDATE and DELETE are then exclusively locked automatically for the duration of the transaction.
+
+    The database performs locking automatically. In certain cases, however, locking must be controlled manually.
+
+        * Basic Syntax of LOCK command :
+
+            LOCK TABLE [table_name] IN [lock_type];
+
+        (You can mention [ONLY] before table name to lock only that table and not its descendent tables.)
+        (Default [lock_type ] -> ACCESS EXCLUSIVE.)
+
+                                        * Other Lock Types :
+
+                                        ACCESS SHARE, 
+                                        ROW SHARE,
+                                        ROW EXCLUSIVE, 
+                                        SHARE UPDATE EXCLUSIVE, 
+                                        SHARE, 
+                                        SHARE ROW EXCLUSIVE, 
+                                        EXCLUSIVE, 
+                                        ACCESS EXCLUSIVE.
+
+        * Example :
+
+            BEGIN;
+            LOCK TABLE company IN ACCESS EXCLUSIVE MODE;
+
+NOTE: 
+    - The LOCK statement works only in a transaction mode.
+
+    - Once obtained, the lock is held for the remainder of the current transaction. 
+    - There is no [UNLOCK TABLE] command; locks are always released at the transaction end.
+
+    - the table is locked until the transaction ends and to finish the transaction 
+        you will have to either rollback or commit the transaction.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
