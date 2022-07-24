@@ -256,5 +256,14 @@ TRIGGER :
             RETURN NEW;
         END;
         $$ LANGUAGE plpgsql;
+        
+        
+        * DROP TRIGGER :
+        
+            DROP TRIGGER [trigger_name];
+            
+        * LIST ALL THE TRIGGERS :
+        
+            SELECT * FORM pg_trigger;
 
 -------------------------------------------------------------------------------------------------------------------------------------
