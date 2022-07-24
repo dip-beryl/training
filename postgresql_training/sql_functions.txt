@@ -1,0 +1,260 @@
+File Name       : sql_functions.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+
+----- Functions -----
+
+Functions are snippets of code that return a value after executing specified code. 
+Through functions we can implement specific task on differnet values. Without writing the code again and again.
+
+Functions allow database reuse as other applications can interact directly with your stored procedures instead of a middle-tier or duplicating code.
+
+CREATE FUNCTION :
+
+    
+    * Basic Syntax :
+
+        CREATE [OR REPLACE] FUNCTION function_name(arguments)
+        RETURNS return_d_type AS $return_variable_name$
+        DECLARE
+        [variable1] [variable1_d_type]
+        .
+        .
+        .
+        [variableN] [variableN_d_type];
+        
+        BEGIN;
+            function logic;
+            RETURN [return_variable_name | value];
+        END;
+        LANGUAGE [plpgsql | plpythonu | ... ];
+
+    * Example :
+
+        CREATE OR REPLACE FUNCTION total()
+            RETURNS integer AS $total$
+                DECLARE total integer;
+        BEGIN
+            SELECT SUM(salary) INTO total FROM company;
+            RETURN total;
+        END;
+        $total$ LANGUAGE plpgsql;
+
+
+    * Execute a function :
+
+        SELECT total();
+
+    * Example with arguents :
+
+        CREATE OR REPLACE FUNCTION increment(i integer) 
+            RETURNS integer AS $$
+        BEGIN
+                RETURN i + 1;
+        END;
+        $$ LANGUAGE plpgsql;
+
+
+
+NOTE :
+
+    In Postgres, the main functional difference between a FUNCTION and a STORED PROCEDURE is that 
+        a FUNCTION returns a result, whereas a STOED PROCEDURE does not. 
+    This is because the intention behind a stored procedure is to perform some sort of activity and then finish, which would then return control to the caller.
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+--- PRE-Defined Functions in PostgreSQL ---
+
+
+    ARRAY_AGG() : function is used to concatenate the input values including null into an array.
+
+        * Example :
+
+            SELECT ARRAY_AGG(salary) FROM company;
+
+        ** Result :
+
+            array_agg
+            ---------------------------------------------
+            {20000,15000,20000,65000,85000,45000,10000}
+
+
+--- NUMERIC FUNCTIONS ---
+
+    ABS()                   : Returns the absolute value of numeric expression.
+
+    CEIL(X) / CEILING(X)    : Returns the ceil value of a number.
+
+    FLOOR ()                : Returns the floor value of a number.
+
+    DEGREES ()              : Converts radians to degrees
+
+    RADIANS ()              : Converts degrees to radians
+
+    GREATEST (n1,n2,...)    : Returns the greatest from all the arguments
+
+    LEAST (n1,n2,...)       : Returns the least from all the arguments
+
+    MOD (dividend, divisor) : Returns the remainder [dividend > divisor (just for understanding)]
+
+    PI ()                   : Returns the value of PI
+
+    POW (x, exp) / POWER()  : Returns the eponent value of x
+
+    ROUND (X, D)            : Round off a number. If a second argument, D, is supplied, then the function returns X rounded to D decimal places.
+
+    SQRT ()                 : Square root of a number.
+
+
+--- STRING FUNCTIONS ---
+
+    BIT_LENGTH ()       : Returns length of argument in bits
+    CHAR_LENGTH ()      : Returns number of characters in argument
+    LENGTH ()           : Returns the length of a string in bytes
+
+    LOWER ()            : Returns the argument in lowercase
+    UPPER ()            : Returns the argument in uppercase
+    
+    REGEXP ()           : Pattern matching using regular expressions
+    REPEAT ()           : Repeats a string the specified number of times
+    REVERSE ()          : Reverse the characters in a string
+
+    REPLACE ()          : Replaces occurrences of a specified string
+
+    SUBSTRING('str',start_pos,length) / SUBSTR()
+                        : Returns the substring according to arguments. [length ] argument is optional.
+    
+    CONCAT (str1,str2...)
+                        : concatination of strings
+
+    CONCAT_WS ('deli', str1, str2,..)
+                        : special type of concat in wich we specify the delimeter and that delimeter appear in the output between the strings.
+    
+    TRIM ()             : Removes leading and trailing spaces
+
+
+
+--- Date  Time Functions ---
+
+    Date and Time datatype variables can be manipulated with the help of operators.
+    Airthmetic and Comparison operators can be used between date & time type variables
+
+        date (+)(-) integer
+        date (+)(-) intervel
+        date (+)(-) time
+        date (+)(-) date
+
+        time (+)(-) intervel
+        time (+)(-) time
+
+        intervel (+)(-) intervel
+        -intervel
+
+        intervel * integer
+
+        timestamp (+)(-) intervel
+        timestamp (+)(-) timestamp
+
+
+The valid field names are: century, day, decade, dow, doy, epoch, hour, 
+                            isodow, isoyear, microseconds, millennium, milliseconds, minute, 
+                            month, quarter, second, timezone, timezone_hour, timezone_minute, week, year.
+
+
+    AGE (timestamp 'source_1' , timestamp 'source_2' [optional] ) :
+
+        - subtracts the [source_2] from [source_1] to find the age.
+        - source_1 > source_2  (just for understanding)
+        - current_date() - source_1  [when only one timestamp is passed]
+         
+
+    CURRENT_DATE 
+    CURRENT_TIME
+    CURRENT_TIMESTAMP
+
+    LOCALTIME : current time without timezone
+    LOCALTIMESTAMP
+
+    timeofday() : current time and date but as a string
+    
+    now() : similar to CURRENT_TIMESTAMP
+
+
+    DATE_PART('field', DATE_TYPE 'source') 
+                            : select the part of a date or time  
+
+            Eg. :   DATE_PART('year', DATE '2000-01-08');
+
+
+    EXTRACT (FIELD FROM DATE_TYPE 'source') 
+                            : select the part of a date or time
+
+            Eg. :   EXTRAXT( YEAR FROM DATE '2000-01-08');
+
+    
+NOTE :  DATE_PART is a (PosgreSQL Function)
+        EXTRACT is a (Standard SQL Function); they both have same working.
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+TRIGGER :
+
+    Triggers are database callback functions, which are automatically performed/invoked when a specified database event occurs.
+
+    Triggers mainly act on INSERT, UPDATE and DELETE statements.
+
+    PostgreSQL trigger can be specified to fire :
+
+        - BEFORE the operations attempted
+        - AFTER the operations
+        - INSTEAD OF operations
+
+    Triggers can be marked :
+        - FOR EACH ROW  
+        - FOR EACH STATEMENT
+
+    * Basic Syntax :
+
+        CREATE TRIGGER [trigger_name]
+        {BEFORE | AFTER | INSTEAD OF}
+        {INSERT | UPDATE | DELETE} ON [table_name]
+        FOR {EACH ROW | EACH STATEMENT}
+        EXECUTE { PROCEDURE | FUNCTION } function_name(argumrents);
+
+    
+    * Basic Syntax When trigger applies on UPDAE operation os sepicif COLUMN :
+
+        CREATE TRIGGER [trigger_name]
+        {BEFORE | AFTER | INSTEAD OF}
+        UPDATE OF [column_name] ON [table_name]
+        FOR {EACH ROW | EACH STATEMENT}
+        EXECUTE { PROCEDURE | FUNCTION } function_name(argumrents);
+
+    * Example :
+
+        CREATE TRIGGER employee_insert_trigger
+        AFTER 
+        INSERT ON employee_table
+        FOR EACH ROW
+        [ WHEN ( condition ) ]
+        EXECUTE PROCEDURE employee_insert_trigger_func();
+
+
+    * Creation of TRIGER FUNCTION 
+
+        CREATE OR REPLACE FUNCTION employee_insert_trigger
+        RETURNS trigger AS $$
+
+        BEGIN
+            INSERT INTO "employee_bkp" (employee_id, employee_name, entry_date)
+            VALUES (NEW.employee_id, NEW.employee_name, CURRENT_TIMESTAMP)
+
+            RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+-------------------------------------------------------------------------------------------------------------------------------------
