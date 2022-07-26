@@ -12,15 +12,17 @@
   >  
   >  **2. nano_command.txt**         : contains details about in-shell nano text editor and their frequently used commands.
 
+
 **2. git_training**
 
   >  **1. git_commands.txt**          : contains setting procedure of GIT and its most usefull commands with their syntax.
 
+
 **3. postgresql_training**
 
-  >  **1. postgresql_basics_&_setup.txt**
-                    >> contains the installation information of PostgreSQL in a debian based system
-                    >> contains basic user guide for PostgreSQL and pgAdmin.
+  >  **1. postgresql_basics_&_setup.txt** :
+  > - contains the installation information of PostgreSQL in a debian based system
+  > - contains basic user guide for PostgreSQL and pgAdmin.
     
   >  **2. sql_basics**                : contains basic and starting level statements of SQL and PostgeSQL.
 
@@ -34,9 +36,10 @@
 
   >  **7. sql_functions**               : FUNCTIONS, TRIGGERS.
 
-**4. database_project :** A Database for School System.
 
-  >  **1. school_system (structure).png** : A image of the design, relations and structure of DB.
+**4. database_project :** *A Database for School System.*
+
+  >  **1. school_system (structure).png** : An Image of the design, relations and structure of DB.
 
   >  **2. create_db_&_tables.sql**        : file to restore or create the *school_system* DB from nothing.
     
