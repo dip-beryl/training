@@ -238,7 +238,7 @@ TRIGGER :
         EXECUTE { PROCEDURE | FUNCTION } function_name(argumrents);
 
     
-    * Basic Syntax When trigger applies on UPDAE operation os sepicif COLUMN :
+    * Basic Syntax When trigger applies on UPDATE operation of specific COLUMN :
 
         CREATE TRIGGER [trigger_name]
         {BEFORE | AFTER | INSTEAD OF}
