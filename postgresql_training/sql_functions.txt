@@ -15,31 +15,41 @@ CREATE FUNCTION :
     
     * Basic Syntax :
 
-        CREATE [OR REPLACE] FUNCTION function_name(arguments)
-        RETURNS return_d_type AS $return_variable_name$
+        CREATE [OR REPLACE] FUNCTION function_name(variable d_type)
+            RETURNS return_d_type 
+        LANGUAGE plpgsql
+            AS 
+        $$
         DECLARE
-        [variable1] [variable1_d_type]
-        .
-        .
-        .
-        [variableN] [variableN_d_type];
+            [variable1] [variable1_d_type];
+            .
+            .
+            .
+            [variableN] [variableN_d_type];
         
-        BEGIN;
+        BEGIN
             function logic;
-            RETURN [return_variable_name | value];
+            
+            RETURN [variable_name | value];
         END;
-        LANGUAGE [plpgsql | plpythonu | ... ];
+        $$
 
     * Example :
 
         CREATE OR REPLACE FUNCTION total()
-            RETURNS integer AS $total$
-                DECLARE total integer;
+            RETURNS integer 
+        LANGUAGE plpgsql
+             AS
+        $$
+        DECLARE 
+            total integer;
+        
         BEGIN
             SELECT SUM(salary) INTO total FROM company;
+            
             RETURN total;
         END;
-        $total$ LANGUAGE plpgsql;
+        $$
 
 
     * Execute a function :
@@ -49,7 +59,9 @@ CREATE FUNCTION :
     * Example with arguents :
 
         CREATE OR REPLACE FUNCTION increment(i integer) 
-            RETURNS integer AS $$
+            RETURNS integer 
+            AS 
+        $$
         BEGIN
                 RETURN i + 1;
         END;
@@ -247,15 +259,18 @@ TRIGGER :
     * Creation of TRIGER FUNCTION 
 
         CREATE OR REPLACE FUNCTION employee_insert_trigger
-        RETURNS trigger AS $$
+            RETURNS trigger 
+        LANGUAGE plpgsql
+            AS 
+        $$
 
         BEGIN
             INSERT INTO "employee_bkp" (employee_id, employee_name, entry_date)
-            VALUES (NEW.employee_id, NEW.employee_name, CURRENT_TIMESTAMP)
+            VALUES (NEW.employee_id, NEW.employee_name, CURRENT_TIMESTAMP);
 
             RETURN NEW;
         END;
-        $$ LANGUAGE plpgsql;
+        $$ 
         
         
         * DROP TRIGGER :
