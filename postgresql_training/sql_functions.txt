@@ -31,8 +31,7 @@ CREATE FUNCTION :
             function logic;
             
             RETURN [variable_name | value];
-        END;
-        $$
+        END $$;
 
     * Example :
 
@@ -48,8 +47,8 @@ CREATE FUNCTION :
             SELECT SUM(salary) INTO total FROM company;
             
             RETURN total;
-        END;
-        $$
+        END $$ ;
+        
 
 
     * Execute a function :
@@ -269,8 +268,7 @@ TRIGGER :
             VALUES (NEW.employee_id, NEW.employee_name, CURRENT_TIMESTAMP);
 
             RETURN NEW;
-        END;
-        $$ 
+        END $$ ;
         
         
         * DROP TRIGGER :
