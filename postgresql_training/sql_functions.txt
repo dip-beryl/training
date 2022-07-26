@@ -275,7 +275,7 @@ TRIGGER :
         
         * DROP TRIGGER :
         
-            DROP TRIGGER [trigger_name];
+            DROP TRIGGER [trigger_name] ON [table_name];
             
         * LIST ALL THE TRIGGERS :
         
