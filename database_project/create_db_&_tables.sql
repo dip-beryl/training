@@ -1,6 +1,7 @@
 -- THIS IS THE SQL FILE TO GENERTAE THE STRUCTURE OF "school_sysytem" DATABASE
 
--- File Name       : school_system_create_tables.sql
+-- File Name       : create_db_&_tables.sql
+-- DATABASE        : school_system
 -- Author          : Dipanshu Ranga (@dip-beryl)
 -- Organization    : Beryl Systems Pvt. Ltd.
 

@@ -1,6 +1,7 @@
 -- THIS FILE CREATES VIEWS, FUNCTIONS, TRIGGERS FOR school_sysytem DATABASE
 
--- File Name       : school_system_views_functions.sql
+-- File Name       : views_&_functions.sql
+-- DATABASE        : school_system
 -- Author          : Dipanshu Ranga (@dip-beryl)
 -- Organization    : Beryl Systems Pvt. Ltd.
 

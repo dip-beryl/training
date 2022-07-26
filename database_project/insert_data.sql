@@ -1,6 +1,7 @@
 -- SQL FILE TO INSERT DATA IN DATABASE school_system
 
--- File Name       : school_system_insert_data.sql
+-- File Name       : insert_data.sql
+-- DATABASE        : school_system
 -- Author          : Dipanshu Ranga (@dip-beryl)
 -- Organization    : Beryl Systems Pvt. Ltd.
 
