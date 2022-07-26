@@ -8,10 +8,9 @@
 
 **1. linux_trining**
 
-  >  **1. basic_linux_commands.pdf**
-                    contains basic linux shell commands and their syntax.
-  >  **2. nano_command.txt**
-                    contains details about in-shell nano text editor and their frequently used commands.
+  >  **1. basic_linux_commands.pdf** : contains basic linux shell commands and their syntax.
+  >  
+  >  **2. nano_command.txt** : contains details about in-shell nano text editor and their frequently used commands.
 
 **2. git_training**
 
