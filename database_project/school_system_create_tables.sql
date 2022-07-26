@@ -22,6 +22,8 @@ CREATE TABLE student (
     dob         date NOT NULL,
     contact     VARCHAR(15),
     date_of_admission DATE NOT NULL,
+    email       VARCHAR(254) NOT NULL UNIQUE,
+    password    VARCHAR(25) NOT NULL CHECK (LENGTH(password) > 6),
     family_id   INTEGER NOT NULL
 );
 
@@ -35,7 +37,6 @@ CREATE TABLE family(
     m_last_name     VARCHAR(20),
     contact         VARCHAR(15) NOT NULL,
     contact_2       VARCHAR(15),
-    email           VARCHAR(254),
     address         TEXT NOT NULL
 );
 
@@ -58,10 +59,11 @@ CREATE TABLE employee(
     gender      char(1) NOT NULL CHECK(gender = 'M' OR gender = 'F'),
     dob         date NOT NULL,
     contact     VARCHAR(15) NOT NULL,
-    email       VARCHAR(254) NOT NULL,
+    email       VARCHAR(254) NOT NULL UNIQUE,
+    password    VARCHAR(25) NOT NULL CHECK (LENGTH(password) > 6),
     address     TEXT NOT NULL,
     date_of_join    DATE    NOT NULL,
-    dept_id     INTEGER NOT NULL REFERENCES department(dept_id)
+    dept_id     INTEGER NOT NULL REFERENCES department(dept_id),
     account_no  TEXT,
     salary  REAL
 );
@@ -117,3 +119,13 @@ CREATE TABLE attendance_employee(
     employee_id  INT REFERENCES employee(employee_id),
     status  BOOLEAN
 );
+
+--CREATE users TABLE
+DROP TABLE IF EXISTS users;
+CREATE TABLE users(
+    user_id       VARCHAR(254) NOT NULL UNIQUE,
+    password    VARCHAR(25) NOT NULL,
+    user_type   CHAR(2) NOT NULL CHECK (user_type = 'A' OR user_type = 'S' OR user_type = 'F' OR user_type = 'E'),
+    create_date TIMESTAMP   NOT NULL
+
+); -- A = Admin, S = Student, F = family, E = Employee
