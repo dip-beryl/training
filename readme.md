@@ -37,15 +37,21 @@
   >  **7. sql_functions**               : FUNCTIONS, TRIGGERS.
 
 
-**4. database_project :** *A Database for School System.*
+**4. database_training :** *A Database for School System.*
+  > **1. project :**
 
-  >  **1. school_system (structure).png** : An Image of the design, relations and structure of DB.
+   > > **1. school_system (structure).png** : An Image of the design, relations and structure of DB.
 
-  >  **2. create_db_&_tables.sql**        : file to restore or create the *school_system* DB from nothing.
+   > > **2. create_db_&_tables.sql**        : file to restore or create the *school_system* DB from nothing.
     
-  >  ***3. views_&_functions.sql***       : creates some VIEWS, FUNCTIONS and TRIGGERS for the DB.
+   > > ***3. views_&_functions.sql***       : creates some VIEWS, FUNCTIONS and TRIGGERS for the DB.
 
-  >  **4. insert_data.sql**               : INSERT demo data into the tables for testing.
+   > > **4. insert_data.sql**               : INSERT demo data into the tables for testing.
+ 
+ > **2. assignment :**
+   > > **1. assignmnet_database.pdf**         : Assignment questions based on database.
+   
+   > > **2. database_assignment_solution.txt**: Assignment solution queries.
 
 
 
