@@ -44,7 +44,7 @@ DROP VIEW IF EXISTS teacher_detail_view;
 CREATE VIEW teacher_detail_view
 AS
 SELECT
-    t.teacher_id AS ID,
+    e.employee_id AS ID,
     first_name,
     last_name,
     subject_name,
@@ -53,20 +53,25 @@ SELECT
     contact,
     email
 FROM
-    teacher t
-LEFT JOIN
     employee e
-        ON t.teacher_id = e.employee_id
+LEFT JOIN
+    department d
+        USING (dept_id)
+LEFT JOIN
+    teacher_subject ts
+     ON (employee_id = ts.teacher_id)
 LEFT JOIN
     subject s
-        ON t.subject_id = s.subject_id
+        ON (ts.subject_id = s.subject_id)
 LEFT JOIN
     classroom c
-        ON t.teacher_id = c.teacher_id
+        ON (employee_id = c.teacher_id)
 LEFT JOIN
     grade g
-        ON c.grade_id = g.grade_id;
-
+        ON (c.grade_id = g.grade_id)
+WHERE
+    d.dept_name = 'EDUCATION';
+    
 
 --CREATE VIEW for class grade and head teacher info
 DROP VIEW IF EXISTS classroom_grade_head_view;
