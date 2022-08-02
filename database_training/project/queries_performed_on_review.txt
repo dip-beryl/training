@@ -78,4 +78,8 @@ RESULT :
 
 Modifications to the Database (school_system) :
 
-    1. renamed table "teacher" to "teacher_subject".
+    1. Renamed table "teacher" to "teacher_subject".
+
+    2. Changed the foreign key of "classroom.teacher_id" to "employee.employee_id".
+
+    3. Changed the code for "teacher_detail_view" in VIEWs
