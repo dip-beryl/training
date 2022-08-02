@@ -107,8 +107,8 @@ VALUES
 ;    
 
 
--- INSERT INTO teacher TABLE
-INSERT INTO teacher
+-- INSERT INTO teacher_subject TABLE
+INSERT INTO teacher_subject
 VALUES
     (1, 005),
     (4, 004),

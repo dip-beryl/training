@@ -77,8 +77,8 @@ CREATE TABLE subject(
 );
 
 -- CREATE A SEPERATE TEACHER TABLE FROM employee TABLE
-DROP TABLE IF EXISTS teacher;
-CREATE TABLE teacher(
+DROP TABLE IF EXISTS teacher_subject;
+CREATE TABLE teacher_subject(
     teacher_id      INTEGER  NOT NULL REFERENCES employee(employee_id) UNIQUE,
     subject_id    INTEGER             REFERENCES subject(subject_id)
 );
@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS classroom;
 CREATE TABLE classroom(
     classroom_id    INTEGER PRIMARY KEY NOT NULL UNIQUE,
     grade_id        INTEGER     REFERENCES grade(grade_id),
-    teacher_id      INTEGER     REFERENCES teacher(teacher_id)
+    teacher_id      INTEGER     REFERENCES employee(employee_id)
 );
 
 -- CREATE A CONNECTION TABLE classrom_student
