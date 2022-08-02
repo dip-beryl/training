@@ -1,0 +1,81 @@
+File Name		: queries_performed_on_review.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------
+
+QUERY 1: 
+        SELECT 
+            classroom_id, COUNT(student_id) 
+        FROM 
+            classroom_student 
+        LEFT JOIN 
+            student 
+                USING(student_id) 
+        GROUP BY classroom_id;
+
+RESULT :
+            classroom_id | count 
+            --------------+-------
+                    101 |     3
+                    103 |     2
+                    104 |     3
+                    102 |     3
+            (4 rows)
+
+------------------------------------------------------------------------
+
+QUERY 2 :
+            SELECT 
+                first_name, 
+                AGE(dob)  AS Age 
+            FROM 
+                student;
+
+RESULT :
+
+            first_name |           age           
+            ------------+-------------------------
+            RAHUL      | 23 years 5 mons 18 days
+            SADHVI     | 25 years 3 mons 1 day
+            DEEPAK     | 23 years 8 mons 21 days
+            AJAY       | 21 years 9 mons 20 days
+            POOJA      | 25 years 1 mon 5 days
+            DIPNASHU   | 24 years 7 mons 30 days
+            DHRUV      | 17 years 6 mons 23 days
+            ANJALI     | 25 years 9 mons 21 days
+            JOHN       | 22 years 7 mons 21 days
+            ADAM       | 18 years 6 mons 4 days
+            JYOTI      | 19 years 2 mons 8 days
+            (11 rows)
+
+---------------------------------------------------------------------------
+
+QUERY 3 :
+            SELECT 
+                e.first_name, 
+                d.dept_name 
+            FROM 
+                employee e 
+            LEFT JOIN 
+                department d 
+                    USING (dept_id);
+
+RESULT :
+
+            first_name |  dept_name   
+            ------------+--------------
+            DHRUV      | FINANCE
+            VIJAY      | EDUCATION
+            ANJALI     | EDUCATION
+            RAHUL      | EDUCATION
+            PRIYANKA   | EDUCATION
+            ANURAG     | ACADEMIC
+            SHYAM      | HOUSEKEEPING
+            (7 rows)
+
+---------------------------------------------------------------
+
+Modifications to the Database (school_system) :
+
+    1. renamed table "teacher" to "teacher_subject".
