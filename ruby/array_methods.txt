@@ -1,0 +1,333 @@
+File Name		: array_methods.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------
+
+--------------------- Array Methods  (Baiscs)-----------------------
+
+Creating Array :
+
+    * To create a new array :
+
+    Syntax  :   Array.new (size = 0, default = nill)
+
+        > arr = []
+
+        > arr = Array.new
+
+        > Array.new(3)
+        >> [nil, nil, nil]
+
+        > Array.new(3, true)
+        >> [true, true, true]
+
+        > Array.new(3, 'yes')
+        >> ['yes', 'yes', 'yes']
+
+
+    Array.new(arr) :
+
+        > arr = [10,20,"uwu"]
+        > arr_2 = Array.new(arr)
+        
+        > print arr
+        >> [10,20,"uwu"]
+
+        > arr_2.equal? arr
+        >> false
+
+
+    * Creating array with blocks :
+        
+        > Hash.new
+        >> {}
+
+        > Array.new (3) { Hash.new }
+        >> [{}, {}, {}]
+
+        > Array.new (4) { |i| i.to_s }
+        >> [1, 2, 3, 4]
+
+    * Converting Hashes into Arrays :
+
+        > Hash.new.to_a
+
+        > Array(Hash.new)
+
+
+        > arr = {:a => "a", :b => "b", :c => 30}
+        > arr.to_a
+            OR
+        > Array(arr)
+        
+        >> [[:a, "a"], [:b, "b"], [:c, 30]]
+
+---------------------------------------------------------------    
+    
+Accessing Elements :
+
+        > arr = [10, 20, 30, 40, 50, 61, 71]
+
+    * With Index :
+
+        > arr[0]
+        >> 10
+
+        > arr[2]
+        >> 30
+
+        > arr[-1]
+        >> 71
+
+        > arr[100]
+        >> nil
+
+    * With Ranges :
+
+        > arr[0..2]
+        >> [10, 20, 30]
+
+        > arr[0...2]
+        >> [10, 20]
+
+    * With (index, length) :
+
+        Syntax : > Array[ start_index, length ]
+
+        > arr[1, 3]
+        >> [20, 30, 40]
+
+        > arr[4, 2]
+        >> [50, 61]
+
+    * .at :
+
+        > arr.at(2)
+        >> 30
+
+    * .fetch    :      It produces an error for out of bounds indexes. You can also specify the result when that happens.
+
+        > arr.fetch(5)
+        >> 61
+
+        > arr.fetch(100)
+        >> IndexError (index 100 outside of array bounds: -7...7)
+
+        > arr.fetch(100, "opps")
+        >> "oops"
+
+        > arr.fetch(100, 999)
+        >> 999
+
+    * .index(obj)   :   tries to find the index of specified object 
+
+        > arr.index(30)
+        >> 2
+
+        > arr.index(100)
+        >> nil
+
+    * .first, .last :
+
+        > arr.first
+        >> 10
+
+        > arr.last
+        >> 71
+
+    * .take(n), .drop(n) :
+
+    .take(n) - returns the first [n ] elements.
+    .drop(n) - skips the first [n ] elements and returns all left elements.
+
+        > arr.take(3)
+        >> [10, 20, 30]
+
+        > arr.drop(2)
+        >> [30, 40, 50, 61, 71]
+-----------------------------------------------------------------------------------
+
+Obtaining Infromation about an array :
+
+    .length, .size and .count :
+
+        > arr.count
+        >> 7
+
+        > arr.length
+        >> 7
+
+        > arr.size
+        >> 7
+
+    . empty?
+
+        > arr.empty?
+        >> false
+
+    .include?
+
+        > arr.include? (100)
+        >> false
+
+-------------------------------------------
+
+Adding Items to an Array :
+
+    .push(obj), Array << obj    :   Adds the object in the [end ] of an array.
+
+        > arr.push(5.78)
+        >> [10, 20, 30, 40, 50, 61, 71, 5.78] 
+
+        > arr << "Yes"
+        >> [10, 20, 30, 40, 50, 61, 71, 5.78, "Yes"] 
+
+
+    .unshift(obj)   :   Adds the object in the starting of the array.
+
+        > arr.unshift("start")
+        >> ["start", 10, 20, 30, 40, 50, 61, 71, 5.78] 
+            
+    .insert(index, obj) :
+
+        > arr.insert(3, "Three")
+        >> >> ["start", 10, 20, "Three", 30, 40, 50, 61, 71, 5.78] 
+
+        > arr.insert(5, 'A', 'B', 'C')
+        >> ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71, 5.78, "Yes"]
+
+-----------------------------------------------------------------------------------------------------
+
+Removing Items :
+
+    .pop    :   removes the last element in an array and returns it.
+
+            > arr.pop
+            >> "Yes"        # Array Structure Now : ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71, 5.78]
+
+            > arr.pop
+            >> 5.78        # Array Structure Now : ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71]
+
+
+    .shift  :   opposite of [.pop ], removes the starting element from the array and returns it.
+
+            > arr.shift
+            >> "start"      # Array Structure Now : [10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71]
+
+
+    .delete_at(index)   : deletes the element at the specified index and returns it.
+
+            > arr.delete_at(2)
+            >> "Three"           # Array Structure Now : [10, 20, 30, "A", "B", "C", 40, 50, 61, 71]
+
+
+    .delete(obj)    :   all the occurences of the specified object will be delted from the array. and returns the object
+
+            > arr.push(20, 30, 20)
+            >> [10, 20, 30, "A", "B", "C", 40, 50, 61, 71, 20, 30, 20] 
+
+            > arr.delete(20)
+            >>  20                 # Array Structure Now : [10, 30, "A", "B", "C", 40, 50, 61, 71, 30] 
+
+
+    .compact    : returns a array with removed [null ] values
+    .compact!   : deletes the null elements from the current array
+
+    .uniq :
+
+        > arr.uniq
+        >> [10, 30, "A", "B", "C", 40, 50, 61, 71]
+            
+            
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------------------- Array Methods (Advanced) ----------------------------------------
+
+[]  :
+
+    > Array.[](10,20,"uwu")
+    >> [10,20,"uwu"]
+
+    > Array[10,20,"uwu"]
+    >> [10,20,"uwu"]
+
+    > [10,20,"uwu"]
+    >> [10,20,"uwu"]
+
+---------------
+
+Array.try_convert(obj)  :   if the obj is an Array it will return the same array unless it will return nil
+                            this method can be used to check if an argument is array or not
+
+    > Array.try_convert( [2] ) 
+    >> [2]
+
+    > Array.try_convert( 2 )
+    >> nil
+
+-----------------
+
+Intersection [&] :  returns the intersection of two arrays. (values that are in both the arrays)
+
+    Syntax : arr1 & arr2
+
+    > arr_1 = [10,20,30,40]
+    > arr_2 = [30,40,50]
+
+    > arr_1 & arr_2
+    >> [30,40]
+
+
+Multiply [* ] :
+
+    * With Number :
+        
+        > arr_1 * 3
+        >> [10,20,30,40,10,20,30,40,10,20,30,40]
+
+    * With String :
+
+        "array * str" and  "arr.join(str)" is same
+
+        > arr_1 * "-"
+        >> "10-20-30-40"
+
+        > arr_1 * ","
+        >> "10,20,30,40"
+
+
+Addition [+] :  concatination
+
+        > arr_1 + arr_2
+        >> [10,20,30,40,30,40,50]
+
+
+Subtraction / Difference [-] :  removes all the elemets from first array that matches second array. and returns first array
+
+        > arr_1 - arr_2
+        >> [10, 20]
+
+
+Append / Push [<<] :
+
+        > arr = [1,2,3]
+        
+        > arr << 4 << 5 << "a"
+        >> [1, 2, 3, 4, 5, "a"]
+
+Compare [ <=> ] :   returns 0 if a == b, returns 1 if a > b, returns -1 a < b, returns nil if a and  b cannot be compared; here [a] and [b] are two arrays
+
+        > [ "a", "a", "c" ] <=> [ "a", "b", "c" ]   
+        >> -1
+
+        > [ 1, 2, 3, 4, 5, 6 ] <=> [ 1, 2 ]            
+        >> +1
+
+        > [ 1, 2 ] <=> [ 1, :two ]
+        >> nil
+
+        > [ 1, 2 ] <=> [ 1, 2 ]
+        >> 0
+        
+
