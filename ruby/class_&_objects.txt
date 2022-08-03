@@ -1,0 +1,90 @@
+File Name		: class_&_objects.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------
+
+Ruby is a perfect Object Oriented Programming Language. The features of the object-oriented programming language include −
+
+        - Data Encapsulation
+        - Data Abstraction
+        - Polymorphism
+        - Inheritance
+----------------------------------------
+
+Class :
+
+    A class name should start from uppercase letter.
+
+        * Basic Syntax :
+
+            class Class_name
+
+                code / statements
+
+            end
+
+    Class variables start with @@
+
+-------------------------------------------------------------------
+
+Objects :
+
+    An object is an instance of a class.
+
+        * Basic syntax :
+
+            obj_name = Class_name.new
+
+----------------------------------------------------------------------------------------
+
+Initialize Method / Constructor / Init Function :
+
+    The initialize method is a special type of method, which will be executed when the [new ] method of the class is called with parameters.
+
+        * Basic Syntax :
+
+            > class Student                     # class creation
+
+                def initialize(id, name, grade)
+                    @std_id = id
+                    @std_name = name
+                    @std_grade = grade
+
+              end
+
+            > student_1 = Student.new(1, "Karan", "10th")       # object creation
+
+----------------------------------
+
+Member Function :
+
+    These are the simple functions / methods that are defined in a class.
+
+        * Example :
+
+            > class Animal
+                
+                def legs (num)
+                    @number_of_legs = num
+                end
+
+                def number_of_legs
+                    @number_of_legs
+                end
+             end
+
+            > dog = Animal.new
+              dog.legs(4)
+
+            > kangaroo = Animal.new
+              kangaroo.legs(2)
+
+            > puts kangaroo.number_of_legs
+              puts dog.number_of_legs
+            
+            >> 2
+               4
+
+-------------------------------------------------------------------------------------------
+

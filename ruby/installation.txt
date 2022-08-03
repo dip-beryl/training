@@ -1,0 +1,83 @@
+File Name		: installation.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+Ruby popularly known as R.
+Ruby is a high-level, interpreted, general-purpose and complete object oriented programing language.
+
+In ruby everything is an OBJECT even the data types.
+
+1. Installation :
+
+    To instal ruby first we install a enivorment manager i.e, RVM. 
+    So, we need to import the GPG Keys of their moderator / maintainers for the safe installation.
+
+        * Importing GPG Keys :
+
+            $ curl -sSL https://rvm.io/mpapis.asc | gpg --import -        (mpapis is the username of maintainer)
+            $ curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -    (pkuczynski is the username of maintainer)
+
+        (curl is a shell tool used to transfer and get data from various type of networks)
+        (gpg is a tool for GPG Keys)
+
+        * Get the list of keys installed :
+
+            $ gpg --list-keys
+
+        * Install RVM - ruby environment manager :
+
+            $ curl -sSL https://get.rvm.io | bash -s stable
+
+        - RVM to /home/beryl/.rvm/
+        - Adding rvm PATH line to 
+                /home/beryl/.profile 
+                /home/beryl/.mkshrc 
+                /home/beryl/.bashrc 
+                /home/beryl/.zshrc.
+    
+        - Adding rvm loading line to 
+                /home/beryl/.profile 
+                /home/beryl/.bash_profile 
+                /home/beryl/.zlogin.
+
+        
+        * To start using RVM you need to reload the shell :
+            
+            $ source ~/.bashrc
+
+        * Version Check :
+
+            $ rvm --version
+
+
+2. Ruby Installation :
+
+    Now we will install the ruby language in inside RVM :
+
+        * Install ruby through RVM :
+
+            $ rvm install ruby
+
+            $ rvm install [version]    (for some specific version)
+
+            $ rvm list known            (get a list of all install version options available)
+
+        * List all the vesions of ruby that are installed :
+
+            $ rvm list
+
+        * using and setting a ruby version as default :
+
+            $ rvm use [version]
+
+            $ rvm use [version] --default
+
+        ( some times you have to use the command $ /bin/bash --login befor the 'rvm use')
+
+3. Running ruby commands :
+
+    Ruby language statements can be executed through 'irb' integrated shell.
+
+            $ irb
+
+            - now run any ruby statement

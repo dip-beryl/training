@@ -1,0 +1,185 @@
+File Name		: blocks_&_iterators.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------
+BLOCK :
+
+    Like methods, but without a name.
+
+    A block consists of chunks of code.
+    The code in the block is always enclosed within braces ({}) or between [do] and [end].
+    
+    You assign a name to a block.
+    A block is always invoked from a function with the same name as that of the block. 
+        
+        *(This means that if you have a block with the name test, then you use the function test to invoke this block.)
+
+    [ A block is a piece of code that accepts arguments, and returns a value. A block is always passed to a method call. ]
+
+-----------
+    Yield - 
+
+        To understand block you have to understand Yield.
+
+        Yield is a return function.
+        But in [return ] function if it is executed then the method execution is stopped.
+
+        In Yield keyword after the return is executed through yield. The continues to execute further statements / code. 
+
+            * Example
+
+                def numbers ()
+                    yield 1
+                    yield 2
+                    yield 3
+                    puts "These are numbers."
+                    yield 4
+                    yield 5
+                end
+                
+
+        But these returns that yield statement sends out from the method can not be used like a normal method call.
+        We need to create a block of the same name as the function who contains the yield statement to make it work.
+
+            * Basic Block Syntax :
+
+                [name_of_block] { | var_name | statement}
+
+                    - name_of_block = must be same as the function for whome this block is existing.
+
+                    - var_name      = is the variable used to catch the outputs from the function with every yield / return statement executed
+                                      var_name but be enclode in pipes ||
+
+            * Executing the above 'numbers()' method with a block :
+
+                > numbers { |i| puts i}
+                >> 1
+                   2
+                   3
+                   These are numbers.
+                   4
+                   5
+
+---------------------
+    BEGIN & END Block :
+
+        Every Ruby source file can declare blocks of code to be run as the file is being loaded (the BEGIN blocks) 
+            and, after the program has finished executing (the END blocks).
+            
+        - BEGIN Block always executes FIRST
+        - END Block always execute LAST.
+
+            * Basic Syntax :
+
+                Begin { code }
+                something code
+                End { code }
+                something code
+
+            * Example :
+                
+                > puts "This Will not print in start"
+                  BEGIN { puts "Begin Block" }
+                  END { puts "End Block" }
+                  puts ("This is Main")
+
+                >> Begin Block
+                   This is Main
+                   End Block
+
+
+----------------------------------------------------------------------------------------------------------
+
+Iterators :
+
+    
+    Objects that store a group of data members are called collections. In Ruby, [arrays] and [hashes] can be termed collections
+
+    - Iterators are nothing but methods supported by collections. 
+
+    Iterators return all the elements of a collection one-by-one according to the method condition that is applied on the collection.
+
+        * NOTE :You can make iterators through numbers and strings too. Some methods of these also used to make enumerate / iteratable blocks.
+
+    These iterators are mainly used in blocks
+
+        Some Iterators on [ Collections ] are :
+
+            - each      : iterate through each value
+            - collect   : colects the returned values from the blocks
+            - select    : collect the values for which the block will return true
+            - detect    : same as 'select'  but stops the iteration at first [true]
+
+        Some Iterators on [ Numbers ] are :
+
+            - times
+
+
+        * A Basic iterator method syntax :
+
+            new_array = collectible.iterator_method { | variable| }
+
+
+        *[IMP NOTE] :
+            Iterator methods when used on any object returns value according to their method defination (pre-defined)
+            To filter these results according to your needs we can pass a block to the iterator method.
+            Now the return quantities or object from the iterator method is filterd according to the block defination.
+
+                * Syntax (Passing Blocks in Iterator Methods):
+
+                    filterd_result = object.iterator_method { | var_name | condition}
+
+            - There are various methods in Ruby that accepts blocks.
+
+
+        * Examples :
+
+            ** .times :
+
+                > 5.times {puts "Yes"}
+                >> Yes
+                   Yes
+                   Yes
+                   Yes
+                   Yes
+
+                > 5.times {|i| puts "Yes #{i}"}
+                >> Yes 0
+                   Yes 1
+                   Yes 2
+                   Yes 3
+                   Yes 4
+
+
+            ** .each :
+
+                > arr = [10,20,30,40]
+                  arr.each { |i| puts i}
+                >> 10
+                   20
+                   30
+                   40
+
+
+            ** .collect
+
+                > arr = [10,20,30,40]
+                  print arr.collect { |i| i +1}
+                >> [11, 21, 31, 41]
+                
+            
+            ** .select
+                
+                > arr = [10,20,30,41,11]
+                  print arr.select { |i| i.odd?}
+                >> [41, 11]
+
+            
+            ** .detect
+                
+                > arr = [10,20,30,41,11]
+                  print arr.detect { |i| i.odd?}
+                >> [41]
+
+----------------------------------------------------------

@@ -1,0 +1,647 @@
+File Name		: syntax_&_basics.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------
+Variables :
+
+    Local variables begin with a lowercase letter or _. 
+    The scope of a local variable ranges from class, module, def, or do to the corresponding end or from a block's opening brace to its close brace {}
+
+    When an uninitialized local variable is referenced, it is interpreted as a call to a method that has no arguments.
+    Assignment to uninitialized local variables also serves as variable declaration. 
+    
+    a = 23
+    b = '45'
+    c = 23 * 5
+    d = a + c
+
+    Types of Variables :
+
+        1. Global variable ( $apple )       : scope - available throughout the program
+        2. Instance variable ( @apple )     : scope - within the [do ] - [end ] statement or {}
+        3. Class variable ( @@apple )       : scope - within class and its objects
+        4. Constant ( APPLE )
+
+------------------------------------------------------
+Output / stdout Function :
+
+    There are two output Functions :
+
+    1. print
+    2. puts (puts appends a new line after each execution of it)
+
+    (both can be used with () and without)
+
+        print 5+5
+        print "yeh"
+        print (a)
+        print "\n"  (for new line)
+        print var1, var2
+
+
+        puts (5*5)
+        puts a
+        puts (5)
+
+    Printing Strings with Variables :
+
+        print "This is Five " + var
+        OR
+        print "This is Five #{var}"
+
+    They also treats arrays differnetly :
+
+        puts [1,2]
+        > 1
+          2
+
+        print [1,2]
+        > [1,2]
+
+----------------------------------------------------
+Here Document :
+
+    "Here Document" is a type of technique in ruby print method in which you can make a string of multiple lines easily.
+    With print<< symbal you can specify a string or identifier to terminate the print statemet.
+
+        print <<EOF
+            Method 1
+        EOF
+        > Method 1
+
+        print <<"EOF";                # same as above
+            Method 2
+        > Method 2
+        EOF
+
+        print <<`EOC`                 # execute shell commands
+                ls
+                echo lo there
+        EOC
+        > Documents Photos Download git
+        > lo there
+
+        print <<"foo", <<"bar"         # you can stack them
+            I said foo.
+        foo
+            I said bar.
+        bar
+        > I said foo
+        > I said bar
+
+----------------------------------------------------------------------
+BEGIN & END statemet :
+
+    Code inside the {BEGIN} block will run FIRST in the whole program.
+
+    Code inside the {END} block will run LAST in the whole program.
+
+    $code$ :
+        puts 2
+
+        END {
+            puts 3
+        }
+
+        BEGIN {
+            puts 1
+        }
+        > 1
+        > 2
+        > 3
+
+----------------------------------------------------------------------------
+Comments :
+
+# for single line Comments
+
+=begin
+This
+is also
+a comment
+=end
+
+----------------------------------------------------
+
+Operators :
+
+    Most of the operators in the Ruby are similar to the generic operators like +, -, %, \.
+
+    But there are some special operators who have different workings. 
+
+            <=>     |   returns 0 if a == b, returns 1 if a > b, returns -1 a < b
+
+            .eql?   |   used to check if two operands have same dtype or not.
+
+                > a.eql?(b)
+                >> if [a] and [b] both are int then it is true unless not
+
+            .equal? |   compares the object id
+
+                > a.equal?(b)
+
+        * Parallel Declaration in ruby :
+
+            a, b, c = 1, 2, 3           # here a = 1, b = 2, c = 3
+
+        * Parallel swapping in ruby :
+
+            a, b = b, a                 # here the values of [a] & [b] are now interchanged
+
+        * Ternary Operator : ?:
+
+            If [Condition] is true ? Then value X : Otherwise value Y
+
+-----------------------------------------------------------------------------------------------------------------
+
+Data Types & Type Casting:
+
+    Ruby is dynamicaly ype language. There it selects the data types of its variables on its own.
+
+    Type Casting :
+
+        print 3.14 to_i     (to integr) #type casting float to integer
+        > 3
+
+        print 3 to to_f     (to float)
+        >3.000
+
+        similarly to_s      (to string)
+
+        to_a                (to array)
+
+----------------------------------------------------------------
+Strings :
+
+    Strings have indices in ruby.
+    In ruby indices start from '0'.
+
+        > str =   "Alphabet"
+        * Indices= 01234567
+
+            > print str.length
+            >> 8
+
+            > print str[5]
+            >> b
+
+            > print str.include? "pha"
+            >> true
+
+            > str.start_with?("letter")
+
+        * print str[ start, length ]
+            
+            > print str[2, 4]
+            >> phab
+
+    * \ backslash is used to ascape any character that follows it :
+
+            > print 'Hi, This is Geeta\'s Guitar'
+            >> Hi, This is Geeta's Guitar
+
+            > print "\\"
+            >> \
+    
+
+-----------------------------------------------------------------
+Numbers :
+
+
+        number.abs()   : for absolute value
+        number.round() : for round off value
+
+    ** Maths class : for advanced methods
+
+        Math.sqrt(number)
+        Math.log()
+
+    * between method
+
+        > 5.between?(1, 10)
+        >> true
+
+    * checking odd even
+
+        > 5.odd?
+        >> true
+
+---------------------------------------------------------------
+stdin :
+
+        var = gets
+        print var
+
+    (if we use only "gets" it will also store a "\n" in the end beacuse of the [enter] pressed by user.)
+    
+    * to ignore the "\n" the gets saves :
+
+        var1 = gets.chomp
+        print var1
+
+------------------------------------------------------------------
+true, false and nil :
+
+    All of these are objects. Means you can assign them to variables.
+
+    nil is special. It represents NOTHING.
+
+    An empty string "", an empty array [], or empty Hash {} all represent something. So they’re not nil.
+
+    Everything is true, except nil. Only nil is false.
+
+---------------------------------------------------------------------------------------------
+Methods / Functions :
+
+    Method names should begin with a lowercase letter. If you begin a method name with an uppercase letter, 
+        Ruby might think that it is a constant and hence can parse the call incorrectly.
+    
+        * A simlpe method example :
+
+            def sum_num(num1, num2 = 99)
+                return num1 + num2
+            end
+
+            (in ruby you need to mention "end" to teminate a function statement)
+
+            sum = sum_num(5, 4)
+            sum2 = sum_num(5)
+
+        * Accepting any number of arguments (including none) :
+
+            ------ def func (*args) --------
+
+            > def sample (*test)
+                puts "The number of parameters is #{test.length}"
+                
+                for i in 0...test.length
+                    puts "The parameters are #{test[i]}"
+                end
+            end
+            
+            > sample "Zara", "6", "F"           # multi argument function call
+            
+            >>  The number of parameters is 3
+                The parameters are Zara
+                The parameters are 6
+                The parameters are F
+
+    (nevr use () in function calls when their is more than a single argument)
+
+    ** undef
+        to cancel the method defination.
+
+            undef [method-name]
+
+NOTE :
+        In Pre-defined funtions for numbers, strings, arrays etc, sometimes there are two functins with same name like "str.downcase" & "str.downcase!"
+
+        both the functions have same name and same working but the later one contains a '!' mark in its name.
+
+        These methods that ends with '!' are known as dangerous functions. Because hey modifies the satate of object these functions applied on.
+
+            * str.downcase will return a output conatining the downcased contents of str. But will not alter the original contents of str.
+            * str.downcase! will return the downcased contents but also changes the contents of str to be downcased.
+
+--------------------------------------------------------------------
+If-Else :
+
+    Expression will execute only if the condition is true.
+
+    * Basic Syntax :
+
+        if condition
+            expression
+
+        elsif condition
+            expression
+
+        else
+            expression
+        end
+
+    * Another Syntax :
+
+        [code / expression] if [condition]
+
+------------
+unless :
+
+    unless is opposite of [if].
+    the expression wil execute if the condition is false
+
+        unless condition
+            expression      # if the condition is false
+        
+        else
+            expression
+
+        end
+------------------------------------------------------------------
+Switch :
+
+    case option_var
+        
+        when value1, value2 ... ,[range]
+            expression
+        
+        when value3
+            expression
+        
+        else
+            expression
+    end
+
+    option_var = ______
+
+-----------------------------------------------------
+Symbols : :
+
+    Symbols are like strings, except they are code.
+    Symbols are unique identifiers that are considered code, not data.
+
+    Symbols are special limited variation of strings.
+
+    Works as strings but same symbol names have same object_id but same strings do not.
+
+        * Syntax :
+
+            :symbol             # A symbol is created by adding a colon in front of a word.
+
+            :hello
+            :string
+
+            > print "hello"
+            >> hello
+
+            > print :hello
+            >> hello
+
+        * (A symbol is not a variable)
+
+            > print "hi".object_id
+            >> 60
+
+            print "hi".object_id
+            >> 80                   # id changed even though the string is same
+
+            > print :hi.object_id
+            >> 1047068
+
+            > print :hi.object_id
+            >> 1047068              # id is same for same symbol
+
+------------------------------------------------------
+Arrays []:
+
+    In Ruby a array can have differnet data types of elements.
+
+        * Creating an Array :
+
+            > arr = [1, 22, 37.8, "hehe", "L", 54, :yupps]
+
+            > print arr[3]
+            >> ["hehe"]
+
+        * negative index will start from end.
+        
+            > arr[-1]         
+            >> ["L"]
+
+        * changing the value of an element in array
+
+            > arr[3] = 38     
+
+
+        * Indexing with length :
+            
+            > collection[ start, length]    (syntax)
+            
+            > arr[2,4]        
+            >> [37.8, "hehe", "L", 54]
+
+
+        * Two dot .. indexing syntax
+            
+            > collection[ start.. end]      (end will be included)
+
+            > arr[2..4]
+            >> [37.8, "hehe", "L"]
+
+
+        * Three dot ... indexing syntax
+        
+            > collection[ start... end]     (end will be skipped)
+            
+            > arr[2...4]
+            >> [37.8, "hehe"]
+
+        * Create an Empty array :
+
+            > arr =[]
+
+------>
+        ** Adding two arrays :
+
+            > [1,2,3] + [3,4,5]
+            >> [1, 2, 3, 3, 4, 5] 
+
+        ** Subtracting :
+
+            > [1,2,3] - [3,4,5]
+            >> [1,2]                # left array will completely be ignored in th output.
+                                    # elements from left array that matches the right array will be deletd from right array 
+
+        ** Multiply :
+
+            > [1,2,3] * 3
+            >> [1,2,3,1,2,3,1,2,3]
+
+        ** Intersection :
+
+            > [1,2,3] & [3,4,5]
+            >> [3]
+
+
+----------------------------------------------------------------------------------------
+Array Methods :
+
+        array.length
+
+        array.push(var)
+
+        array.pop           # deletes the last element
+
+        array.reverse       # does not change the structure of the array
+
+        array.sort          # does not affect main array.
+
+        array.include? var  # check for any specific element if present or not in the array
+
+        array.compact       # returns an aray with ignored [nil] values
+
+        
+        array.rotate(index) # change the array indexes and start the array from the specified index
+                            # all the elements before the mentioned index will become last elements
+
+        array.transpose     # works in a 3D arrays    
+
+-------------------------------------------------------------------------------------------------
+Dictionary / Hashes / Assosiative Arrays {}:
+
+    Key-Value pair array.
+    Keys should be unique.
+    Keys can use any kind object as keys or values.
+    Hash Rocket (=>)
+
+
+        * Syntax:
+
+            dict = {
+                key => value,
+                key2 => value
+            }
+
+            print dict[key]
+
+        * Example :
+
+            counting = {
+                "one" => 1,
+                2 => "two",
+                1.2 => "one point two"
+                :fifteen => 15
+            }
+
+            > print counting[1.2]
+            >> "one point two"
+
+            > print counting[:fifteen]
+            >> 15
+
+        * adding new values to Dictionary :
+
+            > counting[0] = "zero"
+
+            (same you can alter the already existing values)
+
+        * To know all the keys
+
+            > dict.keys
+
+        * To merge two Dictionaries :
+
+            > dict_3 = dict.merge(dict2)            # returns the new dict. Does not modify the original dict.
+
+
+    NEW Method for dict syntax :
+
+            dict = {
+                one: 1,
+                two: 2,
+                three: 3
+            }
+
+            * In this method all the keys are symbols.
+
+------ > 
+NOTE:
+        .fetch() : > [] indexing brackets and a method named "collectibles.fetch( index / key )" works the same way.
+                        Except that indexing brackets never raise an error when invalid key or index is provided.
+                        .fetch() can be used with arrays, dict and many more.
+
+                        * Example :
+
+                            > counting.fetch(22)
+                            >> KeyError.
+
+-------------------------------------------------------------
+LOOPS :
+
+While Loops :
+
+
+        * Basic Syntax :
+
+            while condition [do]
+               
+                expression
+            
+            end
+
+** Until Loop : completely opposite of while loop. executes when the condition is false.
+
+---------------------------------------------------------------
+FOR Loop:
+
+        * Basic Syntax :
+
+            for [var] in [expression] [do]
+                statement
+            end
+
+        * Example :
+
+            > for i in 0..5
+                print i
+              end
+
+            >> 012345
+
+-----------------------------------------------------------------
+
+Ranges :
+
+    Ranges as Sequence : -
+
+    There are different type of ranges that can be used in many different ways.
+
+        * double dot :
+
+            > (1..5)          # last digit is included
+            >> 1,2,3,4,5
+
+        * triple dot :
+
+            > (1...5)         # last digit is skipped
+
+        * can also be used in alphabets :
+
+            > ('a'..'d')
+            >> 'a','b','c','d'
+
+            > ('daa'..'dad')
+            >> 'daa', 'dab', 'dac', 'dad'
+
+            > digits = 1..9
+            
+            > digits.max
+            >> 9
+            
+            > digits.min
+            >> 1
+
+        (.min and .max method can be used on arrays too but only when it contains only same type combarable objects)
+
+        * ranges can be used in case statement too :
+
+            > result = case marks
+                        when (1..30) then "Fail"
+                        when (31..50) then "Pass C"
+                        when (51..70) then "Pass B"
+                        when (71..100) then "Pass A"
+                    end
+            puts result
+
+
+    Ranges as Intervals : -
+
+    Interval Test . Seeing if some value falles within the interval represented by range.
+    This is done with the help of ===
+
+            > if ((1..10) === 8)
+                print "Yes"
+            end
+
+---------------------------------------------------------------------------------------------------------------------------------
