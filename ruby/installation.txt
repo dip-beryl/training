@@ -81,3 +81,10 @@ In ruby everything is an OBJECT even the data types.
             $ irb
 
             - now run any ruby statement
+
+    
+    You can also run ruby files through :
+
+            $ ruby file_name.rb
+
+        *(ruby files have .rb extension)
