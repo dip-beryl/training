@@ -246,6 +246,8 @@ Operators :
 
             .eql?   |   used to check if two operands have same dtype or not.
 
+            =~      |   basic pattern matching operator. Used when one operand is string and one is a regular expression
+
                 > a.eql?(b)
                 >> if [a] and [b] both are int then it is true unless not
 
