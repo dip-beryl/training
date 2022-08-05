@@ -125,7 +125,7 @@ Accessing Elements :
             > arr.fetch(100) { |i| puts "Index : #{i} is out of bonds"}
             >> Index : 100 is out of bonds
 
-
+-------------------------
     * .index(obj)
       .index { block }   :   tries to find the index of specified object 
 
@@ -137,6 +137,22 @@ Accessing Elements :
 
             > arr.index { |i| i > 30}
             >> 3
+
+        .rindex(obj)
+        .rindex { block }   :   same as .index but traverses in reverse order
+
+            > [1, 2, 3, 4, 3, 4].rindex(4)
+            >> 5
+
+            > [1, 2, 3, 4, 3, 4].rindex(3)
+            >> 4
+
+            > [1, 2, 3, 4, 3, 4].rindex(30)
+            >> nil
+
+            > [1, 2, 3, 4, 3, 2, 4].rindex { |i| i == 2}
+            >> 5
+-------------------------            
 
     * .first, .last :
 
@@ -154,7 +170,7 @@ Accessing Elements :
             > arr.last(2)
             >> [61, 71]
 
-    * .take(n), .drop(n) :
+    * .take(n), .drop(n) :      both eturns new array
 
     .take(n) - returns the first [n ] elements.
     .drop(n) - skips the first [n ] elements and returns all left elements.
@@ -179,7 +195,7 @@ Obtaining Infromation about an array :
             > arr.size
             >> 7
 
-    . empty?
+    . empty? , .none?
 
             > arr.empty?
             >> false
@@ -193,14 +209,21 @@ Obtaining Infromation about an array :
 
 Adding Items to an Array :
 
-    .push(obj), Array << obj    :   Adds the object in the [end ] of an array.
+    .append(obj, ...)
+    .push(obj, ...), 
+    Array << obj    :   Adds the object in the [end ] of an array.
 
             > arr.push(5.78)
             >> [10, 20, 30, 40, 50, 61, 71, 5.78] 
 
             > arr << "Yes"
-            >> [10, 20, 30, 40, 50, 61, 71, 5.78, "Yes"] 
+            >> [10, 20, 30, 40, 50, 61, 71, 5.78, "Yes"]
 
+            > [1,2].push(5).push(6)
+            >> [1,2,5,6]
+
+            > [1,2].push(5,6,7)
+            >> [1,2,5,6,7]
 
     .unshift(obj)   :   Adds the object in the starting of the array.
 
@@ -220,6 +243,7 @@ Adding Items to an Array :
 Removing Items :
 
     .pop    :   removes the last element in an array and returns it.
+            :   modifies array
 
             > arr.pop
             >> "Yes"        # Array Structure Now : ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71, 5.78]
@@ -227,11 +251,21 @@ Removing Items :
             > arr.pop
             >> 5.78        # Array Structure Now : ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71]
 
+            > arr.pop(2)
+            >> [61, 71]
 
     .shift  :   opposite of [.pop ], removes the starting element from the array and returns it.
+            :   modifies array
 
             > arr.shift
             >> "start"      # Array Structure Now : [10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71]
+
+            > a = [1,2,3,4]
+            > a.shift(2)
+            >> [1,2]        # returns the removed elements
+
+            > print a
+            >> [3,4]
 
 
     .delete_at(index)   : deletes the element at the specified index and returns it.
@@ -369,12 +403,14 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
 
 -----------------------------------------
 
+.push
 .append :   pushing elements in the end.
 
             > arr = [1, 2, 3, 'a', 'b', 'c']
 
             > arr.append(5.5)
             >> [1, 2, 3, 'a', 'b', 'c', 5.5]
+
 
 -------------------------------------
 
@@ -429,8 +465,10 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
 
 -------------------------------------
 
-.combination    :   used with a block returns all possible combination of array elements.
-(permutation and combination)
+.combination(length)
+.combination(length) { block }   :   can be used with a block returns all possible combination of array elements.
+ 
+ *(permutation and combination)
 
             > arr = [1,2,3]
 
@@ -446,6 +484,12 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
             > arr.combination(0).to_a
             >> [[]]
 
+------
+.repeated_combination(length)
+.repeated_combination(length) { block }   :   returns repeated combinations
+
+            > [1,2,3].repeated_combination(2).to_a
+            >> [[1, 1], [1, 2], [1, 3], [2, 2], [2, 3], [3, 3]] 
 
 --------------------------------
 
@@ -514,9 +558,11 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
             > arr.delete_at (100)
             >> nil
 
+.reject {block }        :   does not modifies main array; all other working is same as .delete_if
+.reject! {block }       :   completely same as .delete_if
 
 .delete_if { block }    :   deletes every element of array for which block evaluates true
-                        :   array is modified as the blocks are executed with each iteration
+                        :   main array is modified as the blocks are executed with each iteration
                         :   returns new array
 
             > arr.delete_if {|i| i > 40}
@@ -532,11 +578,20 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
 ------------------------------------------------
 
 .drop_while {block}     : returns a new array
+                        : drop all the elements for which block returns true
 
-            > arr [10, 20, 30, 40, 51]
+            > arr = [10, 20, 30, 40, 51]
 
             > arr.drop_while { |i| i< 30}
             >> [30, 40, 51]
+
+.take_while { block }   : returns new array
+                        : returns all the elements for which the block returns true [opposite of .take_while]
+
+            > arr = [10, 20, 30, 40, 51]
+
+            > arr.take_while { |i| i< 30}
+            >> [10, 20]
 
 -----------------------------------
 
@@ -550,6 +605,8 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
 
 
 .each_index { block }   :   same as .each but passes the index of elements instead of the elements to the block
+
+.reverse_each { block } :   same as .each but enumerates in reverse order.
 
 ------------------------------
 
@@ -699,16 +756,12 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
 .max                    : returns object
 .max { |a, b| block }   : returns object
 
-.min                    : returns object
-.min { |a, b| block }   : returns object
+        - .max compares objects through comparison operators first on character ank base ('x' > 'a') then on length base
 
             > arr = ["ha", "hello", "Animal", "x", "hsajnsqjwksasw"]
             
             > arr.max
             >> "x"
-
-            > arr.min
-            >> "Animal"
 
             > arr.max { |a, b| a <=> b}
             >> "x"
@@ -716,43 +769,412 @@ Compare_2 [ == ] :  Two arrays are equal when their length is equal and each ele
             > arr.max { |a, b| a.length <=> b.length}
             >> "hsajnsqjwksasw"
 
+----------
+
+.min                    : returns object
+.min { |a, b| block }   : returns object
+
+        - .min compares objects through comparison operators first on character ank base ('x' > 'a') then on length base
+
+            > arr.min
+            >> "Animal"
+
+            > arr.min { |a, b| a <=> b}
+            >> "Animal"
+
+            > arr.min { |a, b| a.length <=> b.length}
+            >> "x"
+
+
+----------------------------------------------------------
 
 .max(n)                    : returns array
 .max(n) { |a, b| block }   : returns array
+
+                > arr = ["ha", "hello", "Animal", "x", "hsajnsqjwksasw"]
+
+                > arr.max(2)
+                >> ["x", "hsajnsqjwksasw"] 
+                
+                > arr.max(3)
+                >> ["x", "hsajnsqjwksasw", "hello"] 
+                
+                > arr.max(4)
+                > ["x", "hsajnsqjwksasw", "hello", "ha"]
+
+                > arr.max(2) { |a, b| a.length <=> b.length }
+                >> ["hsajnsqjwksasw", "Animal"]
 
 
 .min(n)                    : returns array
 .min(n) { |a, b| block }   : returns array
             
+                > arr.min(2)
+                >> ["Animal", "ha"] 
+                
+                > arr.min(3)
+                >> ["Animal", "ha", "hello"] 
+                
+                > arr.min(4)
+                >> ["Animal", "ha", "hello", "hsajnsqjwksasw"]
+
+                > arr.max(2) { |a, b| a.length <=> b.length }
+                >> ["x", "ha"]
+
+-----------------------------------------------------------------------------------------------
+
+.minmax                         : returns two object array [obj, obj]
+.minmax { |a, b| block }        : returns two object array [obj, obj]
+
+                > arr.minmax
+                >> ["Animal", "x" ]
+
+-------------------------------------------------------------------------------
 
 
+.one?           : returns true if the array have only one element.
+.one? { block } :
+
+                > [].one?
+                >> false
+
+                > [1].one?
+                >> true
+
+                > [1,1].one?
+                >> false
+
+---------------------------------------------------------------------------
+
+.permutation {|p| block}        → ary
+.permutation                    → Enumerator
+.permutation(n) {|p| block}     → ary
+.permutation(n)                 → Enumerator
+
+        - Yiled all the permutation of length [n ]; when [n ] is not provided yield all the permutaions of all possible length.
+                
+                > arr = [1, 2, 44, 'a']
+
+                > arr.permutation(2).to_a
+                >> [[1, 2], [1, 44], [1, "a"], [2, 1], [2, 44], [2, "a"], [44, 1], [44, 2], [44, "a"], ["a", 1], ["a", 2], ["a", 44]]
+
+-----------
+
+.repeated_permutation(n)            → Enumerator
+.repeated_permutation(n) { block }  → array
+
+        - n = length
+        - returns repeated permutaions
+
+                > [1,2,3].repeated_permutation(2).to_a
+                >> [[1, 1], [1, 2], [1, 3], [2, 1], [2, 2], [2, 3], [3, 1], [3, 2], [3, 3]]
+
+----------------------------------------------------------------------
+
+.product(array_2, ....)
+.product(array_2, ....) { block }   :   returns an array of all combination with the pasing array.
+
+                > [1,2].product( [3,4,5] )
+                >>[[1,3],[1,4],[1,5], [2,3], [2,4], [2,5]]
+
+                > [1,2].product( [3,4,5], [3,30])
+                >>  [[1, 3, 3], [1, 3, 30], [1, 4, 3], [1, 4, 30], [1, 5, 3], [1, 5, 30], 
+                    [2, 3, 3], [2, 3, 30], [2, 4, 3], [2, 4, 30], [2, 5, 3], [2, 5, 30], 
+                    [3, 3, 3], [3, 3, 30], [3, 4, 3], [3, 4, 30], [3, 5, 3], [3, 5, 30]] 
+
+-----------------------------------------------------------------------
+
+.rassoc(obj)    : returns element_array or nil
+                : compares the passed object with '2nd element' of elements that are arrays.
 
 
+                > arr = [[1, "one"], [2, "two"], [3, "three"], ["ii", "two"], "four", ["five"], ["four", "five"], [1, 2, 3]]
 
+                > arr.rassoc("two")
+                >> [2, "two"]
 
+                > arr.rassoc(2)
+                >> [1,2,3]
 
+                > arr.rassoc(1)
+                >> nil
 
+                > arr.rassoc("four")
+                >> nil
 
+                > arr.rassoc("five")
+                >> nil
 
+                > arr.rassoc(3)
+                >> nil
 
+-------------------------------------------------------------------------------
 
+.reverse        : returns a new array containing elements n reverse order
 
+                > [1, 2, 3, 4].reverse
+                >> [4, 3, 2, 1]
 
+.reverse!       : dangerous method form of reverse
+                : returns and modifies the main array to be reversed
 
+-----------------------------------------------------------------------------------
 
+.rotate(count = 1)         : Returns a new array by rotating array so that the element at count is the first element of the new array.
+                           : returns new array
 
+                > arr = ['A', 'B', 'C', 'D']
 
+                > arr.rotate
+                >> ["B", "C", "D", "A"] 
 
+                > arr.rotate(3)
+                >> ["D", "A", "B", "C"]
 
+                > arr.rotate(-2)
+                >> ["C", "D", "A", "B"]
 
+                > print arr
+                >> ['A', 'B', 'C', 'D']
+--------
+.rotate!(count = 1)         : modifies main array
 
+                > arr = ['A', 'B', 'C', 'D']
 
+                > arr.rotate
+                >> ["B", "C", "D", "A"] 
 
+                > print arr
+                >> ["B", "C", "D", "A"] 
 
+----------------------------------------------------------------------------------------
 
+sample      → obj
+sample(n)   → new_ary
 
+                > arr = [1,2,3,4,5,6,7,8,9,10]
 
+                > arr.sample
+                >> 7
 
+                > arr.sample(4)
+                >> [4, 3, 2, 8]
 
+sample(random: rng)     → obj
+sample(n, random: rng)  → new_ary
 
+        - [random: ] argument is used as random seed
 
+                > arr.sample(random: Random.new(1))
+                >> 6
+
+                > arr.sample(random: Random.new(1))
+                >> 6
+
+                > arr.sample(4, random: Random.new(1))
+                >> [6, 10, 9, 2]
+
+--------------------------------------------------------------------------------------------
+
+.shuffle
+.shuffle(random: rng)   :   shuffles the array and returns "new array"
+
+                > arr = [1,2,3,4,5,6,7,8,9,10]
+
+                > arr.shuffle
+                >> [1, 8, 9, 6, 4, 7, 3, 5, 10, 2]
+
+                > arr.shuffle(random: Random.new(2))
+                >> [5, 2, 6, 1, 8, 3, 4, 7, 10, 9]
+-------
+.shuffle!
+.shuffle!(random: rng)  :   same as .shuffle but in dangerous form
+                        : modifies the main array
+
+--------------------------------------------------------------------------------------------
+
+.slice(index)           → obj or nil
+.slice(start, length)   → new_ary or nil
+.slice(range)           → new_ary or nil
+
+        - .slice is an alias of [] slicing brackets.
+        - they both works exactly the same
+--------------
+
+.slice!(index)     
+.slice!(start, length)
+.slice!(range)          : It works differently from .slice. returns the slices elements and deletes them from the main array
+                        : drops all the elements that are mentioned in parameters and modifies the array
+            
+                > arr = [1,2,3,4,5,6]
+
+                > arr.slice(2,3)
+                >> [3,4,5]
+
+                > print arr
+                >> [1,2,6]
+
+-----------------------------------------------------------------------------------------
+
+sort                → new_ary
+sort {|a, b| block} → new_ary
+            
+            - sort any array and returns new array
+            - sorting is done by using <=> operator
+
+                > arr = [1, 2, 6, 10, 3, 66, 7, 2, 0, 91]
+
+                > arr.sort
+                >> [0, 1, 2, 2, 3, 6, 7, 10, 66, 91]
+
+                > arr.sort { |a, b| b <=> a}            #sorting in reverse
+                >> [91, 66, 10, 7, 6, 3, 2, 2, 1, 0]
+
+                > arr.sort.reverse!
+                >> [91, 66, 10, 7, 6, 3, 2, 2, 1, 0]
+
+                > arr
+                >> [1, 2, 6, 10, 3, 66, 7, 2, 0, 91]
+
+                    - values of the original array is intacted even when we used dangerous function of reverse!
+                    - this happend because reverse! is working on returned value of .sort insted of main array.
+-----------------
+.sort! 
+.sort! { |a, b| block } : dangerous version of .sort method.
+
+-----------------------------------------------------------------------------------------------
+
+.sort_by { |i| block }  :   new array
+
+                > fruits = ["apple", "pear", "pineapple"]
+
+                > fruits.sort_by { |i| i.length }
+                >> ["pear", "apple", "pineapple"]
+
+------------------------------------------------------------------------------------------------
+
+.sum
+.sum { block }
+
+                > [].sum
+                >> 0
+
+                > [1,3,6].sum
+                >> 10
+
+                > [5,6].sum { |i| i*i }
+                >> 61
+
+-------------------------------------------------------------------------------------------------
+
+.to_a
+.to_ary     :   converts an object to array
+
+-------------------------------------------------------------------------------------------------
+
+.to_h
+.to_h { |i| block } :   returns an array as {key, value} pair
+
+        - we need an array of arrays to use .to_h
+
+            > [1,2].to_h
+            >> ERROR
+
+            > [[1,2]].to_h
+            >> {1 => 2}
+
+            > [[1,"one"], [2, "two"]].to_h
+            >> {1=>"one", 2=>"two"}
+
+        - if we want to convert a flat array then, we need to use block
+
+            > arr = ["one", "two", "three"]
+            
+            > arr.to_h { |i| [arr.index(i) , i] }
+            >> {0=>"one", 1=>"two", 2=>"three"}
+
+---------------------------------------------------------------------------------------------------
+
+.transpose  :   transpose of an array, returns new array
+
+            > [[1,2],[3,4],[5,6]].transpose
+            >> [[1, 3, 5], [2, 4, 6]]
+
+---------------------------------------------------------------------------------------------------
+
+.union(array_1, array_2, ....)  :   union of arrays and returns new array
+
+            > ["a", "b", "c"].union( ["b", "c", "d"] )
+            >> ["a", "b", "c", "d"]
+
+            > ["a"].union( ["a", "c", "d"], ["c","x"])
+            >> ["a", "c", "d", "x"]
+
+----------------------------------------------------------------------------------------------------
+
+.uniq           :   returns new array conaining only unique items from main array (self)
+.uniq { block } :   if the block is passed then it will use the result from block for comparison
+
+            > [1,2,3,3,4,5,5].uniq
+            >> [1, 2, 3, 4, 5]
+
+            
+            > b = [["student","sam"], ["student","george"], ["teacher","matz"]]
+            
+            > b.uniq {|s| s.first}
+            >> [["student", "sam"], ["teacher", "matz"]]
+------
+.uniq!
+.uniq! {block}  :   dangerous form of .uniq, modifies the main array.
+                :   (only change) returns nil if no change occure
+
+-----------------------------------------------------------------------------------------------------
+
+.unshift(obj1, obj2, .....)
+.prepend(obj1, obj2, .....) :   ads objects to he starting of array
+
+            > arr = [1, 2, 3, 4]
+
+            > arr.unshift(30, 41)
+            >> [30, 41, 1, 2, 3, 4]
+
+            > arr.prepend("a", "b")
+            >> ["a", "b", 30, 41, 1, 2, 3, 4]
+
+-----------------------------------------------------------------------------------------------------
+
+.values_at(index(s))
+.values_at(range(s))    :   returns a new array, containing only the elements from the main array whose indexes are mentioned in th parameter
+
+            > a = %w{ a b c d e f }
+            
+            > a.values_at(1,3,4)
+            >> ["b", "d", "e"]
+
+            > a.values_at(1..3, 2..4)
+            >> ["b", "c", "d", "c", "d", "e"]
+
+-----------------------------------------------------------------------------------------------------
+.zip(arg, ......)
+.zip(arg,...) {block}   :   return new array
+
+            a = [ 4, 5, 6 ]
+            b = [ 7, 8, 9 ]
+
+            > [1, 2, 3].zip(a, b)   
+            >> [[1, 4, 7], [2, 5, 8], [3, 6, 9]]
+            
+            > [1, 2].zip(a, b)      
+            >> [[1, 4, 7], [2, 5, 8]]
+
+            > a.zip([1, 2], [8])    
+            >> [[4, 1, 8], [5, 2, nil], [6, nil, nil]]
+
+-----------------------------------------------------------------------------------------------------
+
+set union |
+
+            > ["A", "B", "C"] | ["C", "D", "A"]
+            >> ["A", "B", "C", "D"]
+            
+--------------------------------------------------------------- Array Methods End -------------------------------------------------------------------------------
