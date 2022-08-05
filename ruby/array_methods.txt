@@ -12,164 +12,182 @@ Creating Array :
 
     Syntax  :   Array.new (size = 0, default = nill)
 
-        > arr = []
+            > arr = []
 
-        > arr = Array.new
+            > arr = Array.new
 
-        > Array.new(3)
-        >> [nil, nil, nil]
+            > Array.new(3)
+            >> [nil, nil, nil]
 
-        > Array.new(3, true)
-        >> [true, true, true]
+            > Array.new(3, true)
+            >> [true, true, true]
 
-        > Array.new(3, 'yes')
-        >> ['yes', 'yes', 'yes']
+            > Array.new(3, 'yes')
+            >> ['yes', 'yes', 'yes']
 
 
     Array.new(arr) :
 
-        > arr = [10,20,"uwu"]
-        > arr_2 = Array.new(arr)
-        
-        > print arr
-        >> [10,20,"uwu"]
+            > arr = [10,20,"uwu"]
+            > arr_2 = Array.new(arr)
+            
+            > print arr
+            >> [10,20,"uwu"]
 
-        > arr_2.equal? arr
-        >> false
+            > arr_2.equal? arr
+            >> false
 
 
     * Creating array with blocks :
         
-        > Hash.new
-        >> {}
+            > Hash.new
+            >> {}
 
-        > Array.new (3) { Hash.new }
-        >> [{}, {}, {}]
+            > Array.new (3) { Hash.new }
+            >> [{}, {}, {}]
 
-        > Array.new (4) { |i| i.to_s }
-        >> [1, 2, 3, 4]
+            > Array.new (4) { |i| i.to_s }
+            >> [1, 2, 3, 4]
 
     * Converting Hashes into Arrays :
 
-        > Hash.new.to_a
+            > Hash.new.to_a
 
-        > Array(Hash.new)
+            > Array(Hash.new)
 
 
-        > arr = {:a => "a", :b => "b", :c => 30}
-        > arr.to_a
-            OR
-        > Array(arr)
-        
-        >> [[:a, "a"], [:b, "b"], [:c, 30]]
+            > arr = {:a => "a", :b => "b", :c => 30}
+            > arr.to_a
+                OR
+            > Array(arr)
+            
+            >> [[:a, "a"], [:b, "b"], [:c, 30]]
 
 ---------------------------------------------------------------    
     
 Accessing Elements :
 
-        > arr = [10, 20, 30, 40, 50, 61, 71]
+            > arr = [10, 20, 30, 40, 50, 61, 71]
 
     * With Index :
 
-        > arr[0]
-        >> 10
+            > arr[0]
+            >> 10
 
-        > arr[2]
-        >> 30
+            > arr[2]
+            >> 30
 
-        > arr[-1]
-        >> 71
+            > arr[-1]
+            >> 71
 
-        > arr[100]
-        >> nil
+            > arr[100]
+            >> nil
 
     * With Ranges :
 
-        > arr[0..2]
-        >> [10, 20, 30]
+            > arr[0..2]
+            >> [10, 20, 30]
 
-        > arr[0...2]
-        >> [10, 20]
+            > arr[0...2]
+            >> [10, 20]
 
     * With (index, length) :
 
         Syntax : > Array[ start_index, length ]
 
-        > arr[1, 3]
-        >> [20, 30, 40]
+            > arr[1, 3]
+            >> [20, 30, 40]
 
-        > arr[4, 2]
-        >> [50, 61]
+            > arr[4, 2]
+            >> [50, 61]
 
     * .at :
 
-        > arr.at(2)
-        >> 30
+            > arr.at(2)
+            >> 30
 
     * .fetch    :      It produces an error for out of bounds indexes. You can also specify the result when that happens.
 
-        > arr.fetch(5)
-        >> 61
+            > arr.fetch(5)
+            >> 61
 
-        > arr.fetch(100)
-        >> IndexError (index 100 outside of array bounds: -7...7)
+            > arr.fetch(100)
+            >> IndexError (index 100 outside of array bounds: -7...7)
 
-        > arr.fetch(100, "opps")
-        >> "oops"
+            > arr.fetch(100, "opps")
+            >> "oops"
 
-        > arr.fetch(100, 999)
-        >> 999
+            > arr.fetch(100, 999)
+            >> 999
 
-    * .index(obj)   :   tries to find the index of specified object 
+        - can be used with block to give out custom error. block will only execute in case of error
 
-        > arr.index(30)
-        >> 2
+            > arr.fetch(100) { |i| puts "Index : #{i} is out of bonds"}
+            >> Index : 100 is out of bonds
 
-        > arr.index(100)
-        >> nil
+
+    * .index(obj)
+      .index { block }   :   tries to find the index of specified object 
+
+            > arr.index(30)
+            >> 2
+
+            > arr.index(100)
+            >> nil
+
+            > arr.index { |i| i > 30}
+            >> 3
 
     * .first, .last :
 
-        > arr.first
-        >> 10
+            > arr.first
+            >> 10
 
-        > arr.last
-        >> 71
+            > arr.last
+            >> 71
+
+    * .first(n), .last(n) : creates a new array with n number of elements
+
+            > arr.first(3)
+            >> [10, 20, 30]
+
+            > arr.last(2)
+            >> [61, 71]
 
     * .take(n), .drop(n) :
 
     .take(n) - returns the first [n ] elements.
     .drop(n) - skips the first [n ] elements and returns all left elements.
 
-        > arr.take(3)
-        >> [10, 20, 30]
+            > arr.take(3)
+            >> [10, 20, 30]
 
-        > arr.drop(2)
-        >> [30, 40, 50, 61, 71]
+            > arr.drop(2)
+            >> [30, 40, 50, 61, 71]
 -----------------------------------------------------------------------------------
 
 Obtaining Infromation about an array :
 
     .length, .size and .count :
 
-        > arr.count
-        >> 7
+            > arr.count
+            >> 7
 
-        > arr.length
-        >> 7
+            > arr.length
+            >> 7
 
-        > arr.size
-        >> 7
+            > arr.size
+            >> 7
 
     . empty?
 
-        > arr.empty?
-        >> false
+            > arr.empty?
+            >> false
 
     .include?
 
-        > arr.include? (100)
-        >> false
+            > arr.include? (100)
+            >> false
 
 -------------------------------------------
 
@@ -177,25 +195,25 @@ Adding Items to an Array :
 
     .push(obj), Array << obj    :   Adds the object in the [end ] of an array.
 
-        > arr.push(5.78)
-        >> [10, 20, 30, 40, 50, 61, 71, 5.78] 
+            > arr.push(5.78)
+            >> [10, 20, 30, 40, 50, 61, 71, 5.78] 
 
-        > arr << "Yes"
-        >> [10, 20, 30, 40, 50, 61, 71, 5.78, "Yes"] 
+            > arr << "Yes"
+            >> [10, 20, 30, 40, 50, 61, 71, 5.78, "Yes"] 
 
 
     .unshift(obj)   :   Adds the object in the starting of the array.
 
-        > arr.unshift("start")
-        >> ["start", 10, 20, 30, 40, 50, 61, 71, 5.78] 
+            > arr.unshift("start")
+            >> ["start", 10, 20, 30, 40, 50, 61, 71, 5.78] 
             
     .insert(index, obj) :
 
-        > arr.insert(3, "Three")
-        >> >> ["start", 10, 20, "Three", 30, 40, 50, 61, 71, 5.78] 
+            > arr.insert(3, "Three")
+            >> >> ["start", 10, 20, "Three", 30, 40, 50, 61, 71, 5.78] 
 
-        > arr.insert(5, 'A', 'B', 'C')
-        >> ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71, 5.78, "Yes"]
+            > arr.insert(5, 'A', 'B', 'C')
+            >> ["start", 10, 20, "Three", 30, "A", "B", "C", 40, 50, 61, 71, 5.78, "Yes"]
 
 -----------------------------------------------------------------------------------------------------
 
@@ -236,8 +254,8 @@ Removing Items :
 
     .uniq :
 
-        > arr.uniq
-        >> [10, 30, "A", "B", "C", 40, 50, 61, 71]
+            > arr.uniq
+            >> [10, 30, "A", "B", "C", 40, 50, 61, 71]
             
             
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -246,25 +264,25 @@ Removing Items :
 
 []  :
 
-    > Array.[](10,20,"uwu")
-    >> [10,20,"uwu"]
+            > Array.[](10,20,"uwu")
+            >> [10,20,"uwu"]
 
-    > Array[10,20,"uwu"]
-    >> [10,20,"uwu"]
+            > Array[10,20,"uwu"]
+            >> [10,20,"uwu"]
 
-    > [10,20,"uwu"]
-    >> [10,20,"uwu"]
+            > [10,20,"uwu"]
+            >> [10,20,"uwu"]
 
 ---------------
 
 Array.try_convert(obj)  :   if the obj is an Array it will return the same array unless it will return nil
                             this method can be used to check if an argument is array or not
 
-    > Array.try_convert( [2] ) 
-    >> [2]
+            > Array.try_convert( [2] ) 
+            >> [2]
 
-    > Array.try_convert( 2 )
-    >> nil
+            > Array.try_convert( 2 )
+            >> nil
 
 -----------------
 
@@ -272,62 +290,469 @@ Intersection [&] :  returns the intersection of two arrays. (values that are in 
 
     Syntax : arr1 & arr2
 
-    > arr_1 = [10,20,30,40]
-    > arr_2 = [30,40,50]
+            > arr_1 = [10,20,30,40]
+            > arr_2 = [30,40,50]
 
-    > arr_1 & arr_2
-    >> [30,40]
+            > arr_1 & arr_2
+            >> [30,40]
 
 
 Multiply [* ] :
 
     * With Number :
         
-        > arr_1 * 3
-        >> [10,20,30,40,10,20,30,40,10,20,30,40]
+            > arr_1 * 3
+            >> [10,20,30,40,10,20,30,40,10,20,30,40]
 
     * With String :
 
-        "array * str" and  "arr.join(str)" is same
+        [ array * str ]
+            and  
+        [ arr.join(str) ] 
+            is same
 
-        > arr_1 * "-"
-        >> "10-20-30-40"
+            > arr_1 * "-"
+            >> "10-20-30-40"
 
-        > arr_1 * ","
-        >> "10,20,30,40"
+            > arr_1 * ","
+            >> "10,20,30,40"
+
+            > [1, 2, 3].join("&")
+            >> "1&2&3"
 
 
 Addition [+] :  concatination
 
-        > arr_1 + arr_2
-        >> [10,20,30,40,30,40,50]
+            > arr_1 + arr_2
+            >> [10,20,30,40,30,40,50]
 
 
 Subtraction / Difference [-] :  removes all the elemets from first array that matches second array. and returns first array
 
-        > arr_1 - arr_2
-        >> [10, 20]
+            > arr_1 - arr_2
+            >> [10, 20]
 
 
 Append / Push [<<] :
 
-        > arr = [1,2,3]
-        
-        > arr << 4 << 5 << "a"
-        >> [1, 2, 3, 4, 5, "a"]
+            > arr = [1,2,3]
+            
+            > arr << 4 << 5 << "a"
+            >> [1, 2, 3, 4, 5, "a"]
+
 
 Compare [ <=> ] :   returns 0 if a == b, returns 1 if a > b, returns -1 a < b, returns nil if a and  b cannot be compared; here [a] and [b] are two arrays
 
-        > [ "a", "a", "c" ] <=> [ "a", "b", "c" ]   
-        >> -1
+            > [ "a", "a", "c" ] <=> [ "a", "b", "c" ]   
+            >> -1
 
-        > [ 1, 2, 3, 4, 5, 6 ] <=> [ 1, 2 ]            
-        >> +1
+            > [ 1, 2, 3, 4, 5, 6 ] <=> [ 1, 2 ]            
+            >> +1
 
-        > [ 1, 2 ] <=> [ 1, :two ]
-        >> nil
+            > [ 1, 2 ] <=> [ 1, :two ]
+            >> nil
 
-        > [ 1, 2 ] <=> [ 1, 2 ]
-        >> 0
-        
+            > [ 1, 2 ] <=> [ 1, 2 ]
+            >> 0
+            
+
+Compare_2 [ == ] :  Two arrays are equal when their length is equal and each element is equal to coorosponding element with [==] operator.
+
+            > [1, 2, 3, 'a', 'b', 'c'] == [1, 2, 3, 'a', 'b', 'c']
+            >> true
+
+            > [1, 2, 3, 'a', 'b', 'c'] == [1, 2, 3, 'a', 'b', 'd']
+            >> false
+
+            > [1, 2, 3, 'a', 'b', 'c'] == [1, 2, 3, 'a']
+            >> false
+
+-----------------------------------------
+
+.append :   pushing elements in the end.
+
+            > arr = [1, 2, 3, 'a', 'b', 'c']
+
+            > arr.append(5.5)
+            >> [1, 2, 3, 'a', 'b', 'c', 5.5]
+
+-------------------------------------
+
+.assoc(obj)     : it works on an array whose elements are also arrays.
+                    it searches for the [obj ] passed in the argument in the sub-arrays. and reurns the array where it is matched
+                    it returns nil if no search found or the match found element is not an array.
+
+            > s1 = [1, 2, 3]
+              s2 = ['yes', 'also', 5.5]
+              s3 = 'hello'
+              s4 = ['hello_2']
+            > arr = [s1, s2, s3, s4]
+              
+            > arr.assoc("yes")
+            >> ['yes', 'also, 5.5]
+
+            > arr.assoc(5)
+            >> nil
+
+            > arr. assoc('hello')
+            >> nil
+
+            > arr.assoc('hello_2')
+            >> ['hello']
+
+---------------------------------------
+
+.clear  :   removes all the elements from the array
+
+            > arr = [0,4,7,10,12]
+            > arr.clear
+            >> []
+
+----------------------------------------
+
+.collect
+.map        :   invokes given blocks once for each item
+            :   creates a new array by values returned by the block
+
+            > arr = [ 1, 2, 3, 4, 5, 6, 7]
+
+            > arr.collect { |x| x + 10}
+            >> [11, 12, 13, 14, 15, 16, 17]
+
+            > arr.map.with_index { |x, i| x * i}
+            >> [0, 2, 6, 12, 20, 30, 47]
+
+.collect!
+.map!       : same but these are dangerous version of above methods.
+            : they modifies the main array with new array and also returns it.
+
+
+-------------------------------------
+
+.combination    :   used with a block returns all possible combination of array elements.
+(permutation and combination)
+
+            > arr = [1,2,3]
+
+            > arr.combination(1).to_a
+            >> [[1], [2], [3]]
+
+            > arr.combination(2).to_a
+            >> [[1, 2], [1, 3], [2, 3]]
+
+            > arr.combination(5).to_a
+            >> []
+
+            > arr.combination(0).to_a
+            >> [[]]
+
+
+--------------------------------
+
+.concat(array1, array2, ....)     :   concat arrays
+
+            > arr = [1,2,3]
+            > arr1 = [10,20,30] 
+            > arr2 = ['a','b','c']
+
+            > arr.concat(arr1, arr2)
+            >> [1, 2, 3, 10, 20, 30, 'a', 'b', 'c']
+
+------------------------------------------------
+
+.count              :   count all the elements in the array
+.count (obj)        :   count the occurences of the specified object
+.count { condition }:   count only elements according to the condition
+
+            > arr = [10, 20, 30, 30, 40, 50, 5.5, 6.7]
+
+            > arr.count
+            >> 8
+
+            > arr.count (30)
+            >> 2
+
+            > arr.count { |i| i>20 }
+            >> 4
+
+-------------------------------------
+
+.cycle(n) {block }      :  calls the given block for elements [n ] times or forever if [n ] is nil.
+
+            > arr = [1, 2, 3]
+
+            > arr.cycle(3) { |i| print i," " }
+            >> 1 2 3 1 2 3 1 2 3
+
+--------------------------------------
+
+.delete (obj) { block }    :    deletes all ocurrances of the specified object and modifies the array
+                               :    block is returned if the object is not found to be removed
+                               :    returns the delted item
+
+            > arr = [10, 20, 30, 30, 40, 50, 5.5, 6.7]
+
+            > arr.delete (30)
+            >> 30
+            > print arr
+            >> [10, 20, 40, 50, 5.5, 6.7]
+
+            > arr.delete ('x')
+            >> nil
+
+            > arr.delete ('x') { "not found"}
+            >> "not found"
+
+
+.delete_at (index)      :   deletes the object at specified index. returns the deleted item
+
+            > arr.delete_at(5)
+            >> 6.7
+            > print arr
+            >> [10, 20, 40, 50, 5.5]
+
+            > arr.delete_at (100)
+            >> nil
+
+
+.delete_if { block }    :   deletes every element of array for which block evaluates true
+                        :   array is modified as the blocks are executed with each iteration
+                        :   returns new array
+
+            > arr.delete_if {|i| i > 40}
+            >> [10, 20, 40, 5.5]
+
+----------------------------------------
+
+.difference(array1, array2 ..)  :   returns the original array after removing all the occurances of elements that match the argument arrays
+
+            > [1,1,1,2,3,4,4,5].difference([1, 2], [5])
+            >> [3,4,4]
+
+------------------------------------------------
+
+.drop_while {block}     : returns a new array
+
+            > arr [10, 20, 30, 40, 51]
+
+            > arr.drop_while { |i| i< 30}
+            >> [30, 40, 51]
+
+-----------------------------------
+
+.each { block }     :   calls the given block once for each element, passing that element as parameter.
+                    :   returns the array itself
+
+            > arr = [ 1, 2, 3, 50]
+
+            > arr.each { |i| print i, "## "}
+            >> 1## 2## 3## 50##  => [1, 2, 3, 50] 
+
+
+.each_index { block }   :   same as .each but passes the index of elements instead of the elements to the block
+
+------------------------------
+
+.fill (obj)
+.fill (obj, start, length)
+.fill (obj, range)
+.fill { block }
+.fill (start, length) { block }
+.fill(range) { block }              : fill filles the specified indexes with provided object. 
+                                    : It modifies the main array.
+
+            > arr = [1, 2, 3, 4, 5]
+
+            > arr.fill("z")
+            >> ['z', 'z', 'z', 'z', 'z']
+
+            > arr. fill(1, 2, 2)
+            >> ['z','z', 1, 1, 'z']
+
+            > arr.fill(33, 1..4)
+            >> ["z", 33, 33, 33, 33]
+
+            > arr.fill { |i| i*i }
+            >> [0, 1, 4, 9, 16]
+
+            > arr.fill( 1, 3) { |i| i + 2}
+            >> [0, 3, 4, 5, 16] 
+
+            > arr.fill(0..2) { |i| i*i*i }
+            >> [0, 1, 8, 5, 16]
+
+
+-------------------------------------
+
+.filter { block }
+.select { block }   :   returns a new array containing all the elements for which the block will return [true ]
+
+            > arr = [10, 20, 21, 33, 30]
+
+            > arr.filter { |i| i.odd? }
+            >> [21, 33]
+
+            > arr.select {} |i| i.even? }
+            >> [10, 20, 30]
+
+.filter!
+.select!    : returns the modified same array or nil
+
+-------------------------------------
+
+.find_index(obj)
+.find_index { block }   : finds the index of the first match to the specified object and returns it 
+                        : returns int or nil
+
+            > arr = [1, 2, 3, 40, 50, 'a', 'a']
+            
+            > arr.find_index(3)
+            >> 2
+
+            > arr.find_index('a')
+            >> 5
+
+            > arr.find_index { |i| i > 10}
+            >> 3
+
+-------------------------------------------------
+
+.flatten         :
+.flatten (level) :  returns a new array with one dimensional flattening
+                    
+            > a = [1, 2, 3]
+            > b = [a, 30, 40, 50]
+            
+            > arr = [a, b, 400, 500, 600]
+            >> [[1, 2, 3], [[1, 2, 3], 30, 40, 50], 400, 500, 600]
+
+            > arr.flatten
+            >> [1, 2, 3, 1, 2, 3, 30, 40, 50, 400, 500, 600]
+
+            > arr.flatten(1)
+            >> [1, 2, 3, [1, 2, 3], 30, 40, 50, 400, 500, 600]
+
+---------------------------------------------------
+
+.hash       :   compute the hash of given array.
+            :   two arrays with same content have same hash
+
+            > [ 1, 2, 3,].hash
+            >> -1902637927788762951
+
+----------------------------------------------------
+
+.initialize_copy (array_2)  :   
+.replace (array_2)          :   replaces the contents of main array with passed array. Doing truncating or expending if needed
+
+            > arr = [1, 2, 3]
+
+            > arr.replace( [11, 22, 33] )
+            >> [11, 22, 33]
+
+            > print arr
+            >> [11, 22, 33]
+
+-----------------------------------------------------
+
+.inspect
+.to_s       :   creates a string of the array.
+
+            > arr = [10, 20, 30]
+
+            > arr.inspect
+            > arr.to_s
+            >> "[10, 20, 30]"
+
+-----------------------------------------------------
+
+.intersection( arr1, arr2, ....)        :   returns a new array containing elements common to main and passed arrays
+
+            > [1, 2, 3].intersection( [3, 4, 5] )
+            >> [3]
+
+            > [1, 2, 3].intersection( [4, 2, 5], [2])
+            >> [2]
+
+            > [1, 2, 3].intersection( [4, 2, 5], [3])
+            >> []
+
+            > [1, 2, 3].intersection
+            >> [1, 2, 3]
+
+-------------------------------------------------------
+
+.keep_if {block}        :   it is like .select
+                        :   keeps every element for whome block returns true
+                        :   it modifies the main array.
+
+            > arr = [ 'a', 'b', 'c', 'd']
+
+            > arr.keep_if { |i| i =~ /[aeiou]/ }
+            >> ['a']
+
+            > print arr
+            >> ["a"]
+
+--------------------------------------------------------
+
+.max                    : returns object
+.max { |a, b| block }   : returns object
+
+.min                    : returns object
+.min { |a, b| block }   : returns object
+
+            > arr = ["ha", "hello", "Animal", "x", "hsajnsqjwksasw"]
+            
+            > arr.max
+            >> "x"
+
+            > arr.min
+            >> "Animal"
+
+            > arr.max { |a, b| a <=> b}
+            >> "x"
+
+            > arr.max { |a, b| a.length <=> b.length}
+            >> "hsajnsqjwksasw"
+
+
+.max(n)                    : returns array
+.max(n) { |a, b| block }   : returns array
+
+
+.min(n)                    : returns array
+.min(n) { |a, b| block }   : returns array
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
