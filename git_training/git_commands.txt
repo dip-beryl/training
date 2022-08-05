@@ -1,4 +1,4 @@
-File Name		: git_commands.txt
+File Name	 : git_commands.txt
 Author          : Dipanshu Ranga (@dip-beryl)
 Organization    : Beryl Systems Pvt. Ltd.
 
@@ -120,9 +120,16 @@ Git Commit :
 		
 Git log :
 
+		To view the history of commits for a repository, you can use the log command :
+		
 			$ git log
 			
-		To view the history of commits for a repository, you can use the log command.
+		
+		To view the log in a compact version :
+		
+			$ git log --oneline
+		
+			
 		
 		
 Branching :
