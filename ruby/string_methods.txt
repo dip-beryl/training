@@ -1,0 +1,998 @@
+File Name		: string_methods.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------
+
+A String object in Ruby holds and manipulates an arbitrary sequence of one or more bytes, typically representing characters that represent human language.
+
+The simplest string literals are enclosed in single quotes (the apostrophe character). The text within the quote marks is the value of the string −
+
+        > 'This is a simple Ruby string literal'
+
+        > x, y, z = 12, 36, 72
+        
+        > puts "The value of x is #{ x }."
+        > puts "The sum of x and y is #{ x + y }."
+        > puts "The average was #{ (x + y + z)/3 }."
+
+
+Genral Delimiter:
+
+        > %{Ruby is fun.} equivalent to "Ruby is fun."
+        > %Q{ Ruby is fun. } equivalent to " Ruby is fun. "
+        > %q[Ruby is fun.] equivalent to a single-quoted string
+        > %x!ls! equivalent to back tick command output `ls`
+
+---------------------------------------------- String Methods ------------------------------------------------------------------------------------
+
+new(str="")  → new_str
+
+            > String.new("Yups")
+            >> "Yups"
+
+------------------------------------------
+
+try_convert(obj)   :   string or nil
+                    :   tries to convert object into string
+
+            > String.try_convert("str")
+            >> "str"
+
+------------------------------------------------
+
+(copy)
+String * Integer :
+
+            > "a" * 3
+            >> "aaa"
+
+            > "s" * 0
+            >> ""
+
+------------------------------------------------
+
+(concat)
+
+String + String :
+
+            > "a" + "c"
+            >> "ac"
+
+-----------------------------------------------
+
+(append)
+str << obj  
+str << int
+
+            > a = "mouse "
+            
+            > a << "keyboard"
+            >> "mouse keyboard"
+
+------------------------------------------------
+
+(reference)
+str[index]          → new_str or nil
+str[start, length]  → new_str or nil
+str[range]          → new_str or nil
+
+str[regexp]         → new_str or nil
+str[regexp, capture] → new_str or nil       #capturing a regular expression concept
+str[match_str]      → new_str or nil
+
+        - refer a string with slicing
+
+            > str = "My Name is Dipanshu"
+
+            > str[5]
+            >> "m"
+
+            > str[100]
+            >> nil
+
+            > str[5, 5]
+            >> "me is"
+
+            > str[3..8]
+            >> "Name i"
+
+            > str[-8..-3]
+            >> "Dipans"
+            
+            > str[-3..-8]
+            >> ""
+
+            > str["My"]
+            >> "My"
+
+            > str["my"]
+            >> nil
+
+            > str["by"]
+            >> nil
+--------
+
+.slice!(range)
+.slice!(index, length)
+.slice!(index)
+.slice!(regexp)
+
+                    : selected values will be deleted from the main string.
+                    : returns the selected value
+                    : mamin string will have the selected values removed
+                
+                > str = "Hi Hello How"
+
+                > str.slice!(2..6)
+                >> " Hell"          # values according to range
+
+                > print str
+                >> "Hio How" 
+
+----------------------------------------------------------------
+
+.b  : returns a copy string with encoding 8BIT ASCII
+
+            > str = ["ABC"]
+
+            > str.b
+            >> ["ABC"]
+
+---------------------------------------------------------------
+
+.bytes
+
+            > str = ["My Name is Dipanshu"]
+
+            > str.bytes
+            >> [77, 121, 32, 78, 97, 109, 101, 32, 105, 115, 32, 68, 105, 112, 97, 110, 115, 104, 117]
+
+---------------------------------------------------------------
+
+.bytesize   :   length of a string in bytes
+
+            > "Yellow".bytesize
+            >> 6
+
+----------------------------------------------------------------
+
+.capitalize :   capitalize first letter and downcase all other
+
+            > "string".capitalize
+            >> "String"
+
+            > "HELLO".capitalize
+            >> "Hello"
+
+.capitalize!
+
+----------------------------------------------------------------
+
+.casecmp?("other_string")   : comparison; returns true, false or nil
+
+            > "aBcDeF".casecmp?("abcde")     
+            >> false
+            
+            > "aBcDeF".casecmp?("abcdef")    
+            >> true
+            
+            > "aBcDeF".casecmp?("abcdefg")   
+            >> false
+
+            > "abcdef".casecmp?("ABCDEF")    
+            >> true
+
+            > "abcd".casecmp?(2)
+            > nil
+------------------------------------------------------------------
+
+.center(width, padstr=' ')      → new_str
+
+            > str = "hello"
+
+            > str.center(4)
+            >> "hello" 
+
+            > str.center(5)
+            >> "hello" 
+
+            > str.center(6)
+            >> "hello " 
+
+            > str.center(7)
+            >> " hello "
+
+            > str.center(10)
+            >> "  hello   "
+
+            > str.center(10, "123")
+            >> "12hello123"
+
+-------------------------------------------------------------------
+
+.chars  ->  array
+        :   returns an array of characters
+
+        > "hello".chars
+        >> ["h", "e", "l", "l", "o"]
+
+------------------------------------------------------------------
+
+.chomp(separator=$/)    →  new_str
+
+                        :   returns a new string with last new line characters removed or the mentioned character in parameter.
+                        :   if the string ends with \r\n both charachters are removed
+
+        > "hello".chomp
+        >> "hello"
+
+        > "hello\n".chomp
+        >> "hello"
+
+        > hello.chomp("llo")
+        >> "he"
+
+.chomp!(separator=$/) : dangerous form of .chomp
+
+-------------------------------------------------------------------
+
+.chop   ->  new_string
+        :   removes last charachter
+        :   if the string ends with \r\n both charachters are removed
+
+        > "string\r\n".chop
+        >> "string"
+
+        > "string\n\r".chop
+        >> "string\n"
+
+        > "string".chop
+        >> "strin"
+
+        > "xx".chop.chop
+        >> ""
+----
+.chop!  ->  string or nil
+
+-----------------------------------------------------------------------
+
+.chr    ->  string
+        :   returns a string containing the first charachter of main string 
+
+        > "string".chr
+        >> "s"
+
+------------------------------------------------------------------------
+
+.clear  ->  empty the string
+
+        > h = "yeah"
+        
+        > h.clear
+        >> ""
+
+        > print h
+        >> ""
+
+-----------------------------------------------------------------------
+
+.concat(*objects)   ->  string
+                    : modifies the array
+
+        > "hello".concat(" hi", "how are you")
+        >> "hello hihow are you"
+
+----------------------------------------------------------------------
+
+.count( [other_string]+ )   ->  int
+                            : [other_string] are specified charachters that we want to count.
+                            : The intersection of these sets defines the characters to count in str. 
+                            : Any other_str that starts with a caret ^ is negated. 
+                            : The sequence c1-c2 means all characters between c1 and c2. 
+                            : The backslash character \ can be used to escape ^ or - and is otherwise ignored unless it appears at the end of a sequence or the end of a other_str.
+
+        > "string".count("t")
+        >> 1
+
+        > a = "hello world"
+
+        > a.count("lo", "l")
+        >> 2
+
+        > a.count("hello" "^l")
+        >>
+
+        > a.count("ae-l")       # means "a" and letters between "e" & "l"
+        >> 5
+
+        > "hello^".count("\\^ae)
+        >> 2
+
+------------------------------------------------------------------------
+
+.crypt(salt_str) →   new_str
+
+        > "foo".crypt("$5$rounds=1000$salt$")
+        >> "$5$rounds=1000$salt$sOwBWdzaQ/gPXFtLc24VstV7ZQk3/x7k0cDfKUxXsn8"
+
+------------------------------------------------------------------------
+
+.delete([other_str]+)   →   new_str
+
+                        : returns copy of string
+                        : when two parameters then it will use intersection
+                        : ^ for negating
+                        : - for a sequence, just like .count
+
+        > "hello".delete("l")
+        >> "heo"
+
+        > "hello".delete("lo", "l")
+        >> heo
+----
+.delete!([other_str]+)  :   dangerous version of .delete method
+-----------------------------------------------------------------------
+
+.delete_prefix(prefix)  ->  new str
+
+                        :   deletes mentioned prefix
+
+        > "hello".delete_prefix("he")
+        >> "llo"
+
+        > "hello".delete_prefix("llo")
+        >> "hello"                          # nothing is deleted because "llo" is not a prefix
+---
+.delete_prefix!(prefix)  ->  str
+
+-----------------------------------------------------------------------
+
+.delete_suffix(suffix)  →   new_str
+
+                        : deletes mentioned suffix
+
+        > "hello".delete_suffix("llo")
+        >> "he"
+
+        > "hello".delete_prefix("hel")
+        >> "hello"                          # nothing is deleted because "hel" is not a suffix
+---
+.delete_suffix!(suffix)  ->  str
+
+------------------------------------------------------------------------
+
+.downcase(*options)    ->  new_str
+
+        > a  = "HELLO"
+        
+        > a.downcase
+        >> "hello"
+
+        > print a
+        >> "HELLO"
+----
+.downcase!(*options)
+
+--------------------------------
+
+.upcase(*options)      ->  new_str
+
+
+----
+.upcase!(*options)
+
+---------------------------------------------------------------------------
+
+.dump   ->  new_str
+            : Returns a printable version of main string, enclosed in double-quotes, 
+                with special characters escaped, and with non-printing characters replaced by hexadecimal notation.
+
+        > "Hello \n".dump
+        >> "\"Hello \\n\""
+
+        > "\f\x00\xff\\\"".dump
+        >> "\"\\f\\x00\\xFF\\\\\\\"\""
+
+---------------------------------------------
+
+.undump     ->  new_str
+            :
+
+---------------------------------------------------------------------------
+
+.each_byte { |integer| block } → str
+
+                                : passes each byte to the block from the string
+
+        > "hello".each_byte { |i| puts i}
+        >> 104 101 108 108 111
+
+----------------------------------------------------------------------------
+
+.each_char { |int| block}  ->  str
+                                : passes each character to the block
+
+        > "Yeah".each_chare { |i| print i, " "}
+        >> Y e a h
+
+-----------------------------------------------------------------------------
+
+.codepoints     ->      retuns an array of integer ordinals of characters in string
+
+        > "Ruby".codepoints
+        >> [82, 117, 98, 121]
+----
+
+An alias ::  .each_codepoint.to_a        
+         ::  .each_codepoint {block}
+
+-------------------------------------------------------------------------------
+lines(separator=$/, chomp: false)   → an_array
+                : returns an array, with splitting by seperator
+
+        > "Hello\nMac".lines
+        >> ["Hello\n", "Mac"]
+
+        > "Hello\nMac".lines(chomp: true)
+        >> ["Hello", "Mac"]
+
+        > "Hello\nMac".lines("l")
+        >> ["Hel", "l", "o\nMac"]
+
+-----------------------------------------
+
+.each_line(separator=$/, chomp: false) {|substr| block } → str
+
+                : splits string using the supplied parameter
+                : is block is provided, passing each substring to the block
+                : if chomp is true then it will delete the seperator character with each print
+
+        > "Hello\n Mac".each_line { |s| p s }
+        >> "Hello\n"
+           " Mac"
+
+        > "Hello\n Mac".each_line("l") { |s| p s }
+        >> "Hel"
+            "l"
+            "o\n Mac"
+
+        > "Hello\n Mac".each_line(chomp: true) { |s| p s }
+        >> "Hello"
+            " Mac"
+
+-------------------------------------------------------------------------------
+
+.empty? -> true or false
+
+        > "hello".empty?
+        >> false
+
+        > "".empty?
+        >> true
+
+-------------------------------------------------------------------------------
+
+.end_with?( [suffixes]+ )       -> true or false
+                                : checks for the suffci in string
+
+        > "hello".end_with?("lo")
+        >> true
+
+        > "hello".end_with?("lo", "yes")
+        >> true                                 # because of the intersection see .count
+
+        > "hello".end_with?("yups")
+        > false
+
+------------------------------------------------------------------------------
+
+.eql?(object)
+
+        > a = "Hi"
+
+        > a.eql?("Hi")
+        >> True
+
+        > a.eql?("hi")
+        >> False
+        
+        > a.eql?(7)
+        >> False
+
+-----------------------------------------------------------------------------
+
+.freeze     ->  freeze method in Ruby is used to freeze an object.
+                : a freezed object cannot be modified by a method.
+                : you can do assignment to a freeze object.
+
+        > a = "hello"
+
+        > a.freeze
+        > a.delete_prefix! "h"
+        >> FrozenError
+
+        > a = 3
+        > print a
+        >> 3
+
+------------------------------------------------------------------------------
+
+.getbyte        ->  get byte size of a charcter on the basis of their index
+
+        > "A".getbyte(0)
+        >> 65
+
+        > "B".getbyte(0)
+        >> 66
+
+        > "AB".getbyte(0)
+        >> 65
+
+        > "AB".getbyte(1)
+        >> 66
+
+--------------------------------------------------------------------------------
+
+::substitution method
+
+.gsub(pattern, replacement)       → new_string
+.gsub(pattern)                  → enumerator
+                                : returns a new string where the pattern is replaced by replacement
+
+        > str = "Hi my name is Dipanshu"
+
+        > str.gsub("Hi", "Hello")
+        >> "Hello my name is Dipanshu"
+
+        > str.gsub("hi", "Hello")
+        >> "Hi my name is Dipanshu"
+----
+.gsub!(pattern, replacement)
+
+--------------------------------------------------------------------------------
+
+.hash - >   integer
+        : returns the integer hash value for main string. The value is based on the length, content and encoding of main string.
+
+        > "hey".hash
+        >> -3624129387986350718
+
+----------------------------------------------------------------------------------
+
+.include?(other_string)     -> true or false
+
+        > a = "alphabet"
+
+        > a.include?("alp")
+        >> true
+
+        > a.include?("ap")
+        >> false
+
+----------------------------------------------------------------------------------
+
+.index(substring, offset = 0)       -> integer or nil
+.index(regexp, offset = 0)       -> integer or nil
+
+                                : offset takes integer
+                                : if offset is specified. then the search will start from the index mentioned in offset. 
+
+        > a = "alphabet"
+
+        > a.index("alp")
+        >> 0
+
+        > a.index("lp")
+        >> 1
+
+        > a.index("ap")
+        >> nil
+
+        > a.index("a", 2)
+        >> 4
+
+--------------------------
+
+rindex(substring, offset = self.length)     → integer or nil
+rindex(regexp, offset = self.length)        → integer or nil
+
+                                : searches for index but from behind
+
+        > a = "mississippi"
+
+        > a.rindex('s')
+        >> 6
+
+        > a.rindex('i')
+        >> 10
+
+        > a.rindex('i', 3)
+        >> 1
+
+        > a.rindex("pp")
+        >> 8                # same as a.index("pp")
+
+----------------------------------------------------------------------------------
+
+.insert(index, other_string)        ->  main_string modified
+
+        > a = "Hello World"
+
+        > a.insert(6, "New ")
+        >> "Hello New World"
+
+        > a.insert(100, " Order ")
+        >> IndexError
+
+-------------------------------------------------------------------------------------
+
+.inspect    ->  string
+            : Returns a printable version of main string, 
+                enclosed in double-quotes, 
+                    and with special characters escaped
+
+        > "Hello New World\n".inspect
+        >> "\"Hello New World\\n\""
+
+-------------------------------------------------------------------------------------
+
+.intern
+.to_sym      -> symbol
+            : returns the symbol coorosponding to string
+
+        > "yeah".intern
+        >> :yeah
+
+        > "new world".to_sym
+        >> :"new world"
+
+---------------------------------------------------------------------------------------
+
+.length
+.size       -> integer
+
+        > "New".length
+        >> 3
+
+        > "New World".length
+        >> 9
+
+-------------------------------------------------------------------------------------
+
+.ljust(int, padstr="")       -> new_str
+                        :   if the int < length(str) then nothing happen 
+                        :   else; the [padstr ] is concatinated to left of the [main string ] untill the length till [int ] is reached
+
+
+        > "yeah".ljust(3)
+        >> "yeah"
+
+
+        > "yeah".ljust(10)
+        >> "yeah      "
+
+        > "yeah".ljust(10, "1234")
+        >> "yeah123412"
+
+----------------------------------
+.rjust(int, padstr="")       -> new_str
+
+                        : opposite of ljust
+
+        > "yeah".rjust(3)
+        >> "yeah"
+
+
+        > "yeah".rjust(10)
+        >> "      yeah"
+
+        > "yeah".rjust(10, "1234")
+        >> "123412yeah"
+
+-------------------------------------------------------------------------------------
+
+.lstrip  -> new_string
+        :   removes white spaces from left side
+
+.rstrip  -> modifies string
+        :   removes white spaces from right side
+        :   returns modified string or non modified
+ 
+        > "   yeah   ".lstrip
+        >> yeah   "
+
+        > "   yeah   ".rstrip
+        >> "yeah   "
+
+        > "yeah".lstrip
+        >> "yeah"
+
+        > "yoyo".rstrip
+        >> "yoyo"
+----
+.lstrip!         
+.rstrip!     -> returnes [nil ] if left or right white spaces are not avialable; all other things are same
+---------------------------------------------------------------------------------------
+
+.match(pattern, offset =  0)
+.match(pattern, offset =  0) { |matchdata| ...}     
+-> matchdata or nil
+
+                            : get a matchdata object
+                            : offset is used to start the matching from specific index
+
+        > "hello".match('o')
+        >> #<MatchData "o">
+
+        > "hello".match('l')
+        >> #<MatchData "l">
+
+        > "hello".match('x')
+        >> nil
+
+--------------------------------------------------------------------------------------
+
+match?(pattern, offset = 0)     -> true or false
+
+        > 'foo'.match?(/o/)
+        >> true
+
+        > 'foo'.match?('o')
+        >> true
+        
+        > 'foo'.match?(/x/)
+        >> false
+
+        > "hello".match?('e', 2)
+        >> false
+
+-----------------------------------------------------------------------------------
+
+.succ
+.next  ->  new string
+            : eturns the next or the successor of string
+            : successor is calculated by various methods
+
+        > 'a'.succ
+        >> 'b'
+
+        > 'aa'.succ
+        >> "ab"
+
+        > 'BB'.next
+        >> "BC"
+
+        > 'az'.next
+        >> "ba"
+
+        > 'zz'.next
+        >> "aaa"
+
+        > '12'.next
+        >> "13"
+
+        > '09'.next
+        >> "10"
+
+        > '99'.next
+        >> "100"
+
+        > 'zz99'.next
+        >> "aaa00"
+
+        > '<<kite>>'.next
+        >> '<<kitf>>
+
+        > '**'.next
+        >> "*+"
+
+        > ''.succ
+        >> ""           # empty string is successed by empty string
+----
+
+.succ!
+.next!
+
+------------------------------------------------------------------------------------------------------------
+
+.oct        ->  integer     :: octal -> decimal
+
+            : treats leading characters of a stringa as string of octal digits and returns it after converting them to decimal. signs can be represented
+            : returns 0 if conversation fails
+
+        > "123".oct
+        >> 83
+
+        > "good".oct
+        >> 0
+
+        > "-45".oct
+        >> -37
+
+        > "125607gyh".oct
+        > 43911
+
+        > "99".oct
+        >> 0        # octal number canot have 9
+----
+.hex        -> integer
+
+        > "0x0a".hex     
+        >> 10
+
+        > "-1234".hex    
+        >> -4660
+
+        > "0".hex        
+        >> 0
+
+        > "wombat".hex   
+        >> 0
+
+--------------------------------------------------------------------------------------------------------------
+
+.ord    -> integer
+        : ordinal of any single character
+
+        > 'a'.ord
+        >> 97
+
+        >'aa'.ord           # same as 'a'
+        >> 97
+
+        > 1.ord
+        >> 1
+
+        > '1'.ord
+        >> 49
+
+----------------------------------------------------------------------------
+
+.partition(sep)     ->  [head, sep, tail]
+.partition(regexp)     ->  [head, match, tail]
+
+                    : searches for [sep ] or [regexp ] and split the return in 3 parts
+
+        > "New World Order".partition("World")
+        >> ["New ", "World", " Order"]
+
+        > "Yellow".partition(/.l/)
+        >>["Y", "el", "low"]
+
+        > "Yellow".partition("x")
+        >> ["Yellow, "", ""]
+
+------
+
+rpartition(sep)     → [head, sep, tail]
+rpartition(regexp)  → [head, match, tail]
+
+                    : searches for [sep ] or [regexp ] and split the return in 3 parts
+                    : searches from the end of the string in reverse order
+        
+        > "New World Order".rpartition("d")
+        >> ["New World Or", "d", "er"]
+
+        > "Yellow".rpartition("l")
+        >> ["Yel", "l", "ow"]
+
+        > "Yellow".rpartition("x")
+        >> ["", "", "Yellow"]
+
+------------------------------------------------------------------------------------------
+
+.prepend(*other_strings)    ->  string
+                        : works like concat for front
+
+        > s = "laptop"
+
+        > s.prepend("keyboard", "mouse")
+        > "keyboardmouselaptop"
+
+
+----------------------------------------------------------------------------------------
+
+.replace (other_string)     -> string
+                            : replaces the contents of [main string ] with [other_string ] even if the size of [other_string ] is different
+        
+        > a = "alphabet"
+
+        > a.replace("yellow")
+
+        > print a
+        >> "yellow"
+
+------------------------------------------------------------------------------------
+
+.scan(pattern) -> array
+.scan(patern) { |match,..| block}   ->  string
+
+        > a = ["new world"]
+
+        > a.scan("ne")
+        >> ["ne"]
+
+        > a.scan("w")
+        >> ["w","w"]
+
+        > a.scan("change")
+        >> []
+
+        > a.scan(/.../)
+        >> ["new", " wo", "rld"]
+
+        > a.scan(/...../)
+        >> ["new w"]
+
+-----------------------------------------------------------------------------
+
+.scrub              ->  new_string
+.scrub(replcaement) ->  new_string
+.scrub{block}       ->  new_string
+
+        > "abc\u3042\x81".scrub 
+        >> "abcあ�"
+
+        > "abc\u3042\x81".scrub("*")
+        >> "abcあ*"
+-----
+
+.scrub!
+.scrub!(replcaement)
+.scrub!{block}
+
+-----------------------------------------------------------------------------
+
+.setbyte(index, replace byte integer)   -> returns integer
+
+                        : change a charcter by index through byte/ord integer
+
+        ord/byte of 'a' = 97
+        ord/byte of 'b' = 98
+
+        > s ="abcd"
+
+        > s.setbyte(1, 97)
+        >> 97
+
+        > print a
+        >> "aacd"
+
+---------------------------------------------------------------------------------
+
+.split(pattern = nil, [limit = optional])       -> array
+.split(pattern = nil, [limit = optional]) { |sub| block }      -> string
+
+                        : splits a sring in multiple elements to form an array. based on the pattern or string passd in parameter
+                        : limit will limit the elements in the array
+
+        > "new world order".split
+        >> ["new", "world", "order"]
+
+        > "hi-hello-how".split("-")
+        >> ["hi", "hello", "how"]
+
+        > "hi-hello-how".split("h")
+        >> ["", "i-", "ello-", "ow"]
+
+        > "hi-hello-how".split("h", 3)
+        >> ["", "i-", "ello-how"]
+
+------------------------------------------------------------------------------------
+
+.squeeze(pattern string)    -> new_string
+
+                            : removes the runs of identical
+                            : if in mentioned parameter only the runs of that parameter will be removed
+
+        > str = "yellow   mellow"
+
+        > str.squeeze()
+        >> "yelow melow"
+
+        > str.squeeze(" ")
+        >> "yellow mellow"
+
+        > "mmississippi".squeeze("a-p")
+        >> "mississipi
