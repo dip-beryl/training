@@ -1,4 +1,4 @@
-File Name		: string_methods.txt
+File Name	: string_methods.txt
 Author          : Dipanshu Ranga (@dip-beryl)
 Organization    : Beryl Systems Pvt. Ltd.
 
@@ -22,9 +22,81 @@ Genral Delimiter:
         > %{Ruby is fun.} equivalent to "Ruby is fun."
         > %Q{ Ruby is fun. } equivalent to " Ruby is fun. "
         > %q[Ruby is fun.] equivalent to a single-quoted string
+        > %w{ a b c d e f } ----> ["a", "b", "c", "d", "e", "f"] 
         > %x!ls! equivalent to back tick command output `ls`
 
 ---------------------------------------------- String Methods ------------------------------------------------------------------------------------
+
+    :: Creating String: 
+.new
+.try_convert
+
+    :: Querying
+.length
+.size
+.empty?
+.bytesize
+.count
+
+    ::substrings
+.index
+.rindex
+.include?
+.match
+.match?
+.start_with?
+.end_with?
+
+    ::other
+.sum
+.hash
+
+    ::Comparing
+.eql?
+.casecmp
+.casecmp?
+==, ===, <=>
+
+    ::Modifying
+.insert
+<<
+
+    ::substitution
+.sub!
+.gsub!
+.succ!
+.next!
+.replace
+.reverse!
+.setbyte
+.tr!
+.tr_s!
+
+    ::casting
+.capitalize!
+.downcase!
+.upcase!
+.swapcase!
+
+    ::deletion
+.clear
+.slice!
+.squeeze
+.delete!
+.strip!
+.lstrip!
+.rstrip
+.chomp!
+.chop!
+
+    ::Converting to new string
+.center
+.concat
+.prepend
+.ljust
+.rjust
+
+------------------------------------------------------------------------------------------------------------------------
 
 new(str="")  → new_str
 
@@ -391,13 +463,16 @@ str[match_str]      → new_str or nil
         > "Hello \n".dump
         >> "\"Hello \\n\""
 
-        > "\f\x00\xff\\\"".dump
+        > dumped_str = "\f\x00\xff\\\"".dump
         >> "\"\\f\\x00\\xFF\\\\\\\"\""
 
 ---------------------------------------------
 
 .undump     ->  new_str
-            :
+            : returns an unescaped version
+
+        > dumped_str.undump
+        >> "\f\u0000\xFF\\\""
 
 ---------------------------------------------------------------------------
 
@@ -474,7 +549,7 @@ lines(separator=$/, chomp: false)   → an_array
 -------------------------------------------------------------------------------
 
 .end_with?( [suffixes]+ )       -> true or false
-                                : checks for the suffci in string
+                                : checks for the suffix in string
 
         > "hello".end_with?("lo")
         >> true
@@ -484,6 +559,20 @@ lines(separator=$/, chomp: false)   → an_array
 
         > "hello".end_with?("yups")
         > false
+
+-------------------------
+
+.start_with?( [prefix]+ )       -> true or false
+                                : checks for the prefix in the string
+
+        > "hello".start_with?("he")
+        >> true
+
+        > "hello".start_with?("lo")
+        >> false
+
+        > "New World".start_with?("Old", "New")
+        >> true
 
 ------------------------------------------------------------------------------
 
@@ -515,6 +604,8 @@ lines(separator=$/, chomp: false)   → an_array
         > a = 3
         > print a
         >> 3
+------
+.frozen?        :       to know if the string is freeze or not
 
 ------------------------------------------------------------------------------
 
@@ -536,6 +627,9 @@ lines(separator=$/, chomp: false)   → an_array
 
 ::substitution method
 
+.sub(pattern, replacement)  -> new_string
+.sub(pattern) { |match| ...}    -> new_string
+
 .gsub(pattern, replacement)       → new_string
 .gsub(pattern)                  → enumerator
                                 : returns a new string where the pattern is replaced by replacement
@@ -547,7 +641,21 @@ lines(separator=$/, chomp: false)   → an_array
 
         > str.gsub("hi", "Hello")
         >> "Hi my name is Dipanshu"
+
+    - hash example :
+
+        > h = {'foo' => 'bar', 'baz' => 'bat'}
+        > 'food'.sub('foo', h)
+        >> 'bard'
+
+        > h = {foo: 'bar', baz: 'bat'}          # note that symbols does not match with string
+        > 'food'.sub('foo', h)
+        >> 'd'
 ----
+
+.sub(pattern, replacement)!
+.sub(pattern)! { |match| ...}
+
 .gsub!(pattern, replacement)
 
 --------------------------------------------------------------------------------
@@ -691,6 +799,15 @@ rindex(regexp, offset = self.length)        → integer or nil
         >> "123412yeah"
 
 -------------------------------------------------------------------------------------
+.strip   -> new_string
+        :   removes leading(starting) and trailing(ending) white spaces
+
+        > "   Yeah   ".strip
+        >> "Yeah"
+-----
+.strip! ->  modifies main string        
+
+---------------------------------------------
 
 .lstrip  -> new_string
         :   removes white spaces from left side
@@ -996,3 +1113,200 @@ rpartition(regexp)  → [head, match, tail]
 
         > "mmississippi".squeeze("a-p")
         >> "mississipi
+-----
+.squeeze!(pattern string)    -> main string modified
+
+-------------------------------------------------------------------------------------
+
+.sum    -> int
+
+        > "a".sum
+        >> 97
+
+        > "aa".sum
+        >> 194
+
+------------------------------------------------------------------------------------
+
+.swapcase   -> new_string
+        
+        > "Hello Office".swapcase
+        >> "hELLO oFFICE"
+-----
+.swapcase!
+
+------------------------------------------------------------------------------------
+
+.to_c   -> complex number
+        : Returns a complex which denotes the string form.
+        : ignores leading and traling whitespace.
+
+        > "9".to_c
+        >> (9+0i)
+
+        > "5.1".to_c
+        >> (5.1+0i)
+
+        > "-1".to_c
+        >> (-1+0i)
+
+        > "-i".to_c
+        >> (0-1i)
+
+        > "40i".to_c
+        >> (0+40i)
+
+        > '3/4'.to_c
+        >> ((3/4)+0i)
+
+        > 'yes'.to_c
+        >> (0+0i)
+
+----------------------------------------------------------------------------------------
+
+.to_f   -> float  
+        : leading characters to float
+
+        > "3".to_f
+        >> 3.0
+
+        > "3.14ygyugu".to_f
+        >> 3.14
+
+        > "3.14 (pi till two points)".to_f
+        >> 3.14
+
+        > "abcd".to_f
+        >> 0.0
+
+-----------------------------------------------------------------------------------------
+
+.to_i(base = 10)   -> integer
+
+                : base -> base 10
+
+        > "123".to_i
+        >> 10
+
+        > "123".to_i(16)
+        >> 291              # 291 in base 10 is 123 in base 16 (hex)
+
+        > "d".to_i(16)
+        >> 13
+
+        > "12.325".to_i
+        >> 12
+
+        > "1234".to_i(2)
+        >> 1
+
+        > "abcd".to_i
+        >> 0
+
+------------------------------------------------------------------------------------------
+
+.to_r   ->  rational
+
+        : leading integers to rational
+
+        > "   2   ".to_r
+        >> (2/1)
+
+        > "10/5".to_r
+        >> (2/1)
+
+        > "10".to_r
+        >> (10/1)
+
+        > "20/4/2".to_r
+        >> (5/1)
+
+        > "-4.5".to_r
+        >> (-9/2)
+
+        > " 22 August".to_r
+        >> (22/1)
+
+        > "sdecd76/2".to_r
+        >> (0/1)
+
+------------------------------------------------------------------------------------------
+
+.to_s
+.to_str     -> str
+
+        > 232.to_s
+        >> "232"
+
+------------------------------------------------------------------------------------------
+
+.tr( from_str, to_str)  -> new_string
+                        -> searches for [from_str ] in main string and replaces them with [to_str ] coorosponding characters
+
+        > "New World".tr("wol", "qnp")
+        >> "Neq Wnrpd"
+
+        > "New World".tr("wol", "*")
+        >> "Ne* W*r*d"
+
+        > "New World".tr("Wol", "*")
+        >> "New **r*d"
+
+        > "New World".tr("aeiou","-")
+        >> "N-w W-rld"
+
+        > "New World".tr("za-y","ab-z")
+        >> "Nfx Wpsme"
+
+        > "New World".tr("New","")
+        >> " World"
+
+-----
+.tr!( from_str, to_str) -> modified main string
+
+--------------------------------------------------------------------------------------------
+
+.tr_s( from_str, to_str)    -> new_string
+                            : works on duplicate items
+
+        > "Hello World".tr("l", "*")
+        >> "He**o Wor*d"
+
+        > "Hello World".tr("l", "**")
+        >> "He**o Wor*d"
+-----
+.tr_s!( from_str, to_str)    -> modifies main string
+
+-------------------------------------------------------------------------------------------
+
+.unpack(format) -> array
+.unpack(fromat, offset: integer)    -> array
+                : dcodes string according to format
+
+.unpack1(format) -> obj
+.unpack1(fromat, offset: integer)    -> obj
+                : decodes string according to format and returns the first object
+
+            : : The keyword offset can be given to start the decoding after skipping the specified amount of bytes            
+
+---------------------------------------------------------------------------------------------
+
+.upto(other_string, exclusive = false) {|string| ... } → returns main string again
+
+                                    : this method is based on .succ . it calls it again and again untill the [other_string ] value is reached
+
+            > 'a'.upto('z') {|s| print s, ' ' }
+            >> a b c d e f g h i j k l m n o p q r s t u v w x y z
+            return >> 'a'
+
+---------------------------------------------------------------------------------------------
+
+.valid_encoding?    ->  true or false   
+                    : returns true for a string which is encoding correctly
+
+            > "\xc2\xa1".force_encoding("UTF-8").valid_encoding?
+            >> true
+            
+            > "\xc2".force_encoding("UTF-8").valid_encoding?
+            >> false
+
