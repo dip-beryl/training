@@ -1,0 +1,467 @@
+File Name	    : hash_methods.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------
+
+Syntax:
+
+Different Methods of creating a Hash:
+
+- by hash rocket =>
+
+    > h = {"one" => 1, 2 => "Two", :three => 3}
+
+- by new symbols method
+
+    > h = {one:  1, two:  2, 'three': 3}
+    >> {:one=>1, :two=>2, :three=>3} 
+
+
+- mix mehod
+
+    > h = {foo: 0, :bar => 1, 'baz': 2}       #remember numbers cannot be symbols
+
+------------------------------------------------------------------------
+
+Create an empty hash :
+
+    > h = Hash.new
+
+    > h = Hash[]
+
+    > h = {}
+
+---------
+
+CONCEPT of default values and default process:
+
+    - if the passed key in slicing have no value then the default process is used to find its value
+        if default process is also not defined then default value is used 
+
+    > h = Hash.new
+    
+    > h.default
+    >> nil
+
+    
+    -.default_proc
+
+    > h = Hash.new { |hash, key| ... }
+
+    > h.default_proc = proc { |hash, key| ...}
+
+    
+    - .default
+
+    > h = Hash.new(10)
+    > h.default
+    >>  10
+
+    > h.default = 12
+    >> 12
+-----------------------------------------------------------------------
+
+[]
+
+        > h = {one: 1, two: 2, three: 3}
+
+        > h[:four] = 4
+        > h[:one] = 0
+
+        > print h
+        >> {:one=>0, :two=>2, :three=>3, :four=>4}
+
+    - when the argument count is even
+    
+        > Hash[:foo, 0, :bar, 1]
+        >> {:foo => 0, :bar => 1}
+
+----------------------------------------------------------------------
+
+Hash.new(deafult_value = nil)   -> new_hash
+Hash.new { |hash,key| ... }     -> new_hash
+
+
+        > h = Hash.new
+        > h.deafult
+        >> nil
+        > h.default_proc
+        >>nil
+
+    - with default value
+
+        > h = Hash.new(89)
+        > h.default
+        >> 89
+        > h.default_proc
+        >> nil
+
+    - with default proc
+
+        > h = Hash.new { |hash, key| "default value for #{key}" }
+
+        > h.default
+        >> nil
+
+        > h.default_proc
+        >> #<Proc:0x000055db08cbcb48 (irb):99>
+
+        > h[:one]
+        >> "default value for one"
+
+--------------------------------------------------------------------------
+
+.ruby2_keyword_hash(hash)   ->  hash
+.ruby2_keywords_hash?(hash) ->  true or false
+
+                : duplicates a hash and adds a ruby_2_keyword flag.
+                : this method is for debugging use.
+
+------------------------------------------------------------------------
+
+
+.try_convert(obj)   -> obj, hash or nil
+
+.to_hash
+
+
+--------------------------------------------------------------------------
+
+Comparison between Hashes :
+
+<   :   returns true if LHS is a proper subset of RHS 
+>   :   returns true if LHS is a proper superset of RHS 
+<=  :   returns true if LHS is a subset of RHS 
+>=  :   returns true if LHS is a superset of RHS 
+
+        > h1 = {one: 1, two: 2, three: 3}
+        > h2 = {one: 1, two: 2}
+
+        > h1 < h2              > h1 <= h2              
+        >> false               >> false
+
+        > h1 > h2              > h1 >= h2              
+        >> true                >> true
+
+        > h1 < h1              > h1 <= h1
+        >> false               >> true
+
+
+==  :   objects must be a hash
+        keys should be; order of keys doesn't matter
+        for each key values should be identical
+
+        > h3 = {two: 2, one: 1}
+
+        > h1 == h2
+        >> false
+
+        > h2 == h3
+        >> true
+
+--------------------------------------------------------------------------------------
+
+.any?                    -> true or false    :   checks for emptiness
+.any?(object)            -> true or false    :   checks if the object is present in the hash
+.any?{|key, value| ..}   -> true or false    :   checks for the condition on every element an returns true if any satisfies
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.any?
+        >> true
+
+        > h1.any?([:one, 1])
+        >> true
+
+        > h1.any?(['one', 1])
+        >> false
+
+        > h1.any? { |key, value| value < 2}
+        >> true
+
+----------------------------------------------------------------------------------------
+
+.assoc(key)     ->  array
+            :   If the given key is found, returns a 2-element Array containing that key and its value
+
+        > h1.assoc('one')
+        >> nil
+
+        > h1.assoc(:one)
+        >> [:one, 1]
+
+-------------------------------------------------------------------------------------
+
+.clear  ->  empty hash  : removes all entries
+
+        > h = {1 => 2, 2 => 3}
+        
+        > h.clear
+        >> {}
+
+        > print h
+        >> {}
+
+-----------------------------------------------------------------------------------
+
+.compact        ->  new_hash    :   returns a copy of hash with all nil values removed
+
+        > h = {1 => nil, 2 => 2, 3 => nil}
+
+        > h.compact
+        >> {2 => 2}
+------
+.compact!       -> destructive version of [.compact ]
+------------------------------------------------------------------------------------
+
+.compare_by_identity    ->  main hash is returned   :   sets the property of any hash to compare its keys be only identity.
+.compare_by_identity?   ->  boolean                 :   checks if the [.compare_by_identity method ] is active on any hash or not
+
+        > k1 = 'x'
+        > k2 = 'x'
+
+        > h = {}
+        > h.compare_by_identity?
+        >> false
+
+        > h[k1] = 0 
+        > h[k2] = 1
+        >> {'x' => 1}               # only one key as 'x' is accepted. Beacuse hash is taking both k1 and k2 as duplicate.
+
+    - activating [.compare_by_identity ]    
+
+        > k1 = 'x'
+        > k2 = 'x'
+
+        > h ={}
+        > h.compare_by_identity
+        > h.compare_by_identity?
+        >> true
+
+        > h[k1] = 0 
+        > h[k2] = 1
+        > {'x' => 0, 'x' => 1}
+
+---------------------------------------------------------------------------------------------
+
+.delete(key)                    ->  [value ] that is deleted  and modifies the hash
+                                :   nil if the key is not found
+.delete(key) {|key|.. block }   ->  if key is found returns value and deletes the key
+                                :   execute the block if key is not found
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.delete(:one)
+        >> 1
+
+        > print h1
+        >> {two: 2, three: 3}
+
+        > h1.delete(:four)
+        >> nil
+
+        > print h1
+        >> {two: 2, three: 3}
+
+    -- block
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.delete(:one) { |key| raise "#{key} not found"}
+        >> 1
+
+        > print h1
+        >> {two: 2, three: 3}
+
+        > h1.delete(:four) { |key| raise "#{key} not found"}
+        >> RuntimeError (four not found)
+
+----------------------------------------------------------------------------------------------
+
+.delete_if { |key, value| .. block}     ->  returns main array after deletion / modification
+.delete_if                              ->  Enumerator
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.delete_if { |key, value| value <= 2}
+        >> {three: 3}
+
+    -> Enumerator
+
+        > h = {foo: 0, bar: 1, baz: 2}
+
+        > e = h.delete_if
+
+        > e.each { |key, value| value > 1}
+        >> {foo: 0, bar: 1}
+
+        > print h
+        >> {foo: 0, bar: 1}
+
+-----------------------------------------------------------------------------------------------
+
+.dig(object / key, *identifiers)  ->  returns object / value
+                    :   searches through nested hashes and objects
+
+        > hn = {one: {two: {three: 3}}}
+
+        > hn.dig(:one)
+        >> {two: {three: 3}}
+
+        > hn.dig(:one, :two, :three)
+        >> 3
+
+        > hn2 = {one: {two: ['a', 'b', 'c']}}
+
+        > hn2.dig(:one, :two, 1)
+        >> 'b'
+
+-------------------------------------------------------------------------------------------
+
+.each { |key, value| .. block }         ->  main array
+.each_pair { |key, value| .. block }    ->  main array
+.each_key { |key| .. block }    ->  main array
+.each_value { |value| .. block }    ->  main array
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.each { |key, value| puts "#{key} = #{value+1}"}
+        >> one = 2
+           two = 3
+           three = 4
+
+------------------------------------------------------------------------------------------
+
+.empty?     ->      boolean     :   checks if the hash is empty or not
+
+        > h1 = {one: 1}
+        > h2 = {}
+
+        > h1.empty?
+        >> false
+
+        > h2.empty?
+        >> true
+
+        > h1.clear
+        > h1.empty?
+        >> true
+
+---------------------------------------------------------------------------------------
+
+.except(*keys)  ->  new hash    :   returns a new hash excluding the keys in parameters
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.except(:two)
+        >> {:one => 1, :three => 3}
+
+--------------------------------------------------------------------------------------
+
+.fetch(key)                 → object
+.fetch(key, default_value)  → object
+.fetch(key) {|key| ... }    → object
+
+        > h1 = {one: 1, two: 2, three: 3}
+
+        > h1.fetch(:one)
+        >> 1
+
+        > h1.fetch(:four)
+        >> KeyError
+
+    - with default_value parameter
+
+        > h1.fetch(:four, 0)
+        >> 0
+
+    - with block
+        > h1.fetch(:two){|key| "Key not found"}
+        >> 2
+
+        > h1.fetch(:four){|key| "Key not found"}
+        >> "Key not found"
+
+--------------------------------------------------------------------------------------
+
+.fetch_values(*keys)              → new_array
+.fetch_values(*keys) {|key| ... } → new_array   :   keys that are invalid are passed to the block
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.fetch_values(:one, :three)
+        >> [1, 3]
+
+        > h1.fetch_values(:five)
+        >> KeyError
+
+        > h1.fetch_values(:one, :two, :ten, :nine) { |key| key.to_s}
+        >> [1, 2, "ten", "nine"]
+
+-----------------------------------------------------------------------------------------
+
+.select {|key, value| ... } → new_hash      :   select the values for which the block returns true
+.select                     → new_enumerator
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.select { |key, value| value.even? }
+        >> {:two=>2, :four=>4}
+------
+.select! {|key, value| ... }  → modified main hash or nil
+.select!                      → enumerator
+
+-----------------------------------------------------------------------------------------
+
+.flatten         → new_array
+.flatten(level)  → new_array
+
+    - by default nested arrays are not flatten
+
+        > {:one=>1,:two=>[:twenty, 20], :three=>3}.flatten
+        >> [:one, 1, :two, [:twenty, 20], :three, 3]
+
+    - with levels
+
+        > h0 = {zero: 0, one: [:one, [:ten, 10, [:hundred, 100]]]}
+
+        > h0.flatten(1)
+        >> [:zero, 0, :one, [:one, [:ten, 10, [:hundred, 100]]]]
+
+        > h0.flatten(2)
+        >> [:zero, 0, :one, :one, [:ten, 10, [:hundred, 100]]]
+
+        > h0.flatten(4)
+        >> [:zero, 0, :one, :one, :ten, 10, :hundred, 100]
+    
+    - level is any -ve : flatten all
+
+        > h0.flatten(-2)
+        >> [:zero, 0, :one, :one, :ten, 10, :hundred, 100]
+
+    - level is 0 : return result like .to_a
+
+        > {:one=>1,:two=>[:twenty, 20], :three=>3}.flatten.flatten(0)
+        >> [[:one, 1], [:two, [:twenty, 20]], [:three, 3]]
+
+--------------------------------------------------------------------------------------------
+
+.has_key?(key)       ->  boolean
+.has_value?(value)   ->  boolean
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.has_key?(:one)
+        >> true
+
+        > h1.has_key?(:five)
+        >> false
+
+        > h1.has_value?(1)
+        >> true
+
+        > h1.has_value?(100)
+        >> false
+
+--------------------------------------------------------------------------------------------
