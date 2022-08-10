@@ -62,6 +62,161 @@ CONCEPT of default values and default process:
     >> 12
 -----------------------------------------------------------------------
 
+CONCEPT of hashing and rehashing :
+
+[.rehash ]
+
+        > k1 = [:one, :ten]
+        > k2 = [:two, :twenty]
+
+        > h = {k1 => 1, k2 => 2}
+        
+        > print h
+        >> {[:one, :ten]=>1, [:two, :twenty]=>2}
+
+        > h.include?(k1)
+        >> true
+
+        > k1.hash
+        >> 940062934986690606
+
+    --- now modifying the hash keys.
+
+        > k1[1] = :eleven
+
+        > print h
+        >> {[:one, :eleven]=>1, [:two, :twenty]=>2}
+
+    - although the keys in the hash is also changed but the keys are corrupeted
+
+        > h[k1]
+        >> nil
+
+        > h.include?(k1)
+        >> false
+
+        > k1.hash
+        >> 835070808074036940       # Different from above int_hash
+
+    --- repairing hashes through [.rehash ]
+
+        > h.rehash
+
+        > h[k1]
+        >> 1
+
+        > h.include?(k1)
+        >> true
+
+    ---------- a string or int key is safe from modifying hash error
+    ---------- a string or int key that is unfreeze passed to the hash gets frozen inside hash.
+    ---------- a thats why modification of main string or int do not do any change in hash.
+
+        > s = 'kk'
+        > i = 5
+
+        > h = {s => 0, i => 1}
+
+        > s.frozen?
+        >> false
+
+        > h.keys.first.frozen?
+        >> true
+
+    --  therefore new when we modify the main string it will not affect the hash
+
+        > s = "rr"
+
+        > h = {s => 0, i => 1}
+
+        > h[s] = "kk"
+        >> nil
+
+        > print h
+        >>
+
+-------------------------------------------------------------------------------------
+
+        ::Creating a Hash
+[]
+Hash.new
+.try_convert
+
+
+        ::Seting hash state
+.compare_by_identity
+.rehash
+.default=
+.default_proc=
+
+
+        ::Querying
+.any?
+.empty?
+.hash
+.has_value?
+.include?, .has_key?, .member?, .key?
+.length
+.size
+.value?
+
+
+        ::Fetching
+[]
+.assoc
+.rassoc
+.dig
+.fetch(key)
+.fetch_values
+.key(value)
+.keys
+.values
+.values_at(*key)
+
+
+        ::Assigning
+[]
+.store
+.merge!, .update
+.replace
+
+
+        ::Deletion
+.clear
+.compact!
+.delete(key)
+.delete_if{}
+.filter!, .select!
+.keep_if
+.reject!
+.shift
+
+
+        ::Iterating
+.each
+.each_pair
+.each_key
+.each_value
+
+
+        ::Converting
+.to_s, .inspect
+.to_a
+.to_h
+.to_proc
+
+
+        ::Transform
+.transform_keys!
+.transform_values!
+
+
+        ::Other
+.flatten
+.invert
+
+---------------------------------------------------------------------------
+
 []
 
         > h = {one: 1, two: 2, three: 3}
@@ -76,6 +231,18 @@ CONCEPT of default values and default process:
     
         > Hash[:foo, 0, :bar, 1]
         >> {:foo => 0, :bar => 1}
+
+----------------------------------
+
+.store(key,value)       ->  returns value added       :  adds key value pair to the original hash
+
+        > h = {one: 1, two: 2, three: 3}
+
+        > h.store(:four, 4)
+        >> 4
+
+        > print h
+        >> {:one=>1, :two=>2, :three=>3, :four=>4}
 
 ----------------------------------------------------------------------
 
@@ -183,13 +350,26 @@ Comparison between Hashes :
 ----------------------------------------------------------------------------------------
 
 .assoc(key)     ->  array
-            :   If the given key is found, returns a 2-element Array containing that key and its value
+            :   If the given [key ] is found, returns a 2-element Array containing that key and its value
 
+        > h1 = {one: 1, two: 2, three: 3}
+        
         > h1.assoc('one')
         >> nil
 
         > h1.assoc(:one)
         >> [:one, 1]
+
+--------------------------
+
+.rassoc(value)   ->  new_array or nil
+            :   If the given [value ] is found, returns a 2-element Array containing that key and its value
+
+        > h1.rassoc(6)
+        >> nil
+
+        > h1.rassoc(2)
+        >> [:two, 2]
 
 -------------------------------------------------------------------------------------
 
@@ -400,6 +580,7 @@ Comparison between Hashes :
         >> [1, 2, "ten", "nine"]
 
 -----------------------------------------------------------------------------------------
+.filter is an alias
 
 .select {|key, value| ... } → new_hash      :   select the values for which the block returns true
 .select                     → new_enumerator
@@ -409,6 +590,8 @@ Comparison between Hashes :
         > h1.select { |key, value| value.even? }
         >> {:two=>2, :four=>4}
 ------
+.filter! is an alias
+
 .select! {|key, value| ... }  → modified main hash or nil
 .select!                      → enumerator
 
@@ -447,8 +630,10 @@ Comparison between Hashes :
 
 --------------------------------------------------------------------------------------------
 
+.key?(key)           ->  boolean
+.member?(key)        ->  boolean
+.include?(key)       ->  boolean
 .has_key?(key)       ->  boolean
-.has_value?(value)   ->  boolean
 
         > h1 = {one: 1, two: 2, three: 3, four: 4}
 
@@ -458,10 +643,268 @@ Comparison between Hashes :
         > h1.has_key?(:five)
         >> false
 
+--------------------------------
+
+.value?(value)       ->  boolean
+.has_value?(value)   ->  boolean
+
         > h1.has_value?(1)
         >> true
 
         > h1.has_value?(100)
         >> false
 
+-----------------
+
+.values_at(*keys)       ->  array
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.values_at(:one, :three)
+        >> [1, 3]
+
+        > h1.values_at(:one, :ten)
+        >> [1, nil]
+        
 --------------------------------------------------------------------------------------------
+
+.hash   ->  integer     :   returns the integer hash-code for the hash
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.hash
+        >> 4497595894470161049
+
+---------------------------------------------------------------------------------------------
+
+.replace(other_hash)    ->  modified main hash
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.replace({red: 'rose', yellow: 'sunflower'})
+        >> {:red=>"rose", :yellow=>"sunflower"}
+
+        > print h1
+        >> {:red=>"rose", :yellow=>"sunflower"}
+
+----------------------------------------------------------------------------------------------
+
+.invert     ->  new_hash    :   interchange keys and values
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.invert
+        >> {1=>:one, 2=>:two, 3=>:three, 4=>:four}
+
+--------------------------------------------------------------------------
+
+.keep_if {|key, value| ... }  → main array modified
+.keep_if                      → new_enumerator
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.keep_if { |key, value| value > 2}
+        >> {:three=>3, :four=>4}
+
+        > print h1
+        >> {:three=>3, :four=>4}
+
+-------------------------------------------------------------------------
+
+.keys   ->  array
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.keys
+        >> [:one, :two, :three, :four]
+
+------------
+
+.values ->  array
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.values
+        >> [1, 2, 3, 4]
+
+-------------------------------------------------------------------
+
+.size       ->  int
+.length     ->  int :   returns the count of entries
+
+        > h1 = {one: 1, two: 2, three: 3, four: 4}
+
+        > h1.length
+        >> 4
+
+-----------------------------------------------------------------
+
+.update(*other_hashes)  is an alias
+
+.merge                → copy_of_self
+.merge(*other_hashes) → new_hash
+
+.merge(*other_hashes) { |key, old_value, new_value| ... }   → new_hash
+
+                            : calls the block for every duplicate key. with new and old values.
+
+        > h1 = {rat: 1, net: 4, tat: 5}
+        > h2 = {bat: 3, cat: 2, net: 3}
+        > h3 = {rat: 2, set: 10}
+
+        > h1.merge(h2, h3)
+        > {:rat=>2, :net=>3, :tat=>5, :bat=>3, :cat=>2, :set=>10}
+
+    - with block
+
+        > h1.merge(h2, h3) { |key, old_value, new_value| [old_value, new_value].max }
+        >> {:rat=>2, :net=>4, :tat=>5, :bat=>3, :cat=>2, :set=>10}
+-----
+
+.merge!                → modified_hash
+.merge!(*other_hashes) → modified_hash
+
+.merge(*other_hashes) { |key, old_value, new_value| ... }   → modified_hash
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+.reject {|key, value| ... } → new_hash
+.reject                     → new_enumerator
+                        : reject all the entries for which the block returns true
+
+        > h1 = {bat: 1, sat: 2, ball: 3}
+
+        > h1.reject {|key, value| key.start_with('b')}
+        >> {:sat=>2}
+-----
+.reject! {|key, value| ... } → modified_main_hash
+.reject!                     → enumerator
+
+---------------------------------------------------------------------------------------------------
+
+.shift          ->   [key, value] or default_value      :       removes the first entry and returns it as a [key, value ] pair array
+
+        > h1 = {rat: 1, net: 4, tat: 5}
+
+        > h1.shiift
+        >> [:rat, 1]
+
+        > print h1
+        >> {net: 4, tat: 5}
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+.slice(*keys)   ->      new hash        :       returns a new hash containing keys and values of the mentioned keys
+
+        > h1 = {rat: 1, net: 4, tat: 5}
+
+        > h1.slice(:rat, :tat)
+        >> {rat: 1, tat: 5}
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+.to_a   ->      new array       :       converts hash to array
+
+        > h = {:one=>1, :two=>2, :three=>3, :four=>4}
+
+        > h.to_a
+        >> [[:one, 1], [:two, 2], [:three, 3], [:four, 4]]
+
+---------------------------------------------------------------------------------------------
+
+.to_hash                        ->      new_hash (same as main hash)
+.to_h                           ->      new_hash
+.to_h { |key, value| .. block}  ->      new_hash
+                                
+                                : the block should return a [key, value] pair Array
+
+        > h = {:one=>1, :two=>2, :three=>3, :four=>4}
+
+        > h1 = h.to_h { |key, value| [value, key] }
+        >> {1=>:one, 2=>:two, 3=>:three, 4=>:four}
+
+-----------------------------------------------------------------------------------------
+
+.inspect    ->  new_string
+.to_s       ->  new_string
+
+        > h1 = {:red=>"rose", :yellow=>"sunflower"}
+
+        > h1.inspect
+        >> "{:red=>\"rose\", :yellow=>\"sunflower\"}"
+
+        > print h1.inspect
+        >> "{:red=>"rose", :yellow=>"sunflower"}"
+
+------------------------------------------------------------------------------
+
+.to_proc        ->      proc object     : returns a proc object that maps the key to its value.
+
+        > h1 = {:one=>1, :two=>2, :three=>3, :four=>4}
+
+        > proc_of_h1 = h1.to_proc
+
+        > proc_of_h1.class
+        >> proc
+
+        > proc_of_h1.call(:two)
+        >> 2
+
+        > proc_of_h1.call(:ten)
+        >> nil                  # beacuse no default or default_proc is defined
+        
+----------------------------------------------------------------------------------------------------------
+
+.transform_keys {|key| ... }             → new_hash
+.transform_keys(hash2)                   → new_hash
+.transform_keys(hash2) {|other_key| ...} → new_hash
+.transform_keys                          → new_enumerator
+
+                        : change keys to new keys
+                        : provide a block mehod to change keys. the block code will be executed on each key one-by-one
+                        : you can also pass a alternet set of keys to change keys in [hash2 ] parameter
+                        : if for some key no new key is passed in [hash2 ] then th block's code will be used on that key or the key will remain same
+
+        > h1 = {:one=>1, :two=>2, :three=>3, :four=>4}
+
+    - with block only 
+
+        > h1.transform_keys { |key| key.to_s }
+        >> {"one"=>1, "two"=>2, "three"=>3, "four"=>4}
+
+    - with passed new keys
+
+        > h1.transform_keys(one: :ten, two: :twenty)
+        >> {:ten=>1, :twenty=>2, :three=>3, :four=>4}
+
+    - with passed keys and block
+
+        > h1.transform_keys(one: :ten, two: :twenty) { |other_key| other_key.to_s}
+        >> {:ten=>1, :twenty=>2, "three"=>3, "four"=>4}
+
+    - overwritting values
+
+        > h1.transform_keys { |key| :num}
+        >> {:num => 4}
+-----
+
+transform_keys! {|key| ... }             → modified_main_hash
+transform_keys!(hash2)                   → modified_main_hash
+transform_keys!(hash2) {|other_key| ...} → modified_main_hash
+transform_keys!                          → new_enumerator
+
+------------------------------------------------------------------------------------------------------------
+
+transform_values {|value| ... } → new_hash
+transform_values                → new_enumerator
+
+        > h1 = {:one=>1, :two=>2, :three=>3, :four=>4}
+
+        > h1.transform_values { |values| values*values}
+        >> {:one=>1, :two=>4, :three=>9, :four=>16}
+-----
+
+transform_values! {|value| ... } → modified_main_hash
+transform_values!                → new_enumerator
+
+------------------------------------------------------------------------------------------------------------------------------
