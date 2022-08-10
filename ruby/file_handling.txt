@@ -1,0 +1,94 @@
+File Name		: file_handling.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+--------------------------------------------------------------------------------------
+
+1. Ruby provides a whole set of I/O-related methods implemented in the Kernel module. 
+
+2. All the I/O methods are derived from the class IO.
+
+3. The class IO provides all the basic methods, such as read, write, gets, puts, readline, getc, and printf.
+
+---------------------------------------------------------------------------------------------
+
+putc :
+
+        Like puts prints the entire line or sting. putc prints only a single character.
+
+            > putc "Hello"
+            >> "H"
+
+        -- but in return value putc returns the whole string
+
+-----------------------------------------------------------------------------------------
+
+----------Opening and Closing Files :
+
+File.new :
+
+        This method is used to create a new file object.
+
+File_name.close :
+
+        This method is used to close the file object after the operatons on file is performed.
+
+    -- Syntax :
+            
+            > f_obj = File.new("File_path", "mode")
+                ....
+                ... operations
+            > f_obj.close
+
+        - Modes :
+
+            r   : Read Only Mode
+            r+  : Read-Write Mode
+            
+            w   : Write Only Mode. 
+                    Overwrites the file if exists.
+                    If file doesn't exist creates a new file for Writing.
+            
+            w+  : Read-Write Only Mode. 
+                    Overwrites the file if exists.
+                    If file doesn't exist creates a new file for Reading & Writing.
+
+            a   : Write only mode.
+                    Pointer will be at the end of file because its in append mode.
+                    Overwrites the existing if file exists.
+                    If file doesn't exist creates a new file for Writing.
+
+            a+   : Read - Write only mode.
+                    Pointer will be at the end of file because its in append mode.
+                    Overwrites the existing if file exists.
+                    If file doesn't exist creates a new file for Reading & Writing.
+
+File.open :
+
+        This method also works similarly to the File.new method.
+
+        but in this method we do not need to .close the file object.
+
+        This method can passed in a block and will automaticaly close the file when reach [end ].
+
+        -- Syntax :
+
+            > File.open("file_path_name", "mode") do |file_obj|
+                .....
+                ... operations
+              end
+
+sysread() :
+
+        1. We can use simple STDIN and STDOUT methods on file contents. (puts, putc, print, gets etc)
+
+        2. 
+
+        -- Example :
+
+            > File.open("test.txt", "r+") do |f_obj|
+                content = f_obj.sysread(200)
+                puts content
+            end
+
+
