@@ -1,0 +1,432 @@
+File Name		: date_&_time.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------
+
+1. There are two seperate classes 'Time' and 'Date' that manges date and time in Ruby.
+
+2. 'Time' class is slready included in the Ruby. But, If we want to use 'Date' class then we have to :
+
+    > require 'date'
+    >> true
+
+3. 'DateTime' class is a sub class of 'Date' class. It is considered depricated because of poor features. (Like it doesnot track milliseconds)
+
+4. Insted of using 'DateTime' use 'Time' class.
+
+5. Epoch, 1970-01-01 00:00:00 UTC , There for you cannot have time older than this.
+
+6. The Time class treats GMT (Greenwich Mean Time) and UTC (Coordinated Universal Time) as equivalent.
+
+7. All times may have subsecond. Be aware of this fact when comparing times with each other – 
+    times that are apparently equal when displayed may be different when compared.
+
+8. [.inspect ] shows subseconds but [.to_s ] doesn't.
+
+9. Since Ruby 1.9.2, Time implementation uses a signed 63 bit integer, Bignum or Rational.
+
+10. The Unix epoch is 00:00:00 UTC on 1 January 1970.
+
+------------------------------------------------------
+
+Getting Current Date and Time :
+
+.new
+.now
+
+        > Time.new
+        >> 2022-08-10 12:13:13.608751028 +0530
+
+    -- bisecting the Time.new output :
+
+        -    2022-08-10 ->   year : month : date/day
+        -    12:13:13   ->   hour : minute : second
+        -    .608751028 ->   microseconds
+        -    +0530      ->   timezone (+5:30 here) "is a string field"
+
+
+        > Time.new.class
+        >> Time
+
+        > Time.new(2000)
+        >> 2000-01-01 00:00:00 +0530
+
+        > Time.new(2000, 12, 03)
+        >> 2000-12-03 00:00:00 +0530
+
+        > Time.new(2002, 10, 31, 12, 2, 20, "+02:00")
+        >> 2002-10-31 12:02:20 +0200
+
+    - time using thge UNIX epoch : [.at ]
+
+        > Time.at(999999999)
+        >> 2001-09-09 07:16:39 +0530
+
+--------------------------------------------------------
+
+Extract Components of a Time :
+
+        > time = Time.new
+        >> 2022-08-10 12:22:07.304651061 +0530
+
+        > time.year     >> 2022
+
+        > time.month    >> 8
+        > time.mon      >> 8
+
+        > time.day      >> 10
+        > time.mday     >> 10
+
+        > time.wday     >> 3    #wednesday
+
+        > time.yday     >> 222
+
+        > time.hour     >> 12
+
+        > time.min      >> 22
+
+        > time.sec      >> 7
+
+        > time.usec         >> 304651
+        > time.tv_usec      >> 304651
+
+        > time.nsec         >> 304651061
+        > time.tv_nsec      >> 304651061
+
+        > time.zone     >> "IST"
+
+-------------------------------------------------------------
+
+Working around with time :
+
+        > t = time.now
+        >> 2022-08-10 13:26:42.72095669 +0530
+
+        > t.dst?
+        >> false
+
+    - Date of today's date after a year :
+
+        > t + (365*24*60*60)
+        >> 2023-08-10 12:21:42.613226916 +0530
+
+    - Seconds since the Unix Epoch :
+
+        > t.to_i
+        >> 1660114302
+
+    - times can be compared : 
+
+        > t1 = Time.new(2010)
+        > t2 = Time.new(2021)
+        > t3 = Time.new(2021)
+
+        > t1 > t1
+        >> false
+
+        > t1 == t2
+        >> false
+
+        > t2 == t3
+        >> true
+
+        > Time.new(2015,10,31).between?(t1, t2)
+        >> true
+
+---------------------------------------------------------------
+
+Time contents to array :
+
+.to_a
+        [sec,min,hour,day,month,year,wday,yday,isdst,zone]
+
+        > Time.new.to_a
+        >> [40, 42, 12, 10, 8, 2022, 3, 222, false, "IST"]
+
+----------------------------------------------------------------
+
+
+Time.gm(argumens)   ->  time
+.utc  is an alias of .gm
+.gm(sec, min, hour, day, month, year, dummy, dummy, dummy, dummy) → time
+    
+                    : Creates a Time object based on given values, interpreted as UTC (GMT).
+                    : ranges of months can be from 1 to 12 or 3 letter month code
+
+        > Time.gm(2020)
+        >> 2020-01-01 00:00:00 UTC
+
+    - can also give 10 arguments that generates through .to_a; but shoould be in that order
+
+        > Time.gm(40, 42, 12, 10, 8, 2022, 3, 222, false, "IST")
+        >> 2022-08-10 12:42:40 UTC
+-----
+.local(time)
+.mktime(time) is same as .gm but gives local time zone instead of UTC.
+
+-----
+
+.utc?
+.gmt?   ->  boolean
+        : to check for gmt
+------
+
+.getlocal   ->  converts time to local timezone
+.localtime
+
+-----------
+.getgm     ->  converts time to gmt timezone
+.gmtime     ->  converts time to gmt timezone
+
+---------
+
+.gmtoff
+.gmtoffset  ->  integer :   returns the Returns the offset in seconds between the timezone of time and UTC.
+
+---------------------------------------------------------------------
+
+.ctime
+.asctime    ->  string  :   canonical string reprisentation of time
+
+        > Time.now.asctime
+        >> "Wed Aug 10 15:05:37 2022"
+
+---------------------------------------------------------------------
+
+.friday?    -> boolean
+        : or any other day name
+        
+        > Time.new(2022, 8, 10).friday?
+        >> false
+
+        > Time.new(2022, 8, 10).wednesday?
+        >> true
+
+-----------------------------------------------------------------------
+
+.hash   ->  integer
+
+        > Time.new(2022).hash
+        >> 3796879515843121633
+
+----------------------------------------------------------------------
+
+.isdst      -> boolean
+.dst?       -> boolean
+            : returns true if time occurs during day light saving in its time zone.
+
+-----------------------------------------------------------------------
+
+.round([ndigits])   -> new_time
+
+                : works on seconds for rounidng off accordingly.
+
+    > t = time.now
+    >> 2022-08-10 15:30:59.921651632 +0530
+
+        > t.round
+        >> 2022-08-10 15:31:00 +0530
+
+        > t.round(1)
+        >> 2022-08-10 15:30:59.9 +0530
+
+        > t.round(2)
+        >> 2022-08-10 15:30:59.92 +0530
+
+        > t.round(4)
+        >> 2022-08-10 15:30:59.9217 +0530
+
+-----------------
+
+.ceil([ndigits])   -> new_time
+
+        > t.ceil
+        >> 2022-08-10 15:31:00 +0530
+
+        > t.ceil(1)
+        >> 2022-08-10 15:31:00 +0530
+
+        > t.ceil(2)
+        >> 2022-08-10 15:30:59.93 +0530
+
+        > t.ceil(4)
+        >> 2022-08-10 15:30:59.9217 +0530
+
+----------------
+
+.floor([ndigits])    -> new_time
+
+        > t.floor
+        >> 2022-08-10 15:30:59 +0530
+
+        > t.floor(1)
+        >> 2022-08-10 15:30:59.9 +0530
+
+        > t.floor(2)
+        >> 2022-08-10 15:30:59.92 +0530
+
+        > t.floor(4)
+        >> 2022-08-10 15:30:59.9216 +0530
+
+---------------------------------------------------------------------
+
+.subsec      -> number  :   returns the subsecond of time
+
+        > t = Time.now
+        >> 2022-08-10 15:30:59.921651632 +0530
+
+        > t.subsec
+        >> (57603227/62500000)
+
+--------------------------------------------------------------------
+
+.to_f   ->   float  
+    :   Returns the value of time as a floating point number of seconds since the Epoch.
+    :   Remember it is just approximation.
+
+        > Time.now.to_f
+        >> 1660126021.4030192
+
+---------
+
+.tv_sec
+.to_i   ->   integer
+    :   seconds from Epoch
+
+        > Time.now.to_i
+        >> 1660126021
+
+---------
+
+.to_r   ->  Rational
+    :   rational number of seconds since epoch
+
+        > Time.now.to_r
+        >> (415031568798161341/250000000)
+
+--------------------------------------------------------------------------------
+
+[imp]
+
+.strftime(format strng)   ->  string
+            
+            : Time formatting
+            : The directives begin with a percent (%) character.
+            : If for nay field directive is not listed or mentioned then it will have its default formatting
+
+            : The directive consists of 
+                - a percent (%) character, 
+                - zero or more flags, 
+                - optional minimum field width, 
+                - optional modifier; and 
+                - a conversion specifier
+
+        Dirctive format : % <flags> <width> <modifier> <conversion>         # there should be no space in-between.
+
+
+    <flags>
+
+        -  don't pad a numerical output
+        _  use spaces for padding
+        0  use zeros for padding
+        ^  upcase the result string
+        #  change case
+        :  use colons for %z
+
+    <width>
+
+        The minimum field width specifies the minimum width.
+
+    <modifier>
+
+        Modifiers are 'E' or 'O'. They are ignored.
+
+    <conversion>    (some main formats)
+
+        Date (year, Month, Day) : 2021-08-01
+
+            Y - 2021
+            C - 20
+            y - 21
+
+            m - 08, zero padding is default
+            B - January
+            b - Jan
+
+            d - 01, zero padding is default
+            j - day of year
+
+        Time (hour, minute, second, subsecond) : 14:09:04.7777777777
+
+            H - 14, zero padding
+            I - 02, zero padding
+
+            P - am, pm      # Note : Its capital 'P' for lower "am / pm"
+            p - AM, PM
+
+            M - 09
+
+            S - 04
+
+            L - 000-999, milliseconds
+
+        Time Zone:
+
+            %z   - +0900
+            %:z  - +09:00
+            %::z - +09:00:00
+
+        Weekday:
+
+            A - Sunday
+            a - Sun
+
+            u - Day of the week (Monday is 1, 1..7)   so, sunday is 7
+            w - Day of the week (Sunday is 0, 0..6)   so, sunday is 0
+
+            U - Week number of year
+            W - Week number of year
+
+        Literal string:
+        
+            %n - Newline character (\n)
+            %t - Tab character (\t)
+            %% - Literal ``%'' character
+
+        Combination:
+            
+            %c - date and time (%a %b %e %T %Y)
+            
+            %D - Date (%m/%d/%y)
+            %x - Same as %D
+            
+            %F - The ISO 8601 date format (%Y-%m-%d)
+            %v - VMS date (%e-%^b-%4Y)
+            
+            %r - 12-hour time (%I:%M:%S %p)
+            %R - 24-hour time (%H:%M)
+            
+            %T - 24-hour time (%H:%M:%S)
+            %X - Same as %T
+
+    --- Examples on [.strftime ] : ----
+
+        > t = Time.local(2021, 8, 06, 14, 9, 4, 9999)
+        >> 2021-08-06 14:09:04.009999 +0530
+
+        > t.strftime("%A, %d-%^b-%Y, %I:%M:%S %p -- [%:z GMT]")
+        
+        >> "Friday, 06-AUG-2021, 02:09:04 PM -- [+05:30]"
+
+
+        > t.strftime("%H:%M:%S::%L")
+        >> "14:09:04::009"
+
+        > t.strftime("%c")
+        >> "Fri Aug  6 14:09:04 2021"
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+
+        
