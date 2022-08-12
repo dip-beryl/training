@@ -10,6 +10,45 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 3. The class IO provides all the basic methods, such as read, write, gets, puts, readline, getc, and printf.
 
+----------------------------------------------------------------------------------------------------------------------
+
+File.new('file', 'mode')
+.close
+File.open('file', 'mode')
+
+File.rename('old', 'new')
+File.delete('path')
+
+file_obj.chmod(permisison numeric number code accofing to terminal)
+
+.sysread(n)
+.syswrite(string)
+
+.each_byte {}
+.each_char {}
+
+IO.readlines('file path')
+IO.foreach('file path') {}
+
+File.size?('path')
+File.ftype('path')
+File.directory?('path')
+File.readable?('path')
+
+File.ctime
+File.mtime
+File.atime
+
+Dir
+    .pwd
+    []
+    .chdir
+    .mkdir
+    .delete
+    .foreach
+    .enteries
+
+    
 ---------------------------------------------------------------------------------------------
 
 putc :
@@ -32,6 +71,8 @@ File.new :
 File_name.close :
 
         This method is used to close the file object after the operatons on file is performed.
+        
+--------------------------------------------------------------------------------------------
 
     -- Syntax :
             
@@ -42,8 +83,8 @@ File_name.close :
 
         - Modes :
 
-            r   : Read Only Mode
-            r+  : Read-Write Mode
+            r   : Read Only Mode. Cursor is at starting of File.
+            r+  : Read-Write Mode. Cursor is at starting of File.
             
             w   : Write Only Mode. 
                     Overwrites the file if exists.
@@ -63,6 +104,8 @@ File_name.close :
                     Overwrites the existing if file exists.
                     If file doesn't exist creates a new file for Reading & Writing.
 
+----------------------------------------------------------------------------------------------
+
 File.open :
 
         This method also works similarly to the File.new method.
@@ -78,11 +121,13 @@ File.open :
                 ... operations
               end
 
-sysread() :
+---------------------------------------------------------------------------------------------------------------
+
+.sysread(maxlen) :   -> string
 
         1. We can use simple STDIN and STDOUT methods on file contents. (puts, putc, print, gets etc)
 
-        2. 
+        2. 'maxlen' is the no. bytes sysread will read from the file_object.
 
         -- Example :
 
@@ -92,3 +137,240 @@ sysread() :
             end
 
 
+            > File.open("test.txt", "r") do |f_obj|
+                if f_obj
+                    content = f_obj.sysread(200)
+                    puts content
+                else
+                    puts "Unable to read file"
+                end
+            end
+
+-------------------------------------------------------------------------------------------------------------------
+
+.syswrite( string )    ->  integer   : number of bytes written
+
+        1. Writes to files.
+
+            > File.open("test.txt", "w+") do |f_obj|
+                if f_obj
+                    f_obj.syswrite("\nThis file belongs to Dipanshu.")
+                    
+                else
+                    puts "Unable to read file"
+                end
+            end
+
+------------------------------------------------------------------------------------------------------------------
+
+.each_byte {|character| block}  ->  
+
+    - printing bytes :
+
+            > File.open("test.txt", "r+") do |f_obj|
+                if f_obj
+                    f_obj.each_byte {|ch| print ch," "}
+                    
+                else
+                    puts "Unable to read file"
+                end
+            end
+
+            >> 10 84 104 105 115 32 102 105 108 101 32 98 101 108 111 110 103 115 32 116 111 32 68 105 112 97 110 115 104 117 46 
+
+    - printing characters :
+
+            > File.open("test.txt", "r+") do |f_obj|
+                if f_obj
+                    f_obj.each_byte {|ch| putc ch}
+                    
+                else
+                    puts "Unable to read file"
+                end
+            end
+
+            >> This file belongs to Dipanshu.
+
+-----------------------------------------------------------------------------------------
+
+.each_char { |ch| block} :
+
+            > File.open("test.txt", "r+") do |f_obj|
+                if f_obj
+                    f_obj.each_char {|ch| print ch," "}
+                    
+                else
+                    puts "Unable to read file"
+                end
+            end
+
+            >>  T h i s   f i l e   b e l o n g s   t o   D i p a n s h u .
+
+------------------------------------------------------------------------------------------
+
+IO.readlines("file_name", sep=$/)       ->  array   :   each element of array is a line from file.
+
+            > File.open("test.txt", "w+") do |f_obj|
+                if f_obj
+                    f_obj.syswrite("This file belongs to DIPANSHU.\n")
+                    f_obj.syswrite("This is the second line of file.\n")
+                    f_obj.syswrite("This is the 3rd line of file.\n")
+                end
+            end
+
+        - Example :
+
+            > file_array = IO.readlines("test.txt")
+            
+            > print file_array[1]
+            >> This is the second line of file.
+
+
+            > file_array = IO.readlines("test.txt", sep="s")
+
+            > print file_array
+            >> ["This", " file belongs", " to DIPANSHU.\nThis", " is", " the s", "econd line of file.\nThis", " is", " the 3rd line of file.\n"]
+
+------------------------------------------------------------------------------------------------------------------------------
+
+IO.foreach("file_name", sep=$/) {|lines| block} :
+
+            > IO.foreach("test.txt") { |line| puts line}
+
+            >> This file belongs to DIPANSHU.
+               This is the second line of file.
+               This is the 3rd line of file.
+
+--------------------------------------------------------------------------------------------
+
+Renaming and Deleting Files :   (belongs to File class)
+
+File.rename("file_name", "new_file_name") :
+
+            > File.rename("test.txt", "ruby.txt")
+            >> 0                                    # returns 0 as a message for successful renaming.
+
+File.delete("file_name1", ...) :
+
+            > File.delete("ruby.txt")
+            >> 1                                    # returns 1 as amessage for successful deletion.
+
+------------------------------------------------------------------------------------------------
+
+Ownership in files :
+
+File_obj.chmod(ownership_numeric_code)          # see linux guide : chmod
+
+            > f_obj = File.new("Test.txt", "w")
+
+            > f_obj.chmod(664)
+            >> 0                    # returns 0 as a sign of success.
+
+-------------------------------------------------------------------------------------------------
+
+Inquiries :
+
+    -- The following command tests whether a file exists before opening it :
+
+            > File.open("Test.txt") if File.exists?( "test.txt" )
+            
+
+    -- The following command inquire whether the file is really a file :
+
+            > File.file?( "Test.txt" )
+            >> true
+
+    
+    -- The following command finds whether the file is readable, writable or executable :
+
+            > File.readable?( "Test.txt" )   
+            >> true
+
+            > File.writable?( "Test.txt" )
+            >> true
+            
+            > File.executable?( "Test.txt" )
+            >> false
+
+
+    -- Other Methods :
+
+            > File.size?("Test.txt")
+            >> 102                  #its in bytes
+
+            > File.zero?("Test.txt")
+            >> false
+
+            > File.ftype( "Test.txt" )
+            >> "file"                   # types can be file, directory, characterSpecial, blockSpecial, fifo, link, socket, or unknown.
+
+            > File.ftype("/home/beryl/training/ruby/")
+            >> directory
+
+            > File.directory?("/home/beryl/training/ruby/")
+            >> true
+            
+
+    -- Timmings :
+
+            > File.ctime("Test.txt")                # creation time
+            >> 2022-08-11 17:47:56.86528993 +0530
+    
+            > File.mtime("Test.txt")                # modification time
+            >> 2022-08-11 17:47:56.78929593 +0530
+
+            > File.atime("Test.txt")                # accessed time
+            >> 2022-08-11 17:47:56.78929593 +0530
+    
+
+-----------------------------------------------------------------------------------------
+
+Dir.    -> Directory class and its methods to modify directories
+
+    []
+    .pwd
+    .chdir
+    .enteries
+    .foreach
+    .mkdir
+    .delete
+
+            > Dir.pwd
+            >> "/home/beryl/training"
+
+            []
+            > Dir["/home/beryl/training/*"].join(' ')
+            >> ["/home/beryl/training/Test.txt", "/home/beryl/training/database_training", "/home/beryl/training/git_training", "/home/beryl/training/index.html", "/home/beryl/training/linux_training", "/home/beryl/training/logs", "/home/beryl/training/postgresql_training", "/home/beryl/training/readme.md", "/home/beryl/training/ruby", "/home/beryl/training/ruby.txt"]
+
+            > Dir.entries("/home/beryl/training")
+            >> ["ruby", "linux_training", "ruby.txt", "git_training", ".vscode", "database_training", "Test.txt", ".gitignore", "logs", "postgresql_training", "..", ".", "index.html", ".git", "readme.md"]
+            
+            > Dir.chdir["/home/beryl/practice"]
+                # to change the working directory
+
+            > Dir.mkdir("new_dir")
+            
+            > Dir.delete("new_dir")
+
+            > Dir.foreach("/home/beryl/training") do |entry|
+                    puts entry
+            end
+            
+            >> ruby
+                linux_training
+                ruby.txt
+                git_training
+                .vscode
+                database_training
+                Test.txt
+                .gitignore
+                logs
+                postgresql_training
+                ..
+                .
+                index.html
+                .git
+                readme.md
+            
+-----------------------------------------------------------------------------------------------------------------------------------------
+ 
