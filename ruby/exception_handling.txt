@@ -1,0 +1,301 @@
+File Name		: exception_handling.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------
+
+1. The execution and the exception always go together. 
+
+2. If you are opening a file, which does not exist, then if you did not handle this situation properly, then your program is considered to be of bad quality.
+
+3. The program stops if an exception occurs.
+
+4. So various exception handling methods are used to handle various type of errors,
+
+5. In ruby, We enclose the code that could raise an exception in a [begin/end ] block and use [rescue ] clauses to tell Ruby the types of exceptions we want to handle.
+
+6. Raised error message can be captured using $! variable.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+INDEX : 
+
+    begin... end
+    rescue
+    raise
+    retry
+    ensure
+    else
+
+    catch.. throw-> catch
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+[rescue ] : You can capture an exception using rescue block. If any error occur then the rescue block will be executed.
+
+        [begin... rescue... end ]
+
+Simple Syntax of [rescue ] :
+
+            begin
+                
+                rescue  OneTypeOfException
+                
+                rescue  AnotherTypeOfException
+                
+                else    Other exceptions
+                
+                ensure  Always will be executed
+            
+            end
+
+    -- Example :
+
+            > begin
+                f_obj = open("invallid_file_name.txt")
+                
+                if f_obj
+                    puts "Npe error"
+                end
+
+            rescue 
+                print("Error No File")
+            end
+
+            >> "Error No File"
+
+-------------------------------------------------------------------------------------------------------
+
+[retry ]   :   restarts the block again with new parameters.
+
+
+            > begin
+                file = open("unexistant_file")
+                
+                if file
+                    puts "File opened successfully"
+                end
+            rescue
+                fname = "Test.txt"
+            retry
+            
+            end
+
+    -- Sample code for retry 1 time :
+
+            @re_try = true
+            begin
+                code
+            rescue ProtocolError
+                if @re_try then
+                    @re_try = false
+                    retry
+                else
+                    raise
+                end
+            end
+
+-------------------------------------------------------------------------------------------------------
+
+[raise ]    :   to raise a custom exception.
+
+    -- Syntax:
+
+            raise           # raises simple RuntimeError
+
+            OR
+
+            raise "Error Message"       # raises an Error with custom message
+
+            OR
+
+            raise ExceptionType, "Error Message"        # raise an error of specific type with the custom message assosiated to that type of error
+
+            OR
+
+            raise ExceptionType, "Error Message" condition      # same like above but can also add some condition
+
+
+    -- Example :
+
+            > begin
+                
+                puts "No Error"
+                raise
+                puts "Raise did't work"
+
+            rescue
+
+                puts "raise worked"
+
+            end
+
+            puts "begin block ended"
+
+            >> No Error
+               raise worked
+               begin block ended
+
+-----------------------------------------------------------------------------------
+
+[ensure ]   :   the statements in this block will be executed always. No matter if there is an exception or not.
+
+            > begin
+                raise "A psudo exception."
+
+             rescue Exception => e              # passing the exception to the variable [e ]
+                                                # here e = "A psudo exception."
+                puts e.message
+                puts e.backtrace.inspect
+                
+                puts e.class
+
+             ensure
+                puts "This will execute Always."
+
+             end
+
+             >> A psudo exception.
+               ["/home/beryl/training/ruby/tempCodeRunnerFile.txt:2:in `<main>'"]
+               RuntimeError
+               This will execute Always.
+
+------------------------------------------------------------------------------------------------------------------------
+
+[else ]     :
+            : If the else clause is present, it goes after the rescue clauses and before any ensure.
+            : The body of an else clause is executed only if no exceptions are raised by the main body of code.
+
+
+    -- Syntax :
+
+                > begin 
+                    main body 
+                 
+                 rescue
+                    this will execute if exception happen
+                 
+                 else
+                    when no exception
+                 
+                 ensure
+                    this will execute in either condition
+
+                 end
+
+
+    -- Example :
+
+                > begin
+                    f_obj = File.new("Test.txt", "r")
+                    
+                    if f_obj
+                        puts "File is opened successfully."
+                    end
+
+                 rescue
+                    puts "file doesn't exist."
+
+                 else
+                    puts "No Errors"
+                 
+                 ensure
+                    f_obj.close
+
+                 end
+
+                >> File is opened successfully.
+                   No Errors
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+catch and throw     :   throw -> catch ..... throw -> catch
+
+1. In Ruby, catch and throw blocks are the lightweight mechanism for error handling and used to jump from the exception when there is no additional work is available in the program.
+2. The catch block is used to jump out from the nested block and "the block is labeled with a name"
+3. This block works normally until it encounters with the throw block. 
+4. catch and throw method will work faster than raise and rescue method. 
+5. When the throw statement is encountered, Ruby will check the [call stack ] for the catch statement with the related [symbol or string] that is passed to throw. 
+6. The throw statement never executes and always return nil.
+7. [lable_name ] can be Symbol or String.
+
+    -- Synatx :
+
+                > throw :label_name
+                    # this block will not be executed
+
+                catch :label_name [do ]
+                    # matching catch will be executed when the [throw block ] encounter
+
+                end
+
+    -- Syntax : with condition in throw
+
+                > throw :label_name [condition ]
+                    # this block will not be executed
+
+                catch :label_name [do ]
+                    # matching catch will be executed when the [throw block ] encounter
+
+                end
+
+
+    -- 1. Example :    throw is executed
+
+                > def demo_func
+                    
+                    5.times do |i|
+                        print i,'*',i,'='
+                        throw :pass if i > 3
+                        print i*i,"\n"           # when throw is executed this will not be executed
+                    end
+                    
+                    puts "This will be printed when throw condition does not meet."
+                end
+
+
+                catch :pass do
+                    puts "This will be executed."
+                    demo_func()
+                    puts "This will only be executed when throw of this catch is not executed."
+                end
+
+                >> This will be executed.
+                   0*0=0
+                   1*1=1
+                   2*2=4
+                   3*3=9
+                   4*4=
+
+    -- 2. Example : when throw is not executed
+
+            
+                > def demo_func
+                    
+                    5.times do |i|
+                        print i,'*',i,'='
+                        throw :pass if i > 30
+                        print i*i,"\n"           # when throw is executed this will not be executed
+                    end
+                    
+                    puts "This will be printed when throw condition does not meet."
+                end
+
+
+                catch :pass do
+                    puts "This will be executed."
+                    demo_func()
+                    puts "This will only be executed when throw of this catch is not executed."
+                end
+
+                >> This will be executed.
+                   0*0=0
+                   1*1=1
+                   2*2=4
+                   3*3=9
+                   4*4=16
+                   This will be printed when throw condition does not meet.
+                   This will only be executed when throw of this catch is not executed.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
