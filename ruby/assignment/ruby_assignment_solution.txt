@@ -1,0 +1,41 @@
+File Name		: ruby_assignment_solution.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------
+
+1. Create a function that takes an array of strings and integers, and filters out the array so that it returns an
+    array of integers only.
+
+-- Solution :
+
+def filter_int_array(array)
+    
+    filtered_array = array.select{ |i| i.is_a?(Integer) || i.is_a?(Float) }
+    
+    return filtered_array
+end
+
+----------------------------------------------------------
+
+2. Write a function to return reverse of a string using recursion.
+
+-- Solution :
+
+def reverse_recursion(string)
+    
+    if string.length == 1
+        return string
+    end
+
+    return string[-1] + reverse_recursion( string.chop )
+end
+
+----------------------------------------------------------
+
+3. Given a string s, reverse only all the vowels in the string and return it.The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both cases.
+
+-- Solution :
+
+
+
