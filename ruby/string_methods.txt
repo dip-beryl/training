@@ -627,11 +627,12 @@ lines(separator=$/, chomp: false)   → an_array
 
 ::substitution method
 
-.sub(pattern, replacement)  -> new_string
+.sub(pattern, replacement)      -> new_string
 .sub(pattern) { |match| ...}    -> new_string
 
 .gsub(pattern, replacement)       → new_string
 .gsub(pattern)                  → enumerator
+                                
                                 : returns a new string where the pattern is replaced by replacement
 
         > str = "Hi my name is Dipanshu"
@@ -653,8 +654,8 @@ lines(separator=$/, chomp: false)   → an_array
         >> 'd'
 ----
 
-.sub(pattern, replacement)!
-.sub(pattern)! { |match| ...}
+.sub!(pattern, replacement)!
+.sub!(pattern)! { |match| ...}
 
 .gsub!(pattern, replacement)
 
