@@ -428,5 +428,78 @@ Time.gm(argumens)   ->  time
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 
+Date :: Class
 
-        
+There are some things that we cannot do with [Time ] class and there are some things in which Date class is better.
+
+
+    > Date.new(2020, 1, 3)
+    >> #<Date: 2020-01-03 ((2458852j,0s,0n),+0s,2299161j)>
+
+
+.ordinal : day counts
+    
+    > Date.ordinal(2020,40)
+    >> #<Date: 2020-02-09 ((2458889j,0s,0n),+0s,2299161j)>
+
+
+.parse : creates dates from different formats
+
+    > Date.parse('2001-02-03')
+    >> #<Date: 2001-02-03 ...>
+
+    > Date.parse('20010203')
+    >> #<Date: 2001-02-03 ...>
+
+    > Date.parse('3rd Feb 2001')
+    >> #<Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+
+.strptime : more advances then .parse
+             : parses the date according to the passes [strftime ] format
+
+    > Date.strptime('03-02-2001', '%d-%m-%Y')
+    >> #<Date: 2001-02-03 ((2451944j,0s,0n),+0s,2299161j)>
+
+    > Date.strptime("2020/12-Jan", "%Y/%d-%b")
+    >> #<Date: 2020-01-12 ((2458861j,0s,0n),+0s,2299161j)>
+
+
+.to_date   :   converting Time object to Date object
+
+    > Time.new("2020").to_date
+    >> #<Date: 2020-01-01 ((2458850j,0s,0n),+0s,2299161j)>
+
+
+.next_year/day/month
+.prev_year/day/month
+
+    > Date.new(2001,2,3).next_year
+    >> 2002-02-03
+
+    > Date.new(2001,2,3).next_year(4)
+    >> 2005-02-03
+
+    > Date.new(2001,2,3).next_month
+    >> 2001-03-03
+
+    > Date.new(2001,2,3).next_day(5)
+    >> 2001-02-08
+
+
+.valid_date?
+
+    > Date.valid_date?(2001,2,3)
+    >> true
+
+    > Date.valid_date?(2001,2,35)   #y-m-d
+    >> false
+
+.leap?
+
+    > Date.new(2001).leap?
+    >> false
+
+    > Date.new(2004).leap?
+    >> true
+
