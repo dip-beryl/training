@@ -1,0 +1,188 @@
+File Name       : rails/Installation_&_Basics.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------
+About:
+
+    - Rails is a framwork based on ruby for web app development.
+
+    - Rails philosophy includes mainly two things :
+        
+        1. Don't Repeat Yourself (DRY)   :  "Every piece of knowledge must have a single, unambiguous, authoritative representation within a system"
+                                             Do not write same information again and again.
+        
+        2. Convention over Configuration :  Prefer defaults.
+
+--------------------------------------------------------------
+
+Work Flow :
+
+    - Rails work on Model-View-Controller (MVC)
+
+
+    -- Typical :
+
+            __________                          __________
+           | Browser  |     ----------------->  | Web page |
+           | _________|     <-----------------  | _________|
+
+
+
+
+    -- MVC :
+        
+        1. Controller -> Handles Decision
+        2. Model      -> Handles Data
+        3. View       -> Handles Prsentation
+
+            __________                           ____________                       ____________
+           | Browser  |     ----------------->  | Controller |  -----------------> |    Model   |
+           | _________|     <-----------------  | ___________|  <----------------- | ___________|
+                ^
+                |                                   |
+                |                                   |
+                |            __________             |
+                |------------|  VIEW   |  <---------|
+                             |_________|
+
+
+        - Action Controller   -> Controller - Model
+        - Action View         -> Controller - View
+        - Active Record       -> Model - Database
+
+        [Action Controller + Action View ==> Action PACK ]
+    
+---------------------------------------------------------------------------------------------------------------------
+
+Installation_ :
+
+        > gem install rails
+
+        > rails --vrsion
+        >> Rails 7.0.3.1
+
+        > rails --help
+-------------------------------------------------------
+
+Generators :
+
+    - Rails comes with a number of scripts called generators that are designed to make your development
+
+        > rails new [app name ]
+        > rails new --help
+
+        > rails new simple_cms  #content management Systems
+
+        OR
+
+        > rails new blog
+
+    (- this will create a new directory named same as your app name and have many sub-directories)
+
+-------------------------------------------------------------------
+
+Connection to DB :
+
+    -d, [--database=DATABASE]
+
+        > rails new [project_name] -d [database_client_name]
+    
+    - Preconfigure for selected database 
+        (options: mysql/postgresql/sqlite3/oracle/sqlserver/jdbcmysql/jdbcsqlite3/jdbcpostgresql/jdbc)
+
+        > rails new blog -d postgresql
+
+--------------------------------------------------------------
+
+File Structure :
+
+        app     -> 95% of work will be here
+        bin
+        config  ->  configuration for application (connection to DB)
+        db      ->  DB relates files, DB migrations, DB queries
+        lib
+        log     -> activity end error logs
+        public  -> Anything goes here is public, fonts, error pages, 
+        storage
+        test    -> test for the project
+        tmp
+        vendor
+        config.ru
+        Gemfile     -> includes gems that the project is going to use
+        Gemfile.lock
+        Rakefile
+        README.md
+
+bin, lib, vendor --> can be used to store libraries but Gemfile cover most things
+
+------------------------------------------------------------------------
+
+Sub-File Structure :
+
+    ----------------------------------------------------
+    /app
+        /assets      -> images and style sheets
+        /channels
+        /controllers ->
+        /helpers     -> helping with views
+        /javascript  -> used to be in /assets
+        /jobs
+        /mailers
+        /models      ->
+        /views       ->
+
+    -------------------------------------------------------
+    /config
+        /environments       -> configurations for development, production and test envi.
+        /initializers       -> mostly used, code run right at boot
+        /locales
+        application.rb      -> main file (but the developer mostly don't edit it)
+        boot.rb
+        cable.yml
+        credentials.yml.enc
+[IMP.]  database.yml        -> setup/edit database connection (for, developer, production and testing)
+        environment.rb
+        importmap.rb
+        master.key
+        puma.rb
+        routes.rb
+        storage.yml
+
+            /environments
+                development.rb      -> development environment settings (local machine)
+                production.rb       -> production environment (server, for users)
+                test.rb             -> for test environment settings (when we test our project)
+
+----------------------------------------------------------------------------------------------------
+
+Editing [config/database.yml ]:
+
+    -- It contains the configuration of databse connection
+    - user
+    - password
+    - port , etc.
+
+    - Go to the file
+    - check database name
+    - uncomment the setting you want to edit 
+        -- uncomment atleast user, password, and host
+    - add /edit values.
+
+---------------------------------------------------------------------------------------------------------
+
+Strating a server :
+
+        > rails server
+        OR
+        > rails s
+
+    - Server address is : 
+        -- http://127.0.0.1:3000
+        -- http://localhost:3000
+
+    - Port -> 3000
+
+    - Stop Server -> "ctrl + c"
+
+------------------------------------------------------------------------------------------------------------
