@@ -47,7 +47,7 @@ PostgreSQL Shell (psql):
 
         * Enter psql shell:
 
-            $ sudo -su postgresql
+            $ sudo -su postgres
             $ psql
 
             OR,
