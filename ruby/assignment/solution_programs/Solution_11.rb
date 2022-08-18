@@ -34,6 +34,7 @@ def kth_largest(array, k)
     return array[k-1]
 end
 
-s = [1,2,3,4,5]
-print kth_largest(s, 3)
+s = [1,2,2,3,4,5]
+print kth_largest(s, 4)
+
 
