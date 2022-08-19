@@ -27,7 +27,7 @@ def n_palindroms(num)
         end
     end
     
-    return palindromes
+    return palindromes[palindromes.length-15, 15]
 end
 
 print n_palindroms(150)
