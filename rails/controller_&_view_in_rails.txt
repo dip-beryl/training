@@ -1,0 +1,131 @@
+File Name       : controller_&_view_in_rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------
+
+Generators :
+
+    Rails can generate differet types of things:
+
+        application_record
+        benchmark
+        channel
+        controller
+        generator
+        helper
+        integration_test
+        jbuilder
+        job
+        mailbox
+        mailer
+        migration
+        model
+        resource
+        scaffold
+        scaffold_controller
+        system_test
+        task
+
+        
+
+            > rails generate [GENERATOR TYPE] [name]
+
+
+-> First we try genrate a [Controller ]
+
+    - Controller name should be CamelCased or under_score. And you can pass a list of arguments as view names
+
+    Syntax :
+        > rails generate controller [controller_name] [view_name1 view_name2, ..]
+            
+            > rails genrate controller demo
+            >> 
+            --> create  app/controllers/demo_controller.rb
+                invoke  erb
+            --> create    app/views/demo
+                invoke  test_unit
+            --> create    test/controllers/demo_controller_test.rb
+                invoke  helper
+            --> create    app/helpers/demo_helper.rb
+                invoke    test_unit
+
+        - Above command created 3 files. and;
+          1 folder for in app/views named same as controller "demo"
+
+        - the [views/demo ] folder is empty because we did not provide view names as arguments in shell command.
+
+--------------------
+-> Ceate a Controller with Views as arguments [Controller-View ]
+
+     (remember to delete files that were created in last command)
+
+        > rails g controller demo index
+        >>
+            create  app/controllers/demo_controller.rb
+            route  get 'demo/index'
+            invoke  erb
+            create    app/views/demo
+            create    app/views/demo/index.html.erb
+            invoke  test_unit
+            create    test/controllers/demo_controller_test.rb
+            invoke  helper
+            create    app/helpers/demo_helper.rb
+            invoke    test_unit
+
+        - created 5 files and one folder.
+        - 4 of the files and 1 folder is same as last shell command
+        - 1 file that is new is the View "index.html.erb" that is created in [apps/views/demo ]folder
+        - 1 new route is added to routes.rb file for the view "index"
+
+        - You can execute your view in browser by accessing new route, just append the route in  "localhost:300"
+            -> http://localhost:3000/demo/index
+
+--------------------------------------
+
+app/controller/
+FILE :: [controller_name]_controller.rb         # demo.controller.rb
+
+        - inherit everything from ApplicationController
+        - Contains Methods
+
+    Note -> Methods in Controller known as "Action "
+
+---------------------------------------
+
+app/views/
+File :: demo/index.html.erb                     # demo = controller name, index = view name
+
+        - contains the HTML code for this specific view
+
+-------------------------------------------------------------------------------------------
+
+Directory :: public
+
+    - When we have any file in public and the browser or the webserver requestes for a file.
+    - Firstly the files are searched in [public ] directory.
+    - If the files are found then the request gets back [public ] only.
+    - If the files are found in public the request do not access the [Rails Framework ].
+
+Note - routes file will only get checked when the server canot find the files in public directory.
+     - then router i.e, "routes.rb" reads the URl and send them the file accordingly.
+
+    (--- Create a file in public about.html)
+
+        - This file can be access through the "localhost:3000/about"
+        - no need to mention "public/static" as the public directory is root directory of server.
+        - no need to add .html extensions
+
+
+Controller and Actions :
+
+    render("path of view")        -> is used inside actions of controller files
+                                  -> they are used to execute any other view then the default according tol action.
+
+                > def index
+                    render("demo/hello")
+                end
+
+                > render("hello")   #when the folder and controller is same
+
+------------------------------------------------------------------------
