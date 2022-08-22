@@ -1,0 +1,131 @@
+File Name       : routing_in_rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+--------------------------------------------------------------------------------------------
+
+Routes and Routing :
+Folder :: config/
+File   :: routes.rb
+
+    - routes.rb contains the routing information.
+
+    - contains the routes to redirect the browser request to which views or paths.
+    - append the routes in "localhost:3000/" to run the routes files or views.
+
+    - routing information is the information of - to which URL send which files.
+
+    --> File read routes from top to bottom.
+
+    Types :
+        1. Simple Match Route
+        2. Default Route
+        3. Root Route
+        4. Resourceful Route
+
+    Inspect all the routes :
+
+        > rails routes
+    
+        -----------------------
+            routes.rb:
+
+                    Rails.application.routes.draw do
+
+                        ## new routes will be added here
+                    end
+        ------------------------
+
+    -> the above block is the default block that is present in routes.rb
+    -> any new route will be added in this block
+
+-----------------
+--> Adding Routes:
+
+
+    -------------- 1. Simle Match Routes : ---------------------
+
+    to:  ->  which controller action / method to hit
+    via: ->  select get or post or etc.
+    as:  ->  give your routing a name. (or rails will give itself)
+
+
+    -> Original and longest way :
+        
+        > match "demo/index", :to => "demo#index", :via => :get
+
+    OR
+            # if file from "demo" directory isn't mention then print the "index" i.e, default 
+
+        > get "demo/", to: "demo#index"
+        > get "/demo", to: "demo#index", as: "demo_index"
+
+
+    OR
+
+        > get "demo/index" 
+            # this method only works when the view and action(method) name is same. here i.e, "index"
+
+        > get "demo/hi", :to => "demo#hello"
+            # for different url selecting different action controller
+
+
+    ---------------- 2. Default Routes : ------------------------
+
+    - Matches according to the URL name automatically.
+    - parantheses ()  shows that the these arguments are optional.
+    
+        > get ":controller(/:action(/:id))"
+
+
+    ----------------- 3. Root Routes : --------------------------
+
+    - Theiscome at the top of the block.
+    - This is the path controller when the URL is root like google.com/ , localhost:3000/
+
+            # root path
+        > root "demo#index"
+
+
+    ----------------- 4. Resouceful Routing : ------------------------
+
+    - When we aplly Resouceful Routing it creates some predefined routes according to CRUD's standard.
+    
+    - Whenever we have such a combination of routes, controller actions, and views 
+        that work together to perform CRUD operations on an entity, we call that entity a "resource". 
+
+    For example, in our application, we would say a blog is a resource.
+
+        Syntax:
+            > resources :[controller name]
+
+
+        Eg:
+            > resources :demo
+
+
+    - When the above line is added in the routes.rb file it will create many pre-defined paths that can be checked through "rails routes".
+
+    - For each CRUD instruction it will create two routes.
+
+        CRUD    |   Action   |       Description          |     Routes (Example)     |    Controller      |   HTTP
+                |            |                            |                          |      Action        |   Verb
+        --------------------------------------------------------------------------------------------------------------------------
+        - CREATE
+                - new       -> display new record form    <----->  /demo/new       ------>  demo#new      --  GET
+                - create    -> process new record form    <----->  /demo/          ------>  demo#create   --  POST
+
+        - READ
+                - index     -> list record                <----->  /demo           ------>  demo#index    --  GET
+                - show      -> display a single record    <----->  /demo/show/:id  ------>  demo#show     --  GET
+
+        - UPDATE
+                - edit      -> display edit record        <----->  /demo/:id/edit  ------>  demo#edit     -- GET
+                - update    -> process edit records       <----->  /demo/:id       ------>  demo#update   -- PATCH/PUT
+
+        - DELETE
+                - delete    -> display delete record      <----->  /demo/:id       ------>  demo#destroy  --  DELETE
+                - destroy   -> process delete record      <----->  /demo/:id       ------>  demo#destroy  --  DELETE
+
+    
+------------------------------------------------------------------------------------------------------------------------------------
