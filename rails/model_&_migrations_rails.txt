@@ -1,0 +1,138 @@
+File Name       : model_&_migrations_Rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+--------------------------------------------------------------------------------------------
+
+Models and Migrations :
+
+    - Model and Migrations are used to modify databases.
+    - With migration we generate a file that contains the code to create or manipulate DB.
+    - With model we can run a special rails console in which we can write commands and execute them to manipilate DB.
+    - These commands are known as ActiveRecord and ActiveRelations.
+
+    - When we generate a model .. the migration file is auto-generated with it.
+    - Only migration file can be generated seperately. But only model can not be. It always comes with the migration file.
+
+            >  rails g model demo title:string body:text        
+                # "title & body" are column names "string & text" are dtypes for DB.
+
+                We can also provide column names as arguments. 
+            >> 
+            invoke  active_record
+        --> create    db/migrate/20220819121247_create_demos.rb
+        --> create    app/models/demo.rb
+            invoke    test_unit
+        --> create      test/models/demo_test.rb
+        --> create      test/fixtures/demos.yml
+
+
+------------------------------------------------------------------------
+
+db/migrate:
+File:: <time_stamp>_create_<model/migration_name>.rb
+    [ Eg. 20220819125613_create_demos.rb ]
+
+    - The migration file is used to manipulate database through the commands saved in it.
+    - Basically Migration changes the state of DAtabase.
+    - Moving a database state UP or DOWN.
+
+    - Makes easy to create complete DB again in new machine and sharing of DB structure.
+    - With Migration file we can make DB in ruby code.
+
+        ------ auto geneated code -------
+
+                    class CreateDemos < ActiveRecord::Migration[7.0]
+                    def change
+                        create_table :demos do |t|
+                        t.string :title
+                        t.text :body
+
+                        t.timestamps
+                        end
+                    end
+                    end
+
+        -----------------------------------------
+    - current code is to generate a table named "demos" with columns "title, body, timestamps"
+    -------------------------------------------------
+
+    Primary Key : an ID column is auto created with every "create_table" command.
+    Time Stamps : Two columns named "created_on" and "updated_on" are created with command "t.timestamps" for the tracking purposes.
+
+    --------------------------------------------------------------------
+
+    Migration Methods : (some)
+
+        - create_table
+        - add_column
+        
+        - drop_table
+        - remove_column
+        
+        - rename_table
+        - rename_column
+        
+---------------------------------
+
+Running Migrations :
+
+    NOTE -to run/ execute this file, run in shell
+
+        - This command will execute all the migration files. (that has not yet been run)
+
+            > rails db:migrate
+
+        - This will show status of DB up and down changes :
+        
+            > rails db:migrate:status
+
+        - Runs migrate files upto specified verions; If "zero" then reverse all changes:
+
+            > rails db:migrate VERSION = 0
+            > rails db:migrate VERSION = 20220819125613
+
+
+        - Other commands
+            > rails db:create   : creates the DB mentioned in "database.yml"
+            > rails db:drop     : drops the DB mentioned in "database.yml"
+
+                # to create a dump file of current datatbase "db/schema.rb"
+            > rails db:schema:dump
+
+                # to load the dumb file "db/schema.rb"
+            > rails db:schema:load
+
+            > rails db:setup    
+                -> db:create, db:schema:load, db:seed
+            
+            > rails db:reset
+                -> db:drop, db:setup
+
+            > rails db:migrate:reset
+                -> db:drop, db:create, db:migrate
+--
+-- Operations:
+
+        > rails db:create
+            >> Created database 'practice_development'
+
+        > rails db:migrate
+            >> 
+            == 20220819125613 CreateDemos: migrating ======================================
+            -- create_table(:demos)
+            -> 0.1063s
+            == 20220819125613 CreateDemos: migrated (0.1066s) =============================
+
+-----------------------------------------------------------------------
+
+TABLE :: schema_migrations
+
+    - When any migration file is ran. 
+    - The migrations also create a seperate table to track the versions of migration files.
+    - Named with "schema_migrations".
+
+    - This table contains the verison of all the migration files.
+
+|-----------------------------------------------------------------------------------------------------------------------------|
+|-----------------------------------------------------------------------------------------------------------------------------|
