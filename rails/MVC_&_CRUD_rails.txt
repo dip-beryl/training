@@ -1,0 +1,27 @@
+File Name       : MVC_&_CRUD_rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Working on MVC with CRUD operations.
+
+2. First we create a new Project.
+
+3. Edit / Customize the "database.yml" file.
+
+4. Generate new controller with views according CRUD standards i.e, (new, index, show, edit, delete)
+
+5. Add Resourceful Routes, Root routes and any other customised routes.
+
+6. Generate new Model and Migrations.
+
+7. Create database, tables and add values with the help of ActiveRecord and ActiveRelations.
+
+8. Edit the Controller Actions to get routing parameters and create variables and other features accordingly.
+
+9. Edit Views and customize them according to the Controller Actions.
+
+10. Implement all the CRUD Operations / Actions.
+
+---------------------------------------------------------------------------------------------------------------------------------
