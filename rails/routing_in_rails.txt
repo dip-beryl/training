@@ -89,43 +89,6 @@ File   :: routes.rb
 
     ----------------- 4. Resouceful Routing : ------------------------
 
-    - When we aplly Resouceful Routing it creates some predefined routes according to CRUD's standard.
-    
-    - Whenever we have such a combination of routes, controller actions, and views 
-        that work together to perform CRUD operations on an entity, we call that entity a "resource". 
-
-    For example, in our application, we would say a blog is a resource.
-
-        Syntax:
-            > resources :[controller name]
-
-
-        Eg:
-            > resources :demo
-
-
-    - When the above line is added in the routes.rb file it will create many pre-defined paths that can be checked through "rails routes".
-
-    - For each CRUD instruction it will create two routes.
-
-        CRUD    |   Action   |       Description          |     Routes (Example)     |    Controller      |   HTTP
-                |            |                            |                          |      Action        |   Verb
-        --------------------------------------------------------------------------------------------------------------------------
-        - CREATE
-                - new       -> display new record form    <----->  /demo/new       ------>  demo#new      --  GET
-                - create    -> process new record form    <----->  /demo/          ------>  demo#create   --  POST
-
-        - READ
-                - index     -> list record                <----->  /demo           ------>  demo#index    --  GET
-                - show      -> display a single record    <----->  /demo/show/:id  ------>  demo#show     --  GET
-
-        - UPDATE
-                - edit      -> display edit record        <----->  /demo/:id/edit  ------>  demo#edit     -- GET
-                - update    -> process edit records       <----->  /demo/:id       ------>  demo#update   -- PATCH/PUT
-
-        - DELETE
-                - delete    -> display delete record      <----->  /demo/:id       ------>  demo#destroy  --  DELETE
-                - destroy   -> process delete record      <----->  /demo/:id       ------>  demo#destroy  --  DELETE
-
+    -- Jump to CRUD section / file for explination of Resouceful Routing. --    
     
 ------------------------------------------------------------------------------------------------------------------------------------
