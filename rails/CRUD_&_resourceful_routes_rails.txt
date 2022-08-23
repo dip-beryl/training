@@ -1,0 +1,83 @@
+File Name       : CRUD_&_resourceful_routes_rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+CRUD :
+
+    Almost all web applications involve CRUD (Create, Read, Update, and Delete) operations.
+
+
+----------------- 4. Resouceful Routing : ------------------------
+
+    - When we apply Resouceful Routing it creates some predefined routes according to CRUD's standard.
+    
+    - Whenever we have such a combination of routes, controller actions, and views 
+        that work together to perform CRUD operations on an entity, we call that entity a "resource". 
+
+
+        Syntax:
+            > resources :[controller name]
+
+
+        Eg:
+            > resources :demo
+
+
+    - When the above line is added in the "routes.rb" file it will create many pre-defined paths that can be checked through "rails routes".
+
+    - For each CRUD instruction it will create two routes.
+
+
+
+    CRUD    |   Action   |       Description          |     Routes (Example)     |    Controller      |   HTTP
+            |            |                            |        [Views]           |      Action        |   Verb
+    --------------------------------------------------------------------------------------------------------------------------
+    - CREATE
+            - new       -> display new record form    <----->  /demo/new        ------>  demo#new      --  GET
+            - create    -> create an item             <----->  /demo/           ------>  demo#create   --  POST
+
+    - READ
+            - index     -> show all items             <----->  /demo            ------>  demo#index    --  GET
+            - show      -> display a single record    <----->  /demo/:id        ------>  demo#show     --  GET
+
+    - UPDATE
+            - edit      -> show edit form with :i     <----->  /demo/:id/edit   ------>  demo#edit     --  GET
+            - update    -> update item with :id       <----->  /demo/:id        ------>  demo#update   --  PATCH/PUT
+
+    - DELETE
+            - delete    -> show delete form with :id  <----->  /demo/:id/delete ------>  demo#delete   --  GET
+            - destroy   -> delete item with :id       <----->  /demo/:id        ------>  demo#destroy  --  DELETE
+
+    
+-------------------------------------------------------------------------------------------------------------------------------
+
+-------------
+-- Omitting / Ignoring Some Resouceful Routes :
+
+        > resources :demo, except: [:show]
+            OR
+        > resources :demo, :except => [:show]
+
+
+-------------
+-- Including ONLY mentioned Resouceful Routes :
+
+        > resources :demo, :only => [:index, :show]
+
+------------
+-- Ading Cutom routes in Resouceful Routes :
+
+        > resources :demo do
+            memeber do
+                get :delete
+            end
+        end
+
+NOTE : - [get :delete ] is not included in the Resouceful Routes table by default.
+            If you want it you have to include it through block in resource : (like above)
+
+-------------------------------------------------------------------------------------------------------------------------------------
+
+
