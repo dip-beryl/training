@@ -90,5 +90,29 @@ File   :: routes.rb
     ----------------- 4. Resouceful Routing : ------------------------
 
     -- Jump to CRUD section / file for explination of Resouceful Routing. --    
-    
+
 ------------------------------------------------------------------------------------------------------------------------------------
+
+---- Route parameters :
+
+    They are like variables.
+    They gets their values from URL's.
+
+    A route parameter captures a segment of the request's path (URL), and puts that value into the "params" Hash, 
+        which is accessible by the controller action.
+        
+    Example :
+
+            > get "/demo/:id", to: "demo#show"
+
+        - this route transfers any link like "localhost.com/demo/4" to [show ] action in "demo" controller
+        - The value of [:id ] is 4 here
+
+        - [:id] is the routing parameters
+        - to access its value use 
+                    -> params[:id]
+
+-------------------------------------------------------------------------------------------------------------------
+
+        
+
