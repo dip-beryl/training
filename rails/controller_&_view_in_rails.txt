@@ -93,3 +93,47 @@ File :: demo/index.html.erb                     # demo = controller name, index 
         - contains the HTML code for this specific view
 
 -------------------------------------------------------------------------------------------
+
+Directory :: public
+
+    - When we have any file in public and the browser or the webserver requestes for a file.
+    - Firstly the files are searched in [public ] directory.
+    - If the files are found then the request gets back [public ] only.
+    - If the files are found in public the request do not access the [Rails Framework ].
+
+Note - routes file will only get checked when the server canot find the files in public directory.
+     - then router i.e, "routes.rb" reads the URl and send them the file accordingly.
+
+    (--- Create a file in public about.html)
+
+        - This file can be access through the "localhost:3000/about"
+        - no need to mention "public/static" as the public directory is root directory of server.
+        - no need to add .html extensions
+
+----------------------------------------------------------------------------------------------------------
+
+Controller and Actions :
+
+app/controller/
+FILE :: [controller_name]_controller.rb         # demo.controller.rb
+
+        - inherit everything from ApplicationController
+        - Contains Methods
+
+    Note -> Methods in Controller known as "Action "
+
+    Each method / action in controller will triger or call the view of same name when executed.
+
+    
+    render("path of view")        
+    
+        -> is used inside actions of controller files
+        -> they are used to execute any other view then the default according to action.
+
+                > def index
+                    render("demo/hello")
+                end
+
+                > render("hello")   #when the folder and controller is same
+
+------------------------------------------------------------------------
