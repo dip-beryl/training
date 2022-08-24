@@ -88,19 +88,16 @@ Checking for Routes :
         action     |   route name   |   verb  |     route path         |     controller#action
                    |    (prefix)    |         |    (URI Pattern)       |
 
-        #index         demo_index       GET     /demo/index(.:format)          demo#index
-        #about         demo             GET     /demo(.:format)                demo#about
         #about         demo_about       GET     /demo/about(.:format)          demo#about
         #hello         demo_hello       GET     /demo/hello(.:format)          demo#hello
         #hello         demo_hi          GET     /demo/hi(.:format)             demo#hello
-        #show          demo_show        GET     /demo/:id(.:format)            demo#show
 
         ------------------- Resouceful Routes -------------------------------------------
-        #index                          GET     /demo(.:format)                demo#index
+        #index         demo_index       GET     /demo(.:format)                demo#index
         #create                         POST    /demo(.:format)                demo#create
         #new           new_demo         GET     /demo/new(.:format)            demo#new
         #edit          edit_demo        GET     /demo/:id/edit(.:format)       demo#edit
-        #show                           GET     /demo/:id(.:format)            demo#show
+        #show          demo             GET     /demo/:id(.:format)            demo#show
         #update                         PATCH   /demo/:id(.:format)            demo#update
         #update                         PUT     /demo/:id(.:format)            demo#update
         #destroy                        DELETE  /demo/:id(.:format)            demo#destroy
@@ -119,7 +116,7 @@ Routing Names (Prefix), and the Concept of [ _path and _url ]:
         [ This concept should only be used inside views with <% %> and <%= %> tags]
 
         Syntax :
-                > [route prefix]_path
+                > [route prefix]_path(routing parameters optional)
                 > [route prefix]_url
 
         Eg:
@@ -128,5 +125,13 @@ Routing Names (Prefix), and the Concept of [ _path and _url ]:
 
                 > <p> <%= demo_index_url %> </p>
                 >> http://localhost:3000/demo/index
+
+        Eg: Dynamic Links
+                when routes have "routing parameters" like [:id] :
+
+                > demo_path(5)             #show action / path
+                >> demo/5/
+
+        - The "_path" can take arguments as routing parameters
 
 --------------------------------------------------------------------------------------------------------------------------------------
