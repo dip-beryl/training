@@ -67,7 +67,7 @@ CRUD :
         > resources :demo, :only => [:index, :show]
 
 ------------
--- Ading Cutom routes in Resouceful Routes :
+-- Ading Custom routes in Resouceful Routes (through block):
 
         > resources :demo do
             memeber do
@@ -85,6 +85,8 @@ Checking for Routes :
         > rails routes
         >>
 
+        action     |   route name   |   verb  |     route path         |     controller#action
+                   |    (prefix)    |         |    (URI Pattern)       |
 
         #index         demo_index       GET     /demo/index(.:format)          demo#index
         #about         demo             GET     /demo(.:format)                demo#about
@@ -105,4 +107,26 @@ Checking for Routes :
 
 --------------------------------------------------------------------------------------------------------------------------------------
 
+Routing Names (Prefix), and the Concept of [ _path and _url ]:
 
+        - Every route has a name(prefix).
+
+        - "_path" and "_url" are two methods(suffixes) of these routing prefixes (names)
+
+        - "_path" returns the route path (URI pattern)
+        - "_url"  return the complete url you need to visit to access the given path
+
+        [ This concept should only be used inside views with <% %> and <%= %> tags]
+
+        Syntax :
+                > [route prefix]_path
+                > [route prefix]_url
+
+        Eg:
+                > <p> <%= demo_index_path %> </p>
+                >> /demo/index
+
+                > <p> <%= demo_index_url %> </p>
+                >> http://localhost:3000/demo/index
+
+--------------------------------------------------------------------------------------------------------------------------------------
