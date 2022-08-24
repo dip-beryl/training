@@ -99,6 +99,8 @@ File :: demo/index.html.erb                     # demo = controller name, index 
                 <% %> : only excutes the code 
             
                 <%= %> : excutes the code and returns the output
+
+                <%# $> : Is used to comment any statement   
           
           
           - to use the returned values you have embed the above commands, tags, return value statements in html tags.
