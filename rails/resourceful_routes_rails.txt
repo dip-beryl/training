@@ -178,3 +178,20 @@ Helper :: link_to
                 So, be default "link_to" linked the "Text" to show path.
 
 ---------------------------------------------------------------------------------------------------------------------------------------
+
+Extra :: Full Versions of paths :
+      :: Routing Parameters 
+
+        demo_about_path  --> {:controller => "demo", :action => "about"}
+
+        demo_path(5)     --> {:controller => "demo", :action => "show", :id => 5 }
+        
+        OR
+
+        demo/5           --> {:controller => "demo", :action => "show", :id => 5 }
+
+    The above hash is known as Parameters Hash and can access by :
+
+            > params[key]
+
+-------------------------------------------------------------------------------------------------------------------------------
