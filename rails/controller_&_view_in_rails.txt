@@ -90,7 +90,24 @@ Generators :
 app/views/
 File :: demo/index.html.erb                     # demo = controller name, index = view name
 
-        - contains the HTML code for this specific view
+        -- contains the HTML code for this specific view
+
+        -- to execute any ruby code inside .erb files.
+
+            - use <% --code-- %> and <%= --code-- %> tags
+
+                <% %> : only excutes the code 
+            
+                <%= %> : excutes the code and returns the output
+          
+          
+          - to use the returned values you have embed the above commands, tags, return value statements in html tags.
+
+                <%= "hello %>           : will NOT show anything in browser
+
+                <p> <%= "hello %> </p>  : will be shown in the browser.
+
+                <p> <% "hello %> </p>   : will NOT show.
 
 -------------------------------------------------------------------------------------------
 
