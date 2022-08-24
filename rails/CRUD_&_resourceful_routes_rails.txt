@@ -135,3 +135,46 @@ Routing Names (Prefix), and the Concept of [ _path and _url ]:
         - The "_path" can take arguments as routing parameters
 
 --------------------------------------------------------------------------------------------------------------------------------------
+
+Helper :: link_to
+
+    - This is a more advanced way of having dynamic links with routing parameters.
+    - this also replaces the hyperlink tag of HTML.
+
+        Syntax :
+                > link_to [Text to be shown in view] [model object]
+
+        Eg: (Simple by using _path creating link)
+
+                > <%= link_to "About", demo_about_path %>
+                >> " Output will be a hyperlinked text "About". When clicked will redirect to demo_about i.e, demo/about/ "
+
+        Eg: (with model object and "show" action)
+
+        - By default if second argument of "link_to" is not a path then it will execute the passed object for "show" action.
+
+            --- rails console ---
+
+                > object_dosa = Demo.create(title: "Dosa", body: "Dosa is made from Rice Flour.")                
+
+            --- demo_controller.rb ---
+
+                > def index
+
+                    @dosa = Demo.find_by_title("Dosa")
+                end
+                
+            --- index.html.erb ---
+
+                > <%= link_to "Dosa", @dosa %>
+
+                >> Output:
+                    "Dosa" text hyperlinked to " demo/[id of "Dosa"] "
+
+
+    NOTE - In the [first example] 2nd argument was a path. So "link_to" linked the Text(1st argument) to the path in 2nd argument.
+    
+           In the [second example] 2nd argument was a model object. There for no path is mentioned.
+                So, be default "link_to" linked the "Text" to show path.
+
+---------------------------------------------------------------------------------------------------------------------------------------
