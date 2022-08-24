@@ -80,4 +80,29 @@ NOTE : - [get :delete ] is not included in the Resouceful Routes table by defaul
 
 -------------------------------------------------------------------------------------------------------------------------------------
 
+Checking for Routes :
+
+        > rails routes
+        >>
+
+
+        #index         demo_index       GET     /demo/index(.:format)          demo#index
+        #about         demo             GET     /demo(.:format)                demo#about
+        #about         demo_about       GET     /demo/about(.:format)          demo#about
+        #hello         demo_hello       GET     /demo/hello(.:format)          demo#hello
+        #hello         demo_hi          GET     /demo/hi(.:format)             demo#hello
+        #show          demo_show        GET     /demo/:id(.:format)            demo#show
+
+        ------------------- Resouceful Routes -------------------------------------------
+        #index                          GET     /demo(.:format)                demo#index
+        #create                         POST    /demo(.:format)                demo#create
+        #new           new_demo         GET     /demo/new(.:format)            demo#new
+        #edit          edit_demo        GET     /demo/:id/edit(.:format)       demo#edit
+        #show                           GET     /demo/:id(.:format)            demo#show
+        #update                         PATCH   /demo/:id(.:format)            demo#update
+        #update                         PUT     /demo/:id(.:format)            demo#update
+        #destroy                        DELETE  /demo/:id(.:format)            demo#destroy
+
+--------------------------------------------------------------------------------------------------------------------------------------
+
 
