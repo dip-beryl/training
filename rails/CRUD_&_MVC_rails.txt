@@ -68,7 +68,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
     1. Generate new controller and views according to CRUD standards.
 
-            $ rails g controller blogs new index edit show delete
+            $ rails g controller blogs new index edit show about
 
                 >>
                 create  app/controllers/blogs_controller.rb
@@ -76,14 +76,14 @@ Organization    : Beryl Systems Pvt. Ltd.
                         get 'blogs/index'
                         get 'blogs/edit'
                         get 'blogs/show'
-                        get 'blogs/delete'
+                        get 'blogs/about'
                 invoke  erb
                 create    app/views/blogs
                 create    app/views/blogs/new.html.erb
                 create    app/views/blogs/index.html.erb
                 create    app/views/blogs/edit.html.erb
                 create    app/views/blogs/show.html.erb
-                create    app/views/blogs/delete.html.erb
+                create    app/views/blogs/about.html.erb
                 invoke  test_unit
                 create    test/controllers/blogs_controller_test.rb
                 invoke  helper
@@ -109,7 +109,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 ------------ Running Migrations --------------------
 
-    1. Executing Migrate file "20220825052317_create_blogs.rb" to create table:
+    1. Executing Migrate file "db/20220825052317_create_blogs.rb" to create table:
 
         $ rails db:migrate
 
@@ -129,4 +129,95 @@ Organization    : Beryl Systems Pvt. Ltd.
         Status   Migration ID    Migration Name
         --------------------------------------------------
         up     20220825052317  Create blogs
+
+
+------------- ActiveRecord and ActiveRelations -----------
+
+    1. Switch to rails console 
+        (rails console is same like irb console but with loaded rails packages and your project.)
+
+        $ rails c
+
+        >>
+        3.0.0 :001 >
+
+    2. Creating a model object and saving entry to DB with .create method:
+
+        > blog_1 = Blog.create(title: "Apple", author: "Kashmir", body: "Apples are red in colour, and are very healthy. <br>An apple a day keeps the doctor away.")
+
+        >>
+        TRANSACTION (0.4ms)  
+        BEGIN
+            Blog Create (1.6ms)  
+            INSERT INTO "blogs" ("title", "author", "body", "created_at", "updated_at") 
+                VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["title", "Apple"], ["author", "Kashmir"], ["body", "Apples are red in colour, and are very healthy. <br>An apple a day keeps the doctor away."], ["created_at", "2022-08-25 09:50:52.799192"], ["updated_at", "2022-08-25 09:50:52.799192"]]
+        TRANSACTION (18.5ms)  
+        COMMIT
+        => 
+        #<Blog:0x00007f7f087a0a60
+
+    3. Checking if the object is inserted in the table or not ?
+
+        > blog_1.new_record?
+        >> false
+
+            - here false means its a not a new record and have been inserted one time in the table.
+
+    4. Inserting more data :
+
+        > blog_2 = Blog.create(title: "Startup Bubble", author: "Vishal Arora", body: "The Startup bubble is reaching its breaking point. <br>The stocks of Zomato and Paytm are already downfalling")
+
+        > blog_3 = Blog.create(title: "One Nation One Charger", author: "Sumit Vyas", body: "Our governmet is thinking of a one nation one charger Ploicy. <br>In which iphone will also be included")
+
+        > blog_4 = Blog.create(title: "Company who owns the world", author: "Tishu", body: "<b>Black Rock</b>. <br>BlackRock, Inc. is an American multi-national investment company based in New York City. <br>It is the world's largest asset manager, with US$10 trillion in assets under management as of January 2022.")
+
+
+------------------- Routs Management ----------------------------------
+
+--------------- Applying Resouceful Routes ----------------------------------
+
+    1. Open config/routes.rb
+
+        "routes.rb"
+        -------------------------------
+        Rails.application.routes.draw do
+            get 'blogs/new'
+            get 'blogs/index'
+            get 'blogs/edit'
+            get 'blogs/show'
+            get 'blogs/about'
+        end
+        -------------------------------
+
+    2. Deleteing all the routes related to CRUD operations and apply Resouceful Route insted.
+
+        "routes.rb"
+        -------------------------------
+        Rails.application.routes.draw do
+            
+            resources: blogs
+
+            get 'blogs/about'
+        end
+        -------------------------------
+
+    3. Getitng routes table
+
+        $ rails routes
+
+            >>
+
+            controller#Action       prefix          verb        URI Pattern
+                                    
+            blogs#about             root            GET         /
+            blogs#about             blogs_about     GET         /blogs/about(.:format)
+            blogs#index             blogs           GET         /blogs(.:format)
+            blogs#create                            POST        /blogs(.:format)
+            blogs#new               new_blog        GET         /blogs/new(.:format)
+            blogs#edit              edit_blog       GET         /blogs/:id/edit(.:format)
+            blogs#show              blog            GET         /blogs/:id(.:format)
+            blogs#update                            PATCH       /blogs/:id(.:format)
+            blogs#update                            PUT         /blogs/:id(.:format)
+            blogs#destroy                           DELETE      /blogs/:id(.:format)
+
 
