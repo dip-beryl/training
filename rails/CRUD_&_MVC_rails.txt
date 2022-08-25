@@ -221,3 +221,49 @@ Organization    : Beryl Systems Pvt. Ltd.
             blogs#destroy                           DELETE      /blogs/:id(.:format)
 
 
+------------------------- CRUD Operations --------------------------
+
+----------------------------- READ ----------------------------------
+
+------------------------ INDEX ----------------------------------
+
+    1. Setting controller "#index" to take all the values from the DB to make a list for the index.
+        [creating a model object that contails all the enteries of blog table]
+
+        "app/controllers/blogs_controller.rb"
+        -------------------------------------
+        def index
+
+            @blogs_list = Blog.all
+        end
+        -------------------------------------
+
+    2. Editing "index" view to take values from "#index" controller.
+
+        "app/views/blogs/index.html.erb"
+    -----------------------------------------------------------
+        <% @title="Blogs & Vlogs" %>
+
+        <center><h1>Blogs & Vlogs .com</h1></center>
+
+        <% @blogs_list.each do |blog| %>
+            <ul>
+                <li>
+                    <p> <%= link_to(blog.title, blog) %> </p>
+                </li>
+            </ul>
+        <% end %>
+    -------------------------------------------------------------
+
+    2.1 For creating dynamic Page title variable "@title" :
+
+        "app/views/layouts/application.html.erb"
+        -----------------------------------------
+
+        change : <title> BlogSystem </title>
+        to     : <title> <%= @title %> </title>
+        -----------------------------------------
+
+    3. Run "rails s" and go to localhost:3000/blogs to execute the index view.
+
+
