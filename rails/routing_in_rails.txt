@@ -43,7 +43,7 @@ File   :: routes.rb
 --> Adding Routes:
 
 
-    -------------- 1. Simle Match Routes : ---------------------
+    -------------- 1. Simple Match Routes : ---------------------
 
     to:  ->  which controller action / method to hit
     via: ->  select get or post or etc.
@@ -120,6 +120,11 @@ File   :: routes.rb
             > {controller: "demo", action: "about"}
 
 -------------------------------------------------------------------------------------------------------------------
+
+  ----- Redirecting bad routes to root route :
+  
+
+        > get ':not_found' => redirect('/'), :constraints => { :not_found => /.*/ }
 
         
 
