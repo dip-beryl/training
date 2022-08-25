@@ -89,7 +89,7 @@ File   :: routes.rb
 
     ----------------- 4. Resouceful Routing : ------------------------
 
-    -- Jump to CRUD section / file for explination of Resouceful Routing. --    
+    -- Jump to "resourceful_routes_rails.txt" for the explination of Resouceful Routing. --    
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -109,8 +109,15 @@ File   :: routes.rb
         - The value of [:id ] is 4 here
 
         - [:id] is the routing parameters
+        
         - to access its value use 
                     -> params[:id]
+
+    Explination :
+
+        For a link like "demo/about/" params hash will be
+            
+            > {controller: "demo", action: "about"}
 
 -------------------------------------------------------------------------------------------------------------------
 
