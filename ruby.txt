@@ -1,3 +1,0 @@
-This file belongs to DIPANSHU.
-This is the second line of file.
-This is the 3rd line of file.
