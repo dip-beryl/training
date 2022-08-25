@@ -225,3 +225,9 @@ Generators :
             > rails generate [GENERATOR TYPE] [name]
 
 ----------------------------------------------------------------------------------------------------------------------
+
+You can always use :
+        
+        > rails --tasks
+
+        to view available and valid rails tasks.
