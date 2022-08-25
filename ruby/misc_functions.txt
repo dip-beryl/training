@@ -1,0 +1,8 @@
+object_id
+p
+inspect
+
+==
+eql?
+equal?
+

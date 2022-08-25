@@ -25,3 +25,108 @@ Organization    : Beryl Systems Pvt. Ltd.
 10. Implement all the CRUD Operations / Actions.
 
 ---------------------------------------------------------------------------------------------------------------------------------
+
+-------------- New Project --------------------
+
+    > rails new blog_system -d postgresql
+
+
+------------- database.yml --------------------
+
+    1. Mention the databse name (new or old)
+    
+    2. Uncomment username, password, host and port lines.
+
+    3. Pass specified values for each of them for a successful connection.
+
+        - the name of our database on which we will work : "blog_system_development"
+
+
+------------ Creating Database ---------------
+
+    1. If the database s old and already exist in your machine then skip this step.
+
+    2. USE 
+            $ rails db:create
+            >> Created database 'blog_system_development'
+
+
+----------- Running Server ------------------
+
+    1. Running server to check if the connection was sucessful or not.
+
+    2. To Start server :
+            
+            $ rails s
+
+    3. Open Browser and Go to - http://localhost:3000
+
+    4. If you see the Rails logo then the connection is successful.
+
+
+----------- Controller and Views -----------------
+
+    1. Generate new controller and views according to CRUD standards.
+
+            $ rails g controller blogs new index edit show delete
+
+                >>
+                create  app/controllers/blogs_controller.rb
+                route  get 'blogs/new'
+                        get 'blogs/index'
+                        get 'blogs/edit'
+                        get 'blogs/show'
+                        get 'blogs/delete'
+                invoke  erb
+                create    app/views/blogs
+                create    app/views/blogs/new.html.erb
+                create    app/views/blogs/index.html.erb
+                create    app/views/blogs/edit.html.erb
+                create    app/views/blogs/show.html.erb
+                create    app/views/blogs/delete.html.erb
+                invoke  test_unit
+                create    test/controllers/blogs_controller_test.rb
+                invoke  helper
+                create    app/helpers/blogs_helper.rb
+                invoke    test_unit
+
+----------- Model and Migrations -----------------
+
+    1. Generate a new Model that will also create its Migration file.
+
+    2. Also add its columns to the generate commands.
+
+            $ rails g model blog title:string author:sring body:text
+
+            >>
+            invoke  active_record
+            create    db/migrate/20220825052317_create_blogs.rb
+            create    app/models/blog.rb
+            invoke    test_unit
+            create      test/models/blog_test.rb
+            create      test/fixtures/blogs.yml
+
+
+------------ Running Migrations --------------------
+
+    1. Executing Migrate file "20220825052317_create_blogs.rb" to create table:
+
+        $ rails db:migrate
+
+        >>
+        == 20220825052317 CreateBlogs: migrating ======================================
+        -- create_table(:blogs)
+        -> 0.1283s
+        == 20220825052317 CreateBlogs: migrated (0.1285s) =============================
+
+    2. Checking Status :
+
+        $ rails db:migrate:status
+
+        >>
+        database: blog_system_development
+
+        Status   Migration ID    Migration Name
+        --------------------------------------------------
+        up     20220825052317  Create blogs
+

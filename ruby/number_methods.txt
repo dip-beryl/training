@@ -49,6 +49,29 @@ Numbers (n):
     
 ---------------------------------------------------------------------------------------------------------------------------------
     
+.pow
+.sqrt
+.div
+.fdiv
+.remainder
+.succ, .next
+.pred
+.to_f
+.to_s
 
-    
+.upto
+.downto
+.each
+
+.gcd
+.lcm
+
+.rationalize
+.ord
+.modulo
+.chr
+.denominator
+.numerator
+.digits
+.bit_length
 
