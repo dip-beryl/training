@@ -195,6 +195,8 @@ Organization    : Beryl Systems Pvt. Ltd.
         -------------------------------
         Rails.application.routes.draw do
             
+            root "blogs#index"
+
             resources: blogs
 
             get 'blogs/about'
@@ -287,12 +289,20 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         <u><h3> <%= link_to("Blogs & Vlogs .com", blogs_path) %> </h3></u>
 
+        <h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
+
         <center> <h1> <%= @blog.title %> </h1></center>
 
         <center><p>  <%= sanitize @blog.body%> </p></center>
 
-        <p align="right"> Written by -  <%= @blog.author%> </p>
-    ----------------------------------------------------------------------------
+        <br><br>
+
+        <p> <b>Blog ID</b> -  <%= @blog.id%> </p>
+        <p> <b>Written by</b> -  <%= @blog.author%> </p>
+
+        <p> <b>Created on</b> -  <%= @blog.created_at%> </p>
+        <p> <b>Modified on</b> -  <%= @blog.updated_at%> </p>
+    -------------------------------------------------------------------------------
 
     3. Running Server to view the pages.
 
@@ -338,6 +348,8 @@ Organization    : Beryl Systems Pvt. Ltd.
         -----------------------------------------------
         <% @title = "Create New Blog" %>
 
+        <u><h3> <%= link_to("Blogs & Vlogs .com", blogs_path) %> </h3></u>
+
         <h2 align= "center"> Create New Blog </h2>
 
         <%= form_with model: @blog_new do |form| %>
@@ -367,5 +379,4 @@ Organization    : Beryl Systems Pvt. Ltd.
             </div>
         <% end %>
         ------------------------------------------------
-
 
