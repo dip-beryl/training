@@ -408,6 +408,7 @@ Organization    : Beryl Systems Pvt. Ltd.
                 params.require(:blog).permit(:title, :body, :author)
             end
         ------------------------------------------------------
+            - This process is known as "Strong Parameters"
 
         4.1 If we remove ":author" from permit list.
 
@@ -440,4 +441,44 @@ Organization    : Beryl Systems Pvt. Ltd.
         end
         ----------------------------------------------------
 
-        - redirect_to will cause the browser to make a new request, whereas render renders the specified view for the current request.     
+        - redirect_to will cause the browser to make a new request, whereas render renders the specified view for the current request.
+
+
+----------------NEW & CREATE : Validations and Error Messages ----------------   
+
+    1. Now we add process to handle invalid inputs and displaying of eror messages when this happen.
+
+    2. This process happen in "Model" file with a feature called "validates".
+
+        "app/models/blog.rb"
+        ------------------------------------------------------------
+        class Blog < ApplicationRecord
+
+            validates :title, presence: true
+            validates :body, presence: true, length: { minimum: 10}
+        end
+        -------------------------------------------------------------
+
+            -The first validation declares that a title value must be present. 
+                Because title is a string, this means that the title value must contain at least one non-whitespace character.
+
+            - The second validation declares that a body value must also be present. 
+                Additionally, it declares that the body value must be at least 10 characters long.
+
+
+    3. Editing view of "new" to display error messages :
+
+        "app/views/blogs/new.html.erb"
+        -----------------------------------------------------------------
+        <% @blog_new.errors.full_messages_for(:title).each do |message| %>
+            <div style= "color:red"><%= message %></div>
+        <% end %>
+        --------------------------------------------------------------------
+
+            - Appending the above code below the "form.text_field :title" code
+            - Similarly, appending this code for "body text_area" after changing (:title) -> (:body)
+
+
+    4. After this process the new page will have validations and error handling.
+        and, will also do not accept invalid values / enteries.
+
