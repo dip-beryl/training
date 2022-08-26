@@ -380,3 +380,64 @@ Organization    : Beryl Systems Pvt. Ltd.
         <% end %>
         ------------------------------------------------
 
+
+------------------------------- CREATE ----------------------------------------------------
+
+    1. When at "#new" action page someone presses the Submit/ Save Blog button.
+        The data will go to params.
+        Controller can access the data through:
+
+        params[:model_name][:column_name]
+
+        Eg:
+            params[:blog][:title]
+
+    2. We can pass these values to "Blog.new" to create a new entry in the database. 
+         But, If we pass the unfiltered params[:blog] Hash directly to Article.new, 
+         Rails will raise a "ForbiddenAttributesError" to alert us about the problem.
+
+    3. This is because the entries need to permitted first with ".permit" method of params.
+        - if the value is not permitted then it will not be added in the DB.
+
+    4. Let's add a "private method" to the bottom of controller file that filters params.
+
+        "app/controllers/blogs_controller.rb"
+        ----------------------------------------------------
+        private
+            def blog_params
+                params.require(:blog).permit(:title, :body, :author)
+            end
+        ------------------------------------------------------
+
+        4.1 If we remove ":author" from permit list.
+
+            >> 
+            Parameters: 
+            {"authenticity_token"=>"[FILTERED]", 
+             "blog"=>{"title"=>"Demo", 
+                      "body"=>"This is a demo blog.", 
+                      "author"=>"Anonymous"}, 
+             "commit"=>"Save Blog"}
+            
+            Unpermitted parameter: :author. 
+
+            - Above error will be there.
+            - values will be saved but except author's value.
+
+    5. Now Seting the "#create" to get values from private method "blog_params"
+
+        "app/controllers/blogs_controller.rb"
+        ----------------------------------------------------
+        def create
+
+            @blog_new = Blog.new(blog_params)
+
+            if @blog_new.save
+                redirect_to @blog_new
+            else
+                render :new, status: :unprocessable_entity
+            end
+        end
+        ----------------------------------------------------
+
+        - redirect_to will cause the browser to make a new request, whereas render renders the specified view for the current request.     
