@@ -156,3 +156,20 @@ FILE :: [controller_name]_controller.rb         # demo.controller.rb
                 > render("hello")   #when the folder and controller is same
 
 ------------------------------------------------------------------------
+    redirect_to(:controller => "controller_name", :action => "action_name")
+
+        -> redirect and render is deifferent
+        -> redirect is specific to HTML while render is a rails method to pick Views.
+        -> In redirect we make a new request. Any past code , requests, and database loaded items will be lost.
+        -> If we enter a wrong password the website redirect's us to login page insted of rendering the login lage.
+
+                > redirect_to(controller: 'demo', action: 'index')
+
+            - if the controller is same:
+
+                > redirect_to(action: 'index')
+
+            - also can redirect to outer links
+                > redirect_to("https://google.com")
+
+-----------------------------------------------------------------------------------------------------------------------

@@ -167,7 +167,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         > blog_2 = Blog.create(title: "Startup Bubble", author: "Vishal Arora", body: "The Startup bubble is reaching its breaking point. <br>The stocks of Zomato and Paytm are already downfalling")
 
-        > blog_3 = Blog.create(title: "One Nation One Charger", author: "Sumit Vyas", body: "Our governmet is thinking of a one nation one charger Ploicy. <br>In which iphone will also be included")
+        > blog_3 = Blog.create(title: "One Nation One Charger", author: "Sumit Vyas", body: "Our governmet is thinking of a one nation one charger Policy. <br>In which iphone will also be included")
 
         > blog_4 = Blog.create(title: "Company who owns the world", author: "Tishu", body: "<b>Black Rock</b>. <br>BlackRock, Inc. is an American multi-national investment company based in New York City. <br>It is the world's largest asset manager, with US$10 trillion in assets under management as of January 2022.")
 
@@ -195,6 +195,8 @@ Organization    : Beryl Systems Pvt. Ltd.
         -------------------------------
         Rails.application.routes.draw do
             
+            root "blogs#index"
+
             resources: blogs
 
             get 'blogs/about'
@@ -266,4 +268,217 @@ Organization    : Beryl Systems Pvt. Ltd.
 
     3. Run "rails s" and go to localhost:3000/blogs to execute the index view.
 
+
+------------------------------- SHOW -------------------------------------------
+
+    1. Setting controller "#show" to get per record information from blogs table.
+
+        "app/controllers/blogs_controller.rb"
+        -------------------------------------
+        def show
+
+            @blog = Blog.find(params[:id])
+        end
+        -------------------------------------
+
+    2. Edit "show" view to get variables from #show action and present them accordingly:
+
+        "app/views/blogs/show.html.erb"
+    --------------------------------------------------------------------------
+        <% @title=@blog.title %>
+
+        <u><h3> <%= link_to("Blogs & Vlogs .com", blogs_path) %> </h3></u>
+
+        <h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
+
+        <center> <h1> <%= @blog.title %> </h1></center>
+
+        <center><p>  <%= sanitize @blog.body%> </p></center>
+
+        <br><br>
+
+        <p> <b>Blog ID</b> -  <%= @blog.id%> </p>
+        <p> <b>Written by</b> -  <%= @blog.author%> </p>
+
+        <p> <b>Created on</b> -  <%= @blog.created_at%> </p>
+        <p> <b>Modified on</b> -  <%= @blog.updated_at%> </p>
+    -------------------------------------------------------------------------------
+
+    3. Running Server to view the pages.
+
+        $ rails s
+
+
+--------------------------------------------- NEW -----------------------------------------------------
+
+    1. Setting action "#new" :
+
+        1.1 Even if you donot add anything in the #new action it will still works fine.
+
+        1.2 But if we add [Model.new ] variable in the #new action then it will auto-fill the default values in our form.
+
+        1.3 One moe use is that we can specify our customized auto-fill values for the form.
+
+            "app/controllers/blogs_controller.rb"
+            ---------------------------------------
+            def new
+                @blog_new = Blog.new
+            end
+            ---------------------------------------
+
+                * can also use
+                @blog_new = Blog.new(:author => "Anonymous")
+
+                    - This will auto-fill the form field "author" with text "Annonymous"
+                    - User can still edit the field
+
+    2. Editing View : "Index", To create a hyperlink to "New" View.
+
+        "app/views/blogs/index.html.erb"
+        ---------------------------------------------------------------------------
+        
+        <p align= "center"> <%= link_to("Create New Blog", new_blog_path) %> </p>
+
+        ----------------------------------------------------------------------------
+            - append the above line in file.
+    
+    3. Editing View : to create a form
+
+        "app/views/blogs/new.html.erb"
+        -----------------------------------------------
+        <% @title = "Create New Blog" %>
+
+        <u><h3> <%= link_to("Blogs & Vlogs .com", blogs_path) %> </h3></u>
+
+        <h2 align= "center"> Create New Blog </h2>
+
+        <%= form_with model: @blog_new do |form| %>
+            <div align= "center">
+                <%= form.label :title %> <br>
+                <%= form.text_field :title %>
+            </div>
+
+            <br>
+
+            <div align= "center">
+                <%= form.label :body %> <br>
+                <%= form.text_area :body %>
+            </div>
+            
+            <br>
+            
+            <div align= "center">
+                <%= form.label :author %> <br>
+                <%= form.text_field :author %>
+            </div>
+
+            <br>
+
+            <div align= "center">
+                <%= form.submit "Save Blog" %>
+            </div>
+        <% end %>
+        ------------------------------------------------
+
+
+------------------------------- CREATE ----------------------------------------------------
+
+    1. When at "#new" action page someone presses the Submit/ Save Blog button.
+        The data will go to params.
+        Controller can access the data through:
+
+        params[:model_name][:column_name]
+
+        Eg:
+            params[:blog][:title]
+
+    2. We can pass these values to "Blog.new" to create a new entry in the database. 
+         But, If we pass the unfiltered params[:blog] Hash directly to Article.new, 
+         Rails will raise a "ForbiddenAttributesError" to alert us about the problem.
+
+    3. This is because the entries need to permitted first with ".permit" method of params.
+        - if the value is not permitted then it will not be added in the DB.
+
+    4. Let's add a "private method" to the bottom of controller file that filters params.
+
+        "app/controllers/blogs_controller.rb"
+        ----------------------------------------------------
+        private
+            def blog_params
+                params.require(:blog).permit(:title, :body, :author)
+            end
+        ------------------------------------------------------
+            - This process is known as "Strong Parameters"
+
+        4.1 If we remove ":author" from permit list.
+
+            >> 
+            Parameters: 
+            {"authenticity_token"=>"[FILTERED]", 
+             "blog"=>{"title"=>"Demo", 
+                      "body"=>"This is a demo blog.", 
+                      "author"=>"Anonymous"}, 
+             "commit"=>"Save Blog"}
+            
+            Unpermitted parameter: :author. 
+
+            - Above error will be there.
+            - values will be saved but except author's value.
+
+    5. Now Seting the "#create" to get values from private method "blog_params"
+
+        "app/controllers/blogs_controller.rb"
+        ----------------------------------------------------
+        def create
+
+            @blog_new = Blog.new(blog_params)
+
+            if @blog_new.save
+                redirect_to @blog_new
+            else
+                render :new, status: :unprocessable_entity
+            end
+        end
+        ----------------------------------------------------
+
+        - redirect_to will cause the browser to make a new request, whereas render renders the specified view for the current request.
+
+
+----------------NEW & CREATE : Validations and Error Messages ----------------   
+
+    1. Now we add process to handle invalid inputs and displaying of eror messages when this happen.
+
+    2. This process happen in "Model" file with a feature called "validates".
+
+        "app/models/blog.rb"
+        ------------------------------------------------------------
+        class Blog < ApplicationRecord
+
+            validates :title, presence: true
+            validates :body, presence: true, length: { minimum: 10}
+        end
+        -------------------------------------------------------------
+
+            -The first validation declares that a title value must be present. 
+                Because title is a string, this means that the title value must contain at least one non-whitespace character.
+
+            - The second validation declares that a body value must also be present. 
+                Additionally, it declares that the body value must be at least 10 characters long.
+
+
+    3. Editing view of "new" to display error messages :
+
+        "app/views/blogs/new.html.erb"
+        -----------------------------------------------------------------
+        <% @blog_new.errors.full_messages_for(:title).each do |message| %>
+            <div style= "color:red"><%= message %></div>
+        <% end %>
+        --------------------------------------------------------------------
+
+            - Appending the above code below the "form.text_field :title" code
+            - Similarly, appending this code for "body text_area" after changing (:title) -> (:body)
+
+
+    4. After this process the new page will have validations and error handling.
+        and, will also do not accept invalid values / enteries.
 
