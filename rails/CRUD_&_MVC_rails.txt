@@ -236,7 +236,7 @@ Organization    : Beryl Systems Pvt. Ltd.
         -------------------------------------
         def index
 
-            @blogs_list = Blog.all
+            @blog = Blog.all
         end
         -------------------------------------
 
@@ -248,7 +248,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         <center><h1>Blogs & Vlogs .com</h1></center>
 
-        <% @blogs_list.each do |blog| %>
+        <% @blog.each do |blog| %>
             <ul>
                 <li>
                     <p> <%= link_to(blog.title, blog) %> </p>
@@ -482,3 +482,103 @@ Organization    : Beryl Systems Pvt. Ltd.
     4. After this process the new page will have validations and error handling.
         and, will also do not accept invalid values / enteries.
 
+
+------------------------------ EDIT & UPDATE -----------------------------------------
+
+    1. "Edit & Update" is simlar to "New and Create". Both are a multi-step process.
+        - It uses ".find and .update".
+
+    2. First the #edit action will take values from model to display in the form.
+        It will use the .find method to get the values.
+
+        "app/controllers/blogs_controller.rb"
+        ------------------------------------------
+        def edit
+            @blog_edit = Blog.find(params[:id])
+        end
+        -------------------------------------------
+
+    3. Then the #update action will try to update and save the values. It also displays error if any happen. Same as #create action
+
+        "app/controllers/blogs_controller.rb"
+        ---------------------------------------------------
+        def update
+            @blog_edit = Blog.find(params[:id])
+
+            if @blog_edit.update(blog_params)
+                redirect_to @blog_edit
+            else
+                render :edit, status: :unprocessable_entity
+            end
+        end
+        -----------------------------------------------------
+
+    4. We also need to edit the "index" and "show" view for adding "edit buttons"
+
+        "app/views/blogs/index.html.erb"
+        -----------------------------------------------------
+        <div align = "center">
+        <table>
+            <tr>
+                <th> Blog Name </th>
+                <th> Actions </th>
+            </tr>
+
+            <% @blog.each do |blog| %>
+            <tr>
+                <td> <li> <%= blog.title  %> </li> </td> 
+                <td> <%= link_to("Show", blog) %> </td>
+                <td> <%= link_to("Edit", edit_blog_path(blog)) %> </td>
+                <td> <%= link_to("Delete", blog) %> </td>
+            </tr>
+            <% end %>
+        </table>
+        </div>
+        ----------------------------------------------------------
+            - changing the structure of index from "list" to "table" to implement action links / buttons.
+            - setting "link_to" of edit to edit_blog_path
+
+    5. The update action (re-)fetches the blogs from the database, 
+        and attempts to update it with the submitted form data filtered by blog_params. 
+        
+        If no validations fail and the update is successful, the action redirects the browser to the blog's page. 
+        Else, the action redisplays the form — with error messages — by rendering app/views/blogs/edit.html.erb
+
+    6. The Form of "Edit and New" view is same 
+
+        - The form builder automatically configures the form to make the appropriate kind of request, 
+            based on whether the model object has been previously saved.
+
+        - so we are going to share the same code for both views.
+            With a concept called "Partials"
+
+            6.1 Cut the "form code" from new.html.erb file and paste in a new file named:
+
+                "app/views/blogs/_form.html.erb"
+
+                - This file we be a shared view between new and edit.
+
+            6.2 Add shared view "form" to New and Edit view.
+
+                6.2.1
+                    "app/views/blogs/new.html.erb"
+                    ----------------------------------
+
+                    <%= render "form", blog: @blog_new
+                    ----------------------------------
+                    
+                6.2.2 
+                    "app/views/blogs/edit.html.erb"
+                    ----------------------------------
+
+                    <%= render "form", blog: @blog_edit
+                    ----------------------------------
+
+            NOTE : A partial's filename must be prefixed with an underscore, e.g. _form.html.erb. 
+                    But when rendering, it is referenced without the underscore, e.g. render "form"
+                
+                 : The above code is the same as our form in app/views/blogs/new.html.erb, except that all occurrences of @blog_new and @blog_edit have been replaced with blog.
+                        Because partials are shared code, it is best practice that they do not depend on specific instance variables set by a controller action. 
+                        Instead, we will pass the blog to the partial as a local variable.
+                
+    7. We are all set for editing records now.
