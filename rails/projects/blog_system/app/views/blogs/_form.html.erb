@@ -1,0 +1,33 @@
+<%= form_with model: blog do |form| %>
+    <div align= "center">
+        <%= form.label :title %>* <br>
+        <%= form.text_field :title %>
+        <% blog.errors.full_messages_for(:title).each do |message| %>
+            <div style= "color:red"><%= message %></div>
+        <% end %>
+    </div>
+
+    <br>
+
+    <div align= "center">
+        <%= form.label :body %>* <br>
+        <%= form.text_area :body, size: "50x6" %>
+        <% blog.errors.full_messages_for(:body).each do |message| %>
+            <div style= "color:red"> <%= message %> </div>
+        <% end %>
+    </div>
+    
+    <br>
+    
+    <div align= "center">
+        <%= form.label :author %> <br>
+        <%= form.text_field :author %>
+    </div>
+
+    <br>
+
+    <div align= "center">
+        <%= form.submit "Save Blog" %>
+    </div>
+<% end %>
+

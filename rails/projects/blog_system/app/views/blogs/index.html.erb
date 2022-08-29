@@ -1,0 +1,40 @@
+<% @title="Blogs & Vlogs" %>
+
+<h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
+
+<h1 align= "center">Blogs & Vlogs .com</h1>
+
+
+<!--
+<% @blog.each do |blog| %>
+    <ul>
+        <li>
+            <p> <%= blog.title  %>  <%= link_to("Show", blog) %> </p>
+        </li>
+    </ul>
+<% end %>
+-->
+
+<div align = "center">
+<table>
+    <tr>
+        <th> Blog Name </th>
+        <th> Actions </th>
+    </tr>
+
+    <% @blog.each do |blog| %>
+    <tr>
+        <td> <li> <%= blog.title  %> </li> </td> 
+        <td> <%= link_to("Show", blog) %> </td>
+        <td> <%= link_to("Edit", edit_blog_path(blog)) %></td>
+        <td> <%= link_to "Delete", blog_path(blog), data: {
+                                                            turbo_method: :delete,
+                                                            turbo_confirm: "Are You Sure?\nYou want to delete '#{blog.title}'" } %></td>
+    </tr>
+    <% end %>
+</table>
+</div>
+
+<br>
+
+<p align= "center"> <%= link_to("Create New Blog", new_blog_path) %> </p>
