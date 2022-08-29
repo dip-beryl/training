@@ -1,0 +1,9 @@
+<% @title = "Editing Blog" %>
+
+<u><h3> <%= link_to("Blogs & Vlogs .com", blogs_path) %> </h3></u>
+
+<h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
+
+<h2 align= "center"> Edit Blog </h2>
+
+<%= render "form", blog: @blog_edit %>
