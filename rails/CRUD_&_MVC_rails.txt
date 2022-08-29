@@ -625,5 +625,31 @@ Organization    : Beryl Systems Pvt. Ltd.
                 - turbo_confrim: is used to show a popup before the final deletion.
 
 
-                                                        
+
+---------------- Making viwes more presentable --------------------------------
+
+    1. Adding "Edit and Delete" hyperlinks to Blog's show page: 
+
+        "app/views/blogs/show.html.erb"
+        ------------------------------------------------------------------------------------------------------------------------------------------------
+        <p align= "center"> <%= link_to("Edit This Blog", edit_blog_path(@blog)) %> </p>
+        <p align= "center"> <%= link_to "Delete This Blog", blog_path(@blog), data: 
+                                                                        {turbo_method: :delete,
+                                                                        turbo_confirm: "Are You Sure?\nYou want to delete '#{@blog.title}' "}  %> </p>
+        -------------------------------------------------------------------------------------------------------------------------------------------------
+
+    2. Making the text-area of Body look bigger:
+
+        "app/views/blogs/_form.html.erb"
+        ---------------------------------------------------------
+        <%= form.text_area :body, size: "50x6" %>
+        ---------------------------------------------------------
+            
+            - using size: argument of form_with and text_area
+
+    3. Adding about page link to each view
+
+        ---------------------------------------------------------------------------
+        <h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
+        ----------------------------------------------------------------------------
         
