@@ -1,0 +1,99 @@
+File Name       : helpers_rails.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. link_to "text", path/model_object
+
+- This is a more advanced way of having dynamic links with routing parameters.
+- this also replaces the hyperlink tag of HTML.
+
+        Syntax :
+                > link_to [Text to be shown in view] [model object]
+
+        Eg: (Simple by using _path creating link)
+
+                > <%= link_to "About", demo_about_path %>
+                >> " Output will be a hyperlinked text "About". When clicked will redirect to demo_about i.e, demo/about/ "
+
+        Eg: (with model object and "show" action)
+
+        - By default if second argument of "link_to" is not a path then it will execute the passed object for "show" action.
+
+            --- rails console ---
+
+                > object_dosa = Demo.create(title: "Dosa", body: "Dosa is made from Rice Flour.")                
+
+            --- demo_controller.rb ---
+
+                > def index
+
+                    @dosa = Demo.find_by_title("Dosa")
+                end
+                
+            --- index.html.erb ---
+
+                > <%= link_to "Dosa", @dosa %>
+
+                >> Output:
+                    "Dosa" text hyperlinked to " demo/[id of "Dosa"] "
+
+
+    NOTE - In the [first example] 2nd argument was a path. So "link_to" linked the Text(1st argument) to the path in 2nd argument.
+    
+           In the [second example] 2nd argument was a model object. There for no path is mentioned.
+                So, be default "link_to" linked the "Text" to show path.
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+2. form_with
+
+    - It is used to generate html forms and collect data from it.
+
+        
+        form_with model:[mode_name].new do |form|
+            form.text_field :[column_name]
+        end 
+        
+            (the above form will be equivalent to: )
+
+        <form action= "/model_name" method='post' data-remote='true'>
+            <input type='text' name='column_name'>
+        </form>
+
+
+    - can also be used if u have no model_object and have [route_path ] :
+
+        form_with url:[route_prefix]_path do |form|
+            form.text_field :[column_name]
+        end 
+
+    - Other optons available are:
+
+        form_with model: ... id: ... class: ... html: ... data: ... method: ... url: ...
+        
+        end
+
+NOTE : don't to be confused with "form_for" and "form_tag" they both are now combined to make "form_with".
+
+
+    -Useful:
+
+        <%= form.text_area :message, size: "70x5" %>
+        <%= form.hidden_field :parent_id, value: "foo" %>
+        <%= form.password_field :password %>
+        <%= form.number_field :price, in: 1.0..20.0, step: 0.5 %>
+        <%= form.range_field :discount, in: 1..100 %>
+        <%= form.date_field :born_on %>
+        <%= form.time_field :started_at %>
+        <%= form.datetime_local_field :graduation_day %>
+        <%= form.month_field :birthday_month %>
+        <%= form.week_field :birthday_week %>
+        <%= form.search_field :name %>
+        <%= form.email_field :address %>
+        <%= form.telephone_field :phone %>
+        <%= form.url_field :homepage %>
+        <%= form.color_field :favorite_color %>
+
+---------------------------------------------------------------------------------------------------------------------------------------
