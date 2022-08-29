@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   get 'blogs/about'
 
     #resourceful routes
-  resources :blogs 
+  resources :blogs do
+    resources :comments
+  end
   
     #when bad route is accessed 
   get ':not_found' => redirect('/'), :constraints => { :not_found => /.*/ }

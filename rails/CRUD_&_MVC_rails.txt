@@ -787,3 +787,18 @@ Organization    : Beryl Systems Pvt. Ltd.
             -  Now, If you have an model object [ @blog ] containing a blog, 
                 you can retrieve all the "comments" belonging to that blog as an [ array] using "@blog.comments".
 
+
+-------------------------- Adding Routes for comments -----------------------------------------
+
+    1. Resourceful Routes for comments:
+
+        "config/routes.rb"
+    -----------------------------
+    resources :blogs do
+        resources :comments
+    end
+    -----------------------------
+
+    2. Creating the routes of comments like this will help in relationship heirarchy between blogs and comments.
+
+
