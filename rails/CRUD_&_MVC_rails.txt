@@ -581,4 +581,49 @@ Organization    : Beryl Systems Pvt. Ltd.
                         Because partials are shared code, it is best practice that they do not depend on specific instance variables set by a controller action. 
                         Instead, we will pass the blog to the partial as a local variable.
                 
-    7. We are all set for editing records now.
+    7. We are all set for editing records now. 
+
+
+
+--------------------------------- Delete & Destroy -----------------------------------------------------
+
+    1. To delete we simple need to connect the recor to the delete path.
+
+    2. First we edit the controller.
+
+        "app/controllers/blogs_controller.rb"
+        -----------------------------------------------
+        def destroy
+
+            @blog = Blog.find(params[:id])
+
+            @blog.destroy
+
+            redirect_to root_path, status: :see_other
+        end
+        ------------------------------------------------
+
+            - finding the record through .find
+            - deleting the record.
+            - redirecting to root route.
+            - send a confirmation signal "303 see other".
+
+    3. Editing the view:
+
+        "app/views/blogs/index.html.erb"
+        -------------------------------------------------------------------------------------------------------
+        <%= link_to "Delete", blog_path(blog), data: {
+                                                        turbo_method: :delete
+                                                        turbo_confirm: "Are you sure?\nYou Want to delete '#{blog.title}' " } %>
+        ---------------------------------------------------------------------------------------------------------------------------
+
+            - the path of show, update and delete is same. i.e, blog_path
+                - only difference is HTML method/verb i.e., GET, PUT and DELETE respectively.
+
+            - the turbo method is as an alternative to JavaScript.
+                - turbo_method: is used to change the html call/method to DELETE
+                - turbo_confrim: is used to show a popup before the final deletion.
+
+
+                                                        
+        
