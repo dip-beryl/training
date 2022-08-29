@@ -652,4 +652,138 @@ Organization    : Beryl Systems Pvt. Ltd.
         ---------------------------------------------------------------------------
         <h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
         ----------------------------------------------------------------------------
+
+
+----------------- Adding a Second Model ---------------------
+
+------------------ Comments ----------------------------------
+
+    1. Adding a second model to store the comments on the blog.
+
+    2. Generating a model named "comment" :
+
+        > $ rails g model comment name:string body:text blog:references
+        >>
+            invoke  active_record
+            create    db/migrate/20220829123111_create_comments.rb
+            create    app/models/comment.rb
+            invoke    test_unit
+            create      test/models/comment_test.rb
+            create      test/fixtures/comments.yml
+
+    3. Checking the model file for references:
+
+        "app/models/comment.rb"
+        -----------------------------------
+        class Comment < ApplicationRecord
+            belongs_to :blog
+        end
+        ------------------------------------
+            - belongs_to :blog, which sets up an "Active Record" association
+            
+            - The (:references) keyword used in the shell command is a special data type for models.
+            - It creates a new column on database model with the provided name appended with "_id" that will hold integer values
+
+    4. Check the newly created migration file :
+
+        "db/migrate/20220829123111_create_comments"
+    -----------------------------------------------------------------
+        class CreateComments < ActiveRecord::Migration[7.0]
+        def change
+            create_table :comments do |t|
+            t.string :name
+            t.text :body
+            t.references :blog, null: false, foreign_key: true
+
+            t.timestamps
+            end
+        end
+        end
+    -----------------------------------------------------------------
+        - t.references :blog, will create a column named "blog_id"
+        - this column will be linked to "id" column of "blogs" table.
+
+
+
+----------------------- Migrating second model --------------------------------------
+    
+    1. Running migrations:
+
+        $ rails db:migrate
+        >>
+            == 20220829123111 CreateComments: migrating ===================================
+            -- create_table(:comments)
+            -> 0.9221s
+            == 20220829123111 CreateComments: migrated (0.9223s) ==========================
+
+        $ rails db:migrate:status
+        >>
+
+            database: blog_system_development
+
+            Status   Migration ID    Migration Name
+            --------------------------------------------------
+            up     20220825052317  Create blogs
+            up     20220829123111  Create comments
+
+    2. Checking schema file for better understanding:
+
+        "db/schema.rb"
+    ------------------------------------------------------------------
+    create_table "blogs", force: :cascade do |t|
+        t.string "title"
+        t.string "author"
+        t.text "body"
+        t.datetime "created_at", null: false
+        t.datetime "updated_at", null: false
+    end
+
+    create_table "comments", force: :cascade do |t|
+        t.string "name"
+        t.text "body"
+        t.bigint "blog_id", null: false
+        t.datetime "created_at", null: false
+        t.datetime "updated_at", null: false
+        t.index ["blog_id"], name: "index_comments_on_blog_id"
+    end
+
+    add_foreign_key "comments", "blogs"
+    end
+    ------------------------------------------------------------------
+        - You can see blogs and comments are connected through foreign key.
+        - and there is a table also named "blog_id" for foreign key connection.
+
+
+---------------------------- Associating Models ------------------------------------------
+
+    1. Active Record Association:
+
+        1.1. They help in making relations between models / tables.
+
+    2. In case of our project we can say.
+
+        - one blog can have many comments.
+        - Each comment will belong to atleast one blog.
+
+    3. Editing model files for associations :
+
+        3.1 We have already connected each entry in comments table to blogs table.
+
+        3.2 Now we need to edit blogs model to add the other side of the association:
+
+            "app/models/blog.rb"
+        ------------------------------------------------------------
+        class Blog < ApplicationRecord
+
+            has_many :comments
+
+            validates :title, presence: true
+            validates :body, presence: true, length: {minimum: 10}
+        end
+        --------------------------------------------------------------
         
+            - These two declarations enable a good bit of automatic behavior. (belong_to and has_many)
+            
+            -  Now, If you have an model object [ @blog ] containing a blog, 
+                you can retrieve all the "comments" belonging to that blog as an [ array] using "@blog.comments".
+
