@@ -652,4 +652,54 @@ Organization    : Beryl Systems Pvt. Ltd.
         ---------------------------------------------------------------------------
         <h3 align= "right"> <%= link_to "About Project", {action: "about"} %></h3>
         ----------------------------------------------------------------------------
-        
+
+
+----------------- Adding a Second Model ---------------------
+
+------------------ Comments ----------------------------------
+
+    1. Adding a second model to store the comments on the blog.
+
+    2. Generating a model named "comment" :
+
+        > $ rails g model comment name:string body:text blog:references
+        >>
+            invoke  active_record
+            create    db/migrate/20220829123111_create_comments.rb
+            create    app/models/comment.rb
+            invoke    test_unit
+            create      test/models/comment_test.rb
+            create      test/fixtures/comments.yml
+
+    3. Checking the model file for references:
+
+        "app/models/comment.rb"
+        -----------------------------------
+        class Comment < ApplicationRecord
+            belongs_to :blog
+        end
+        ------------------------------------
+            - belongs_to :blog, which sets up an "Active Record" association
+            
+            - The (:references) keyword used in the shell command is a special data type for models.
+            - It creates a new column on database model with the provided name appended with "_id" that will hold integer values
+
+    4. Check the newly created migration file :
+
+        "db/migrate/20220829123111_create_comments"
+    -----------------------------------------------------------------
+        class CreateComments < ActiveRecord::Migration[7.0]
+        def change
+            create_table :comments do |t|
+            t.string :name
+            t.text :body
+            t.references :blog, null: false, foreign_key: true
+
+            t.timestamps
+            end
+        end
+        end
+    -----------------------------------------------------------------
+        - t.references :blog, will create a column named "blog_id"
+        - this column will be linked to "id" column of "blogs" table.
+
