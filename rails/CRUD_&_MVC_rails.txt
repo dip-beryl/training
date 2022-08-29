@@ -753,3 +753,37 @@ Organization    : Beryl Systems Pvt. Ltd.
         - You can see blogs and comments are connected through foreign key.
         - and there is a table also named "blog_id" for foreign key connection.
 
+
+---------------------------- Associating Models ------------------------------------------
+
+    1. Active Record Association:
+
+        1.1. They help in making relations between models / tables.
+
+    2. In case of our project we can say.
+
+        - one blog can have many comments.
+        - Each comment will belong to atleast one blog.
+
+    3. Editing model files for associations :
+
+        3.1 We have already connected each entry in comments table to blogs table.
+
+        3.2 Now we need to edit blogs model to add the other side of the association:
+
+            "app/models/blog.rb"
+        ------------------------------------------------------------
+        class Blog < ApplicationRecord
+
+            has_many :comments
+
+            validates :title, presence: true
+            validates :body, presence: true, length: {minimum: 10}
+        end
+        --------------------------------------------------------------
+        
+            - These two declarations enable a good bit of automatic behavior. (belong_to and has_many)
+            
+            -  Now, If you have an model object [ @blog ] containing a blog, 
+                you can retrieve all the "comments" belonging to that blog as an [ array] using "@blog.comments".
+
