@@ -95,6 +95,15 @@ ALTER TABLE :
             ALTER TABLE [table_name]
                 DROP CONSTRAINT [constraint_name];
 
+
+NOTE :
+
+1. With every DROP command you can use IF EXISTS to tackle errors.
+        DROP [TABLE, DATABASE ....] IF EXISTS [name];
+
+2. Use CASCADE condition in DROP statement to forcefully drop the table, trigger, database and all the objects depending on it.
+        DROP [TABLE, DATABASE ....] [name] CASCADE;
+
 --------------------------------------------------------------------------------------------------------------------
 
 ----- Privilages -----
