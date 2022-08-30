@@ -1,0 +1,31 @@
+File Name       : ActiveRecord_Basics.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Active Record :
+
+    Active Record is the M in MVC - the model - which is the layer of the system responsible for representing business data and logic.
+    Active Record facilitates the creation and use of business objects whose data requires persistent storage to a database.
+
+    1.1 Active Record Pattern :
+
+        - In Active Record, objects carry both persistent data and behavior which operates on that data.
+
+    
+    1.2 Object Relational Mapping (ORM):
+
+        - It is a technique that connects the rich objects of an application to tables in a relational database management system.
+
+        - Using ORM, the properties and relationships of the objects in an application can be easily stored and retrieved from a database without writing SQL statements
+
+    1.3 ORM Framework and Active Record :
+
+        - Models and their data.
+        - Associations between these models.
+        - Inheritance hierarchies through related models.
+        - "Validate models" - before they get persisted to the database.
+        - Perform database operations - in an object-oriented fashion.
+
+-----------------------
