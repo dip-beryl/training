@@ -98,3 +98,33 @@ Organization    : Beryl Systems Pvt. Ltd.
 
             Polymorphic Associations    :  A slightly more advanced twist on associations is the polymorphic association.
                                             - We will discuss them in detail in associations.
+
+
+---------------
+3. Creating Active Record Models :
+
+    3.1 First we will create a new demo project for "Active Record Lernings" :
+
+        $ rails new lms -d postgresql       # lms is sort for library management system
+                                
+    3.2 Setting its database.yml file for proper connection :
+    
+    3.3 Generate models :
+
+        $ rails g model Book 
+
+        OR
+
+        We can directly make a file :
+            
+            To create Active Record models, subclass the "ApplicationRecord" class and you're good to go:
+
+            "app/models/book.rb"
+        -----------------------------------------
+        class Book < ApplicationRecord
+        end
+        -----------------------------------------
+
+            - This will create a model/class name Book that is connected to a database named "books" that is yet to be created.
+
+---------
