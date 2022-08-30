@@ -128,3 +128,91 @@ Organization    : Beryl Systems Pvt. Ltd.
             - This will create a model/class name Book that is connected to a database named "books" that is yet to be created.
 
 ---------
+
+4. Overriding Naming Convention :
+
+    - If you need to follow a different naming convention i.e., different from your Class name.
+    - If you need to use your Rails application with a legacy database.
+
+        - ApplicationRecord inherits from ActiveRecord::Base
+            - It has number of helpful methods. Like :
+
+                * ActiveRecord::Base.table_name=        # to specify a table name that should be used with model.
+                * ActiveRecord::Base.primary_key=       # to specify a diferent column as primary key
+
+
+        DATA we are using for example below:
+        ---------------------------------------------------------------------------------
+       | DB      : lms;                                                                  |
+       | Tables  : books, book_details;                                                  |
+       |                                                                                 |
+       |     Columns : "books" -> id, name, author, isbn, created_at, updated_at;        |
+       |     Columns : "book_details" -> book_id, name, author;                          |
+        ---------------------------------------------------------------------------------
+
+    4.1 Changing table for model :
+
+            $ rails c
+
+            > Book.all
+            >>
+                Book Load (1.3ms)  SELECT "books".* FROM "books"
+
+            ( Selecting all records from [ books] table)
+
+
+    -----> Changing the table_name in model file :
+        
+            "app/models/book.rb"
+        ----------------------------------------------
+        class Book < ApplicationRecord
+            self.table_name = "book_details"
+        end
+        ----------------------------------------------
+            
+            > reload!
+
+            > Book.all
+            >>
+                  Book Load (1.4ms)  SELECT "book_details".* FROM "book_details"
+
+            ( Selecting all records from [ book_details] table)
+    
+
+    4.2 Changing primary key:
+
+        $ rails c
+
+        > Book.ids
+        >> 
+              Book Pluck (0.7ms)  SELECT "books"."id" FROM "books"
+
+        (Picking ids from [id] column)
+
+
+    -----> Changing the table_name in model file :
+
+            "app/models/book.rb"
+        ----------------------------------------------
+        class Book < ApplicationRecord
+            self.primary_key = "isbn"
+        end
+        ----------------------------------------------
+            
+            > reload!
+
+            > Book.ids
+            >>
+                  Book Pluck (0.7ms)  SELECT "books"."isbn" FROM "books"
+            
+            (Picking ids from [isbn] column)
+
+NOTES :
+        1. Active Record does not support using "non-primary key" columns named as [ id ].
+
+        2. You also need to edit fixtures/[model_name].yml file.
+            
+            2.1 Rename to the [table_name].yml that you used in model for connection.
+            2.2 Add "set_fixture_class" method. Furthur process can be found on 
+                - "https://guides.rubyonrails.org/active_record_basics.html#overriding-the-naming-conventions"
+
