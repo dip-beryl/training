@@ -253,3 +253,57 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 --------------------------------------------------------------------------------------------------------------------------
 
+3. Writing Migrations :
+
+    3.1. Creating a Table (create_table)
+
+        - The create_table method is one of the most fundamental, but most of the time, will be generated for you from using a 
+            model, resource, or scaffold generator.
+        
+        - A create_table command will automatically create a "id" column and set it as primary key.
+
+            * Typical Create Table Example :
+
+                ---------------------------
+                create_table :books do |t|
+                    t.string :name
+                    t.integer :isbn
+                end
+                -------------------------
+
+            * Example with various options :
+
+                -----------------------------------------------------------
+                create_table :books, options: "ENGINE=BLACKHOLE" do |t|
+                end
+                -----------------------------------------------------------
+    
+                    - options: is used to add any text or command in the end of sql that will be generated.
+
+
+            * Constraints :
+
+                -----------------------------------------------------
+                create_table :books, id: false do |t|
+    
+                    t.integer :student_id, primary_key: true, null: false
+                    
+                    t.string :name, index: true, null: false
+                    
+                    t.string :email, index: {unique: true, name: "unique_email"}                
+                end
+                -----------------------------------------------------
+
+                    - [id: false] will do not create id column in table
+                    
+            
+            * Valid Values for index: 
+                        :unique, :length, :order, :opclass, :where, :type, :using, :comment, :algorithm.
+
+
+                        --> creating a temporary table for examples:
+
+                            $ rails g migration CreateTempBooks name:string author:string isbn:integer 
+
+
+ 
