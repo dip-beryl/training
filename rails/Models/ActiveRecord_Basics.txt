@@ -216,3 +216,255 @@ NOTES :
             2.2 Add "set_fixture_class" method. Furthur process can be found on 
                 - "https://guides.rubyonrails.org/active_record_basics.html#overriding-the-naming-conventions"
 
+------
+
+5. CRUD with ActiveRecord :
+
+    - Active Record automatically creates methods to allow an application to read and manipulate data stored within its tables.
+
+    (taking blogs data base with default primary key i.e., [id ])
+    
+--------------
+    5.1 CREATE :
+
+        - .create   : creates and saves record in one go
+        - .new      : creates a new object
+        - .save     : saves the object
+
+        > book_1 = Book.create(name: "Bikers Guide", Author: "John D. Costa", isbn: 8934)
+        >>
+            TRANSACTION (0.5ms)  
+            BEGIN
+            Book Create (112.3ms)  
+                INSERT INTO "books" ("name", "author", "isbn", "created_at", "updated_at") 
+                    VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Bikers Guide"], ["author", "John D. Costa"], ["isbn", 8934], ["created_at", "2022-08-31 05:06:31.580048"], ["updated_at", "2022-08-31 05:06:31.580048"]]
+            TRANSACTION (11.1ms)  
+            COMMIT
+            =>                                                               
+            #<Book:0x00007fd35093d9a8
+
+
+        > book_2 = Book.new
+        >>
+             => #<Book:0x000055e5990f8a78 id: nil, name: nil, author: nil, isbn: nil, created_at: nil, updated_at: nil> 
+
+
+        > book_2.name = "Understanding Library"
+        >>
+             => "Understanding Library" 
+            
+            ( The value for name: column is saved in object but in database)
+
+        > book_2.author = "Ravi Heera"
+        >>
+            => "Ravi Heera"
+
+        > book_2.isbn = 5638
+        >>
+            => 5638
+
+        > book_2.save
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+                Book Create (1.0ms)  
+                    INSERT INTO "books" ("name", "author", "isbn", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Understanding Library"], ["author", "Ravi Heera"], ["isbn", 5638], ["created_at", "2022-08-31 05:11:40.250215"], ["updated_at", "2022-08-31 05:11:40.250215"]]                        
+            TRANSACTION (6.4ms)  
+            COMMIT                                        
+            => true
+
+            *( .save is used to save the records in database now the book_2 record is saved in database)
+            *( .save always return a boolean class.)
+
+--------------
+    5.2 READ:
+
+        .all    : retruns all records of database as an array
+        .first  : returns record with smallest primary key
+        .find   : find a record through its "id"
+        .find_by: find by any author name
+        .where  :
+        .order  :
+
+        Syntax :
+
+            > model_name.all
+
+        > Book.all          # returns an array
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books"
+            => 
+
+            [#<Book:0x000055e59912a960                                  
+            id: 1,                                                    
+            name: "Bikers Guide",                                     
+            author: "John D. Costa",                                  
+            isbn: 8934,                                               
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:07.086615000 UTC +00:00>,
+
+            #<Book:0x000055e59912a898                                  
+            id: 2,                                                    
+            name: "Understanding Library",                            
+            author: "Ravi Heera",                                     
+            isbn: 5638,                                               
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00>,
+
+            #<Book:0x000055e59912a7d0
+            id: 3,
+            name: "C hash",
+            author: "Lemon D costa",
+            isbn: 67,
+            created_at: Tue, 30 Aug 2022 12:40:36.556112000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:12.858914000 UTC +00:00>] 
+
+
+        > Book.first
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books" ORDER BY "books"."id" ASC LIMIT $1  [["LIMIT", 1]]
+            =>
+            id: 1,
+            name: "Bikers Guide",                                      
+            author: "John D. Costa",                                   
+            isbn: 8934,                                                
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:31:46.354482000 UTC +00:00> 
+
+
+        > Book.find(2)
+        >>
+            Book Load (1.0ms)  SELECT "books".* FROM "books" WHERE "books"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+            =>                                                         
+            #<Book:0x000055e5997a3fa8                                   
+            id: 2,                                                     
+            name: "Understanding Library",                             
+            author: "Ravi Heera",                         
+            isbn: 5638,                                   
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00> 
+            
+
+        > Book.find_by(author: "John D. Costa")
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books" WHERE "books"."author" = $1 LIMIT $2  [["author", "John D. Costa"], ["LIMIT", 1]]
+            => 
+            #<Book:0x000055e59920a718
+            id: 1,
+            name: "Bikers Guide",
+            author: "John D. Costa",
+            isbn: 8934,
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:31:46.354482000 UTC +00:00>
+
+
+        > Book.where(name: "Understanding Library", aauthor: "Ravi Heera").order(id: :desc)
+        >>
+            Book Load (0.9ms)  
+                SELECT "books".* FROM "books" 
+                WHERE "books"."name" = $1 
+                    AND 
+                    "books"."author" = $2 
+                ORDER BY "books"."id" DESC  [["name", "Understanding Library"], ["author", "Ravi Heera"]]
+            => 
+            [#<Book:0x000055e5998fb9c8
+
+
+
+        ( All these results can be save into any variable.)
+
+
+    5.3 UPDATE :
+
+        .update     : updates a single record                     # object.update
+        .update_all : updates all the records of the columne      # Model.update_all
+
+        > book = Book.find_by(name: "C hash")
+
+        > book.update(name: "C Hash Introduction", author: "John D. Costa")
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+            Book Update (0.9ms)  
+                UPDATE "books" SET "author" = $1, "updated_at" = $2 
+                    WHERE "books"."id" = $3  [["author", "John D. Costa"], ["updated_at", "2022-08-31 05:57:18.311640"], ["id", 3]]                                                    
+            TRANSACTION (23.0ms)  
+            COMMIT
+            => true  
+
+            ( returns boolean same as .save )
+
+
+        > Book.update_all(author: "John D. Costa")
+        >>
+            Book Update All (15.1ms)  UPDATE "books" SET "author" = $1  [["author", "John D. Costa"]]
+            => 3 
+
+            ( returns the Count of updated records )
+
+            * Now all author: of all the record is "John D. Costa". It updates for all records.
+
+
+        Alternate Syntax :
+
+            > Book.update_all "author= 'John D. Costa', isbn = 7637"
+            > Book.update(:all, author: "John D. Costa")
+
+
+    5.4 DELETE :
+
+        .destroy      : deletes the object and its entry in DB
+        .destroy_by   : deletes the by finding it through the arguments
+        .destroy_all  : deletes all the enteries of a table
+        
+        > book = Book.find_by(name: "Bikers Guide")
+        > book.destroy
+        >>
+            TRANSACTION (0.5ms)  BEGIN
+            Book Destroy (1.1ms)  
+                DELETE FROM "books" WHERE "books"."id" = $1  [["id", 1]]
+            TRANSACTION (14.9ms)  COMMIT                                     
+            =>                                                                
+            #<Book:0x00007f51e80fc328  
+
+
+        > Book.destroy_by(name: "Understanding Library")
+        >>
+            Book Load (0.8ms)  SELECT "books".* FROM "books" WHERE "books"."name" = $1  [["name", "Understanding Library"]]
+            TRANSACTION (0.5ms)  BEGIN                                       
+            Book Destroy (0.7ms)  DELETE FROM "books" WHERE "books"."id" = $1  [["id", 2]]
+            TRANSACTION (53.0ms)  COMMIT                                     
+            =>                                                                
+            [#<Book:0x00007f51e8a52f08                            
+
+            id: 2,                 
+            name: "Understanding Library",
+            author: "John D. Costa",
+            isbn: 5638,
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00>] 
+
+
+        ( returns allm the object entries that are deleted ) --> array
+        
+        
+        > Book.destroy_all
+        >>
+            Book Load (0.8ms)  SELECT "books".* FROM "books"
+            TRANSACTION (0.3ms)  BEGIN                                    
+            Book Destroy (0.5ms)  DELETE FROM "books" WHERE "books"."id" = $1  [["id", 3]]
+            TRANSACTION (21.7ms)  COMMIT                                  
+            =>                                                             
+            [#<Book:0x00007f51e82c19b0
+            
+            id: 3,
+            name: "C Hash Introduction",
+            author: "John D. Costa",
+            isbn: 67,
+            created_at: Tue, 30 Aug 2022 12:40:36.556112000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:57:18.311640000 UTC +00:00>] 
+
+        ( returns all the enteries that are deleted ) --> array
+
+-----------------------------------------------------------------------------------------------------------------------------
