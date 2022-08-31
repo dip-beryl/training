@@ -337,3 +337,22 @@ Organization    : Beryl Systems Pvt. Ltd.
             -------------------------------------------
 
         ----------------------------------------------------------------------------------------------------
+    3.3. Changing Tables: (change_table)
+
+        - "change_table" is very close in functioning with "create_table" but it is more smart.
+
+            -------------------------------------
+            change_table :temp_books do |t|
+
+                t.remove :name, :author
+                t.string :book_name
+                t.index :book_name
+                t.rename :isbn, :isbn_book
+            end
+            --------------------------------------
+                - removed column :name and :author
+                - created new column :book_name as string
+                - added index to :book_name
+                - renamed :isbn to isbn_book
+
+        -------------------------------------------------------
