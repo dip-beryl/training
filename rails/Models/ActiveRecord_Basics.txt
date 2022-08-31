@@ -1,0 +1,470 @@
+File Name       : ActiveRecord_Basics.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Active Record :
+
+    Active Record is the M in MVC - the model - which is the layer of the system responsible for representing business data and logic.
+    Active Record facilitates the creation and use of business objects whose data requires persistent storage to a database.
+
+    1.1 Active Record Pattern :
+
+        - In Active Record, objects carry both persistent data and behavior which operates on that data.
+
+    
+    1.2 Object Relational Mapping (ORM):
+
+        - It is a technique that connects the rich objects of an application to tables in a relational database management system.
+
+        - Using ORM, the properties and relationships of the objects in an application can be easily stored and retrieved from a database without writing SQL statements
+
+    1.3 ORM Framework and Active Record :
+
+        - Models and their data.
+        - Associations between these models.
+        - Inheritance hierarchies through related models.
+        - "Validate models" - before they get persisted to the database.
+        - Perform database operations - in an object-oriented fashion.
+
+-----------------------
+2. Convention over Configuration  in Active Record :
+
+------
+    2.1 Naming Convention :
+
+        - Active Record uses some naming conventions to find out how the mapping between models and database tables should be created.
+
+        - Rails will pluralize your class names to find the respective database table.
+            - So, for a class Book, you should have a database table called books.
+        
+        - Rails pluralization mechanism is very powerful.
+
+        - If your class/model name have two words then use CamelCase format. 
+            - Rails will automaticly convert your Model name to a plural snake_case name for database table.
+
+        Eg:
+
+            BookClub --> book_clubs
+            deer     --> deers
+            Mouse    --> mice
+            Person   --> people
+
+------
+    2.2 Schema Conventions :
+
+        - Active Record uses naming conventions for the columns in database tables, depending on the purpose of these columns.
+
+        2.2.1 Primary Key :
+
+            - By default, Active Record will automaticly create and use an integer column named [id ] as the table's primary key
+                - bigint for PostgreSQL and MySQL
+                - integer fro SQLite
+
+        2.2.2 Foreign Key :
+
+            - Reference feilds should be named same as primary table name with "_id" appended at the end of them.
+                - "item_id" or "blog_id" etc.
+
+            - These are the columns, fields Active Record will look when yiu create "ActiveRecord Associations".
+
+    [ - There are some special column names that will add special functionalities to those columns : ]
+
+    
+        2.2.4 created_at            -> automatically adds the timestamp of record creation.
+
+        2.2.5 updated_at            -> automatically adds the timestamp of record updation.
+
+        2.2.6 type                  -> Specifies that the model uses "Single Table Inheritance".
+
+        2.2.7 lock_version          -> adds "optimistic locking" to a model
+
+        2.2.8 (associating_name)_type   -> Stores the type for "polymorphic associations".
+
+        2.2.9 (table_name)_count        -> Used to cache/count the number of belonging objects on associations/foreign_keys.
+                                        Eg:
+                                            A "comments_count" column in an [Article] class that has many instances of Comment 
+                                                will cache the number of existent comments for each article.
+
+
+            Single Table Inheritance    : Active Record allows inheritance by storing the name of the class in a column that is named “type” by default.                
+            
+            Optimistic Locking          : Optimistic locking allows multiple users to access the same record for edits, 
+                                            and assumes a minimum of conflicts with the data. 
+                                            It does this by checking whether another process has made changes to a record since it was opened.
+
+                                            Optimistic locking will also check for stale data when objects are destroyed.
+
+            Polymorphic Associations    :  A slightly more advanced twist on associations is the polymorphic association.
+                                            - We will discuss them in detail in associations.
+
+
+---------------
+3. Creating Active Record Models :
+
+    3.1 First we will create a new demo project for "Active Record Lernings" :
+
+        $ rails new lms -d postgresql       # lms is sort for library management system
+                                
+    3.2 Setting its database.yml file for proper connection :
+    
+    3.3 Generate models :
+
+        $ rails g model Book 
+
+        OR
+
+        We can directly make a file :
+            
+            To create Active Record models, subclass the "ApplicationRecord" class and you're good to go:
+
+            "app/models/book.rb"
+        -----------------------------------------
+        class Book < ApplicationRecord
+        end
+        -----------------------------------------
+
+            - This will create a model/class name Book that is connected to a database named "books" that is yet to be created.
+
+---------
+
+4. Overriding Naming Convention :
+
+    - If you need to follow a different naming convention i.e., different from your Class name.
+    - If you need to use your Rails application with a legacy database.
+
+        - ApplicationRecord inherits from ActiveRecord::Base
+            - It has number of helpful methods. Like :
+
+                * ActiveRecord::Base.table_name=        # to specify a table name that should be used with model.
+                * ActiveRecord::Base.primary_key=       # to specify a diferent column as primary key
+
+
+        DATA we are using for example below:
+        ---------------------------------------------------------------------------------
+       | DB      : lms;                                                                  |
+       | Tables  : books, book_details;                                                  |
+       |                                                                                 |
+       |     Columns : "books" -> id, name, author, isbn, created_at, updated_at;        |
+       |     Columns : "book_details" -> book_id, name, author;                          |
+        ---------------------------------------------------------------------------------
+
+    4.1 Changing table for model :
+
+            $ rails c
+
+            > Book.all
+            >>
+                Book Load (1.3ms)  SELECT "books".* FROM "books"
+
+            ( Selecting all records from [ books] table)
+
+
+    -----> Changing the table_name in model file :
+        
+            "app/models/book.rb"
+        ----------------------------------------------
+        class Book < ApplicationRecord
+            self.table_name = "book_details"
+        end
+        ----------------------------------------------
+            
+            > reload!
+
+            > Book.all
+            >>
+                  Book Load (1.4ms)  SELECT "book_details".* FROM "book_details"
+
+            ( Selecting all records from [ book_details] table)
+    
+
+    4.2 Changing primary key:
+
+        $ rails c
+
+        > Book.ids
+        >> 
+              Book Pluck (0.7ms)  SELECT "books"."id" FROM "books"
+
+        (Picking ids from [id] column)
+
+
+    -----> Changing the table_name in model file :
+
+            "app/models/book.rb"
+        ----------------------------------------------
+        class Book < ApplicationRecord
+            self.primary_key = "isbn"
+        end
+        ----------------------------------------------
+            
+            > reload!
+
+            > Book.ids
+            >>
+                  Book Pluck (0.7ms)  SELECT "books"."isbn" FROM "books"
+            
+            (Picking ids from [isbn] column)
+
+NOTES :
+        1. Active Record does not support using "non-primary key" columns named as [ id ].
+
+        2. You also need to edit fixtures/[model_name].yml file.
+            
+            2.1 Rename to the [table_name].yml that you used in model for connection.
+            2.2 Add "set_fixture_class" method. Furthur process can be found on 
+                - "https://guides.rubyonrails.org/active_record_basics.html#overriding-the-naming-conventions"
+
+------
+
+5. CRUD with ActiveRecord :
+
+    - Active Record automatically creates methods to allow an application to read and manipulate data stored within its tables.
+
+    (taking blogs data base with default primary key i.e., [id ])
+    
+--------------
+    5.1 CREATE :
+
+        - .create   : creates and saves record in one go
+        - .new      : creates a new object
+        - .save     : saves the object
+
+        > book_1 = Book.create(name: "Bikers Guide", Author: "John D. Costa", isbn: 8934)
+        >>
+            TRANSACTION (0.5ms)  
+            BEGIN
+            Book Create (112.3ms)  
+                INSERT INTO "books" ("name", "author", "isbn", "created_at", "updated_at") 
+                    VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Bikers Guide"], ["author", "John D. Costa"], ["isbn", 8934], ["created_at", "2022-08-31 05:06:31.580048"], ["updated_at", "2022-08-31 05:06:31.580048"]]
+            TRANSACTION (11.1ms)  
+            COMMIT
+            =>                                                               
+            #<Book:0x00007fd35093d9a8
+
+
+        > book_2 = Book.new
+        >>
+             => #<Book:0x000055e5990f8a78 id: nil, name: nil, author: nil, isbn: nil, created_at: nil, updated_at: nil> 
+
+
+        > book_2.name = "Understanding Library"
+        >>
+             => "Understanding Library" 
+            
+            ( The value for name: column is saved in object but in database)
+
+        > book_2.author = "Ravi Heera"
+        >>
+            => "Ravi Heera"
+
+        > book_2.isbn = 5638
+        >>
+            => 5638
+
+        > book_2.save
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+                Book Create (1.0ms)  
+                    INSERT INTO "books" ("name", "author", "isbn", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Understanding Library"], ["author", "Ravi Heera"], ["isbn", 5638], ["created_at", "2022-08-31 05:11:40.250215"], ["updated_at", "2022-08-31 05:11:40.250215"]]                        
+            TRANSACTION (6.4ms)  
+            COMMIT                                        
+            => true
+
+            *( .save is used to save the records in database now the book_2 record is saved in database)
+            *( .save always return a boolean class.)
+
+--------------
+    5.2 READ:
+
+        .all    : retruns all records of database as an array
+        .first  : returns record with smallest primary key
+        .find   : find a record through its "id"
+        .find_by: find by any author name
+        .where  :
+        .order  :
+
+        Syntax :
+
+            > model_name.all
+
+        > Book.all          # returns an array
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books"
+            => 
+
+            [#<Book:0x000055e59912a960                                  
+            id: 1,                                                    
+            name: "Bikers Guide",                                     
+            author: "John D. Costa",                                  
+            isbn: 8934,                                               
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:07.086615000 UTC +00:00>,
+
+            #<Book:0x000055e59912a898                                  
+            id: 2,                                                    
+            name: "Understanding Library",                            
+            author: "Ravi Heera",                                     
+            isbn: 5638,                                               
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00>,
+
+            #<Book:0x000055e59912a7d0
+            id: 3,
+            name: "C hash",
+            author: "Lemon D costa",
+            isbn: 67,
+            created_at: Tue, 30 Aug 2022 12:40:36.556112000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:12.858914000 UTC +00:00>] 
+
+
+        > Book.first
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books" ORDER BY "books"."id" ASC LIMIT $1  [["LIMIT", 1]]
+            =>
+            id: 1,
+            name: "Bikers Guide",                                      
+            author: "John D. Costa",                                   
+            isbn: 8934,                                                
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:31:46.354482000 UTC +00:00> 
+
+
+        > Book.find(2)
+        >>
+            Book Load (1.0ms)  SELECT "books".* FROM "books" WHERE "books"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+            =>                                                         
+            #<Book:0x000055e5997a3fa8                                   
+            id: 2,                                                     
+            name: "Understanding Library",                             
+            author: "Ravi Heera",                         
+            isbn: 5638,                                   
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00> 
+            
+
+        > Book.find_by(author: "John D. Costa")
+        >>
+            Book Load (0.9ms)  SELECT "books".* FROM "books" WHERE "books"."author" = $1 LIMIT $2  [["author", "John D. Costa"], ["LIMIT", 1]]
+            => 
+            #<Book:0x000055e59920a718
+            id: 1,
+            name: "Bikers Guide",
+            author: "John D. Costa",
+            isbn: 8934,
+            created_at: Wed, 31 Aug 2022 05:06:31.580048000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:31:46.354482000 UTC +00:00>
+
+
+        > Book.where(name: "Understanding Library", aauthor: "Ravi Heera").order(id: :desc)
+        >>
+            Book Load (0.9ms)  
+                SELECT "books".* FROM "books" 
+                WHERE "books"."name" = $1 
+                    AND 
+                    "books"."author" = $2 
+                ORDER BY "books"."id" DESC  [["name", "Understanding Library"], ["author", "Ravi Heera"]]
+            => 
+            [#<Book:0x000055e5998fb9c8
+
+
+
+        ( All these results can be save into any variable.)
+
+
+    5.3 UPDATE :
+
+        .update     : updates a single record                     # object.update
+        .update_all : updates all the records of the columne      # Model.update_all
+
+        > book = Book.find_by(name: "C hash")
+
+        > book.update(name: "C Hash Introduction", author: "John D. Costa")
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+            Book Update (0.9ms)  
+                UPDATE "books" SET "author" = $1, "updated_at" = $2 
+                    WHERE "books"."id" = $3  [["author", "John D. Costa"], ["updated_at", "2022-08-31 05:57:18.311640"], ["id", 3]]                                                    
+            TRANSACTION (23.0ms)  
+            COMMIT
+            => true  
+
+            ( returns boolean same as .save )
+
+
+        > Book.update_all(author: "John D. Costa")
+        >>
+            Book Update All (15.1ms)  UPDATE "books" SET "author" = $1  [["author", "John D. Costa"]]
+            => 3 
+
+            ( returns the Count of updated records )
+
+            * Now all author: of all the record is "John D. Costa". It updates for all records.
+
+
+        Alternate Syntax :
+
+            > Book.update_all "author= 'John D. Costa', isbn = 7637"
+            > Book.update(:all, author: "John D. Costa")
+
+
+    5.4 DELETE :
+
+        .destroy      : deletes the object and its entry in DB
+        .destroy_by   : deletes the by finding it through the arguments
+        .destroy_all  : deletes all the enteries of a table
+        
+        > book = Book.find_by(name: "Bikers Guide")
+        > book.destroy
+        >>
+            TRANSACTION (0.5ms)  BEGIN
+            Book Destroy (1.1ms)  
+                DELETE FROM "books" WHERE "books"."id" = $1  [["id", 1]]
+            TRANSACTION (14.9ms)  COMMIT                                     
+            =>                                                                
+            #<Book:0x00007f51e80fc328  
+
+
+        > Book.destroy_by(name: "Understanding Library")
+        >>
+            Book Load (0.8ms)  SELECT "books".* FROM "books" WHERE "books"."name" = $1  [["name", "Understanding Library"]]
+            TRANSACTION (0.5ms)  BEGIN                                       
+            Book Destroy (0.7ms)  DELETE FROM "books" WHERE "books"."id" = $1  [["id", 2]]
+            TRANSACTION (53.0ms)  COMMIT                                     
+            =>                                                                
+            [#<Book:0x00007f51e8a52f08                            
+
+            id: 2,                 
+            name: "Understanding Library",
+            author: "John D. Costa",
+            isbn: 5638,
+            created_at: Wed, 31 Aug 2022 05:11:40.250215000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:28:10.081581000 UTC +00:00>] 
+
+
+        ( returns allm the object entries that are deleted ) --> array
+        
+        
+        > Book.destroy_all
+        >>
+            Book Load (0.8ms)  SELECT "books".* FROM "books"
+            TRANSACTION (0.3ms)  BEGIN                                    
+            Book Destroy (0.5ms)  DELETE FROM "books" WHERE "books"."id" = $1  [["id", 3]]
+            TRANSACTION (21.7ms)  COMMIT                                  
+            =>                                                             
+            [#<Book:0x00007f51e82c19b0
+            
+            id: 3,
+            name: "C Hash Introduction",
+            author: "John D. Costa",
+            isbn: 67,
+            created_at: Tue, 30 Aug 2022 12:40:36.556112000 UTC +00:00,
+            updated_at: Wed, 31 Aug 2022 05:57:18.311640000 UTC +00:00>] 
+
+        ( returns all the enteries that are deleted ) --> array
+
+-----------------------------------------------------------------------------------------------------------------------------
