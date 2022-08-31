@@ -1,0 +1,67 @@
+File Name       : ActiveRecord_Migrations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Migration (Overview) :
+
+    1.1. Rails provides a "domain-specific language" (DSL) for managing a "database schema" called -- Migrations. 
+    
+    1.2. Migrations are stored in files which are executed against any database that "Active Record" supports using [rake ].
+        -> "project/db/migrate/..."
+    
+    
+    - Example of a migration that "creates a table":
+
+    ---------------------------------------------------------------------
+    |                                                                   |
+    |   class CreatePublications < ActiveRecord::Migration[7.0]         |
+    |       def change                                                  |
+    |           create_table :publications do |t|                       |
+    |           t.string :title                                         |
+    |           t.text :description                                     |
+    |           t.references :publication_type                          |
+    |           t.integer :publisher_id                                 |
+    |           t.string :publisher_type                                |
+    |           t.boolean :single_issue                                 |
+    |                                                                   |
+    |           t.timestamps                                            |
+    |           end                                                     |
+    |           add_index :publications, :publication_type_id           |
+    |       end                                                         |
+    |   end                                                             |
+    ---------------------------------------------------------------------
+
+    1.3. Migrations help us to manipulate databases without the need of SQL.
+    
+    1.4. You can think of each migration as being a new 'version' of the database. 
+    
+    1.5. A schema starts off with nothing in it.
+        - With each migration executes - it add or remove tables, columns, or entries. 
+    
+    1.6. Active Record knows how to update your schema along this timeline, bringing it from whatever point it is in the history to the latest version. 
+    
+    1.7. Active Record will also update your "db/schema.rb" file to match the up-to-date structure of your database.
+
+    1.8. Rails keeps track of which files have been committed to the database and provides rollback features. 
+    
+    1.9. To actually create the table, you'd run 
+    
+        $ rails db:migrate 
+        
+            and; to roll it back, 
+        
+        $ rails db:rollback.
+
+    NOTE : Note that in migrations we define the changes in forward direction.
+           Migrations keep track of migration files that have been run or yet to run.
+           You cannot execute a same migration file again. Unless you have rolled back that migration file.
+           You cannot execute the migration again, Even if you have made changes in that file now.
+           
+           To run the migration again with changes :
+                - Make changes
+                - Rollback migration
+                - Migrate the migrations again.
+
+----------------------------------------------------------------------------------------------------------
