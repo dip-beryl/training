@@ -263,6 +263,15 @@ NOTES :
         >>
             => 5638
 
+            --- OR ----
+
+        > book_2 = Book.new do |b|
+              
+              b.name = "Understanding Library"
+              b.author = "Ravi Heera"
+              b.isbn = 5638
+          end
+
         > book_2.save
         >>
             TRANSACTION (0.6ms)  
