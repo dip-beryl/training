@@ -305,5 +305,35 @@ Organization    : Beryl Systems Pvt. Ltd.
 
                             $ rails g migration CreateTempBooks name:string author:string isbn:integer 
 
+        ----------------------------------------------------------------------------------------------------
+    3.2. Creating a Join Table: (create_join_table)
 
- 
+        - It is used to create a joined table of two table's ids column
+
+            -------------------------------------------
+            create_join_table :students, :books
+            
+            OR
+
+            create_join_table :books, :students do |t|
+            end
+            -------------------------------------------
+
+                * the above command will craete a new table named "books_students" (alphabetical order)
+                * the table will contain only two columns "book_id" and "student_id"
+                * By default these column are "null: false" 
+                * By default there is index created.
+
+        - Example to:
+                    Change Table name
+                    Add Index
+                    Setting null: true
+
+            -------------------------------------------
+            create_join_table :students, :books, column_options: {null: false}, table_name: :issues do |t|
+                t.index :student_id
+                t.index :book_id
+            end
+            -------------------------------------------
+
+        ----------------------------------------------------------------------------------------------------
