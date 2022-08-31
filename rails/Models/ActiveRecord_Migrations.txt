@@ -356,3 +356,57 @@ Organization    : Beryl Systems Pvt. Ltd.
                 - renamed :isbn to isbn_book
 
         -------------------------------------------------------
+    3.4. Changing Columns : 
+                            - add_column
+                            - remove_column
+                            - change_column
+
+        - change data type of column
+
+            ------------------------------------------
+                change_column :books, :isbn, :string
+            ------------------------------------------
+                * changes the datatype of books.isbn to "string"
+
+        
+        - change_column_null is used to chnage the value of NULL
+        - change_column_default is used to change the default value true or false
+
+            -------------------------------------------------------------------
+            change_column_null :products, :name, false
+            
+            change_column_default :products, :approved, from: true, to: false
+            -------------------------------------------------------------------
+                * This sets :name field on products to a NOT NULL column and;
+                * the default value of the :approved field from true to false.
+
+        ---------------------------------------
+    3.5. Column Modifiers:
+
+        - They are used for "add_column" and "change_column" :
+
+            comment     : Adds a comment for the column.
+
+            collation   : Specifies the collation for a string or text column.
+
+            default     : Allows to set a default value on the column. 
+                            Note that if you are using a dynamic value (such as a date), 
+                            the default will only be calculated the first time (i.e. on the date the migration is applied). Use nil for NULL.
+
+            limit       : Sets the maximum number of characters for a string column and the maximum number of bytes for text/binary/integer columns.
+            
+            null        : Allows or disallows NULL values in the column.
+            
+            precision   : Specifies the precision for decimal/numeric/datetime/time columns.
+            scale       : Specifies the scale for the decimal and numeric columns, representing the number of digits after the decimal point.
+
+        Eg:
+            ----------------------------------------------------------------------------------
+            add_column :students, :father_name, :string, null: true, limit: 20, default: "papa"
+            ----------------------------------------------------------------------------------
+                * limit doesn't add a check condition. It specifies the size of data type like VARCHAR(20).
+            
+        Example: of precision and scale is in "2.3" above.
+
+        NOTE : to add index in columns use "add_index"
+        ------------------------------------------------------------------------------------------------------------------
