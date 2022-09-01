@@ -410,3 +410,83 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         NOTE : to add index in columns use "add_index"
         ------------------------------------------------------------------------------------------------------------------
+
+    3.6. References :
+
+            add_reference
+            remove_reference
+        
+        - The add_reference method allows the creation of an appropriately named column.
+
+        - The method [add_belongs_to] is an alias of [add_reference].
+
+        - A foreign key can be created with the foreign_key option.
+
+            
+
+        -------------------------------------
+            add_reference :temp_books, :students, foreign_key: true
+        ------------------------------------
+            * This migration will create a "students_id" column in the "temp_books" table.
+            * The index will automatically be created unless explicitly mentioned not to.
+                index: false
+
+
+        ------------------------------------------------------
+            remove_reference :issued_books, :students, foreign_key: true, index: false
+        -----------------------------------------------------------------
+
+NOTE : References and Foreign Key are different concepts.
+
+        1. References Work on Model Layer. And just adds the column as mentioned above
+        
+        2. Foreign Key is a Database concept. and adds constraint of foreign_key.
+
+        3. While it's not required you might want to add foreign key constraints to guarantee referential integrity.
+            
+        ----------------------------------------------------------------------------------------------------------------
+    
+    3.7. Foreign Keys :
+
+            add_foreign_key
+            remove_foreign_key
+
+        ----------------------------------------------
+            add_foreign_key :issued_books, :students
+        ----------------------------------------------
+            * This adds a new constraint to the :issued_books table. 
+                
+                (foreign_key) issued_books.student_id ---> students.id (primary_key)
+            
+            * A column name with referenced_table_name appended with [_id] is pre-needed
+
+                student_id (is approved)
+                students_id (is NOT-approved)
+
+        NOTE * - add_reference creates a table with plural name.
+                BUT, add_foreign_key connects table with singulat name.
+
+                So, Either USE:
+
+                    add_reference with foreign_key: option
+
+                    OR
+
+                    add_foreign_key and pre-create singular named table.
+
+        - You can use "column:" option for different column name, and; 
+            "primary_key:" option for different named primary key
+
+            ---------------------------------------------------------------
+            add_foreign_key :temp_books, :books, column: :isbn_book, primary_key: :isbn
+            ---------------------------------------------------------------
+
+        - Removing Foreign Key:
+
+            -----------------------------------------------
+            remove_foreign_key :issued_books, :students
+
+            remove_foreign_key :temp_books, column: :isbn_book
+            -----------------------------------------------
+
+        ---> add_foreign_key also supports options such as name, on_delete, if_not_exists, validate, and deferrable.
