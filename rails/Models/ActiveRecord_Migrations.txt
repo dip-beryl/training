@@ -490,3 +490,174 @@ NOTE : References and Foreign Key are different concepts.
             -----------------------------------------------
 
         ---> add_foreign_key also supports options such as name, on_delete, if_not_exists, validate, and deferrable.
+        
+        
+        --------------------------------------------------------------------------------------------------------------
+
+    3.8. When Helpers aren't Enough: (.connection.execute)
+
+        If the helpers provided by Active Record aren't enough you can use the execute method to execute arbitrary SQL.
+
+            - Product.connection.execute(" UPDATE products SET price = 'free' WHERE 1=1 ")
+
+        -----------------------------------------------------------------------------------------------------------------
+    3.9. Using the change Method :
+
+        - The change method is the primary way of writing migrations.
+
+            add_column
+            add_foreign_key
+            add_index
+            add_reference
+            add_timestamps
+            change_column_comment (must supply a :from and :to option)
+            change_column_default (must supply a :from and :to option)
+            change_column_null
+            change_table_comment (must supply a :from and :to option)
+            create_join_table
+            create_table
+            disable_extension
+            drop_join_table
+            drop_table (must supply a block)
+            enable_extension
+            remove_column (must supply a type) --------------> or ActiveRecord will not able to re-create column
+            remove_foreign_key (must supply a second table)
+            remove_index
+            remove_reference
+            remove_timestamps
+            rename_column
+            rename_index
+            rename_table
+            change_table (except when block contains "change", "change_default" or "remove")
+
+Lets Understand : 
+                    1. Migrations can be roolback. This process is known as reversing.
+                    2. Not every migration is reversible.
+                    3. In some cases ActiveRecord knows how to reverse the migrations on its own.
+                    4. But with some changes ActiveRecord isn't smart enough to reverse the changes on its own.
+
+                    5. In the cases in which ActiveRecord can do reversing on its own are mentioned in change method.
+                        def change
+                        end
+
+                        All the migrations from above list are automatically reversible.
+
+                    6. For manual reversing we use up and down mehod or the reversible method.
+            
+        ---------------------------------------------------------------------------------------------------------------------
+    3.10. Reversible : 
+
+        - Reversible method is used to reverse the changes that are not automatically reversible.
+
+        - Reversible method is used inside change method.
+
+        - We can use reverisble method or the up/down methods.
+
+        -Syntax :
+        
+            def change
+                reversible do |object|
+
+                    obj.up do
+                    end
+
+                    obj.down do
+                    end
+                end
+            end
+
+
+        - Example :
+        ---------------------------------------------------------------------------------------------------------
+            class ExampleMigrationTwo < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :example_table do |t|
+                
+                        t.string :name
+                        t.string :contact_no
+                        t.integer :marks
+                    end
+                
+                    reversible do |dir|
+                        dir.up do
+                            execute <<-SQL
+                        
+                                ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                            
+                            SQL
+                        end
+
+                        dir.down do
+                            execute <<-SQL
+                                ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+
+                            SQL
+                        end
+                    end
+
+                    add_column :example_table, :dob, :datetime
+
+                end
+            end
+        --------------------------------------------------------------------------------------------------------------
+            * when we run db:migrate :
+                - 1st create_table
+                - in reversible on (up) block is executed that is "alter add constraint check"
+                - then add_column
+            
+            * when we run db:rollback :
+
+                - 1st the column is removed.
+                    - add_column is automatically reversible
+                - then in revrsible on (down) block will run that is "alter drop constarint"
+                - last the tabole is dropped.
+                    - create_table is automatically reversible
+
+
+        ------------------------------------------------------------------------
+    3.11. up / down Methods :
+
+        - Up / Down method is the old style of writing reversible migrations.
+        - In this all the reversible actions are provoided by the developer.
+        - In this "change method and reverisble block" is completely removed.
+        - Up is for migrate and Down is for rollback.
+        
+        - the flow of execution should be completely opposite in resepect to each other (Up and Down).
+
+        Example:
+        ------------------------------------------------------------------------------------------------------------------
+            class ExampleMigrationTwo < ActiveRecord::Migration[7.0]
+                def up
+                    create_table :example_table do |t|
+                
+                        t.string :name
+                        t.string :contact_no
+                        t.integer :marks
+                    end
+                
+                    execute <<-SQL
+            
+                        ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                
+                    SQL
+                
+                    add_column :example_table, :dob, :datetime
+                end
+
+                def down
+
+                    remove_column :example_table, :dob
+
+                    execute <<-SQL
+                
+                        ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+                
+                    SQL
+
+                    drop_table :example_table
+                
+                end
+            end
+        ----------------------------------------------------------------------------------------------------------
+
+
