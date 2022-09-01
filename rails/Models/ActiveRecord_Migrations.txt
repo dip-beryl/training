@@ -491,7 +491,7 @@ NOTE : References and Foreign Key are different concepts.
 
         ---> add_foreign_key also supports options such as name, on_delete, if_not_exists, validate, and deferrable.
         
-        
+
         --------------------------------------------------------------------------------------------------------------
 
     3.8. When Helpers aren't Enough: (.connection.execute)
@@ -661,3 +661,92 @@ Lets Understand :
         ----------------------------------------------------------------------------------------------------------
 
 
+
+        ---------------------------------------
+    3.12. Reverting Previous Migrations :
+
+        revert method.
+
+        Syntax:
+
+            revert [class name of revrting migration]
+
+        (AT TOP)
+            require_relative 'file name of migartion'
+
+
+        - Revert is quite different from down or roll back.
+        - Revert can be execute on db:migrate or db:rollback
+
+        - In revrt you can specify a already migrated migration file whose changes you want to be reverted.
+        - When a migration gets too old in the record you cannot roll back it without roll backing all the between migrations.
+
+        - In these type of cases revert is used.
+
+        - After reverting the actions of that migration file you can specify your changes.
+
+        Example
+        ------------------------------------------------------------------------
+            require_relative '20220901054029_example_migration_two.rb'
+
+            class ExampleRevert < ActiveRecord::Migration[7.0]
+                def change
+                    revert ExampleMigrationTwo
+
+                    create_table :revert_table do |t|
+                        t.string :my_name
+                        t.string :your_name
+                    end
+                end
+            end
+        ------------------------------------------------------------------------
+            * Above revr command will revert all the changes done by ExampleMigrationTwo
+            * and then apply its changes.
+
+            Result :
+                - Table example_table will be removed.
+                - Table revert_table will be created.
+
+
+        - revert method also accepts a block.
+            - Block is used mention a snipped of code from the reverting migration.
+            - You can use this block when you want to revert only some part of the last migration.
+
+
+        Exmpale: lets say we only want to revert the part from ExampleMigrationTwo where check constarint is added.
+
+        --------------------------------------------------------------------------------------------------------------
+            class ExampleRevert < ActiveRecord::Migration[7.0]
+                def change
+                    revert do
+                            # copy pasting code from ExampleMigrationTwo
+                        reversible do |dir|
+                            dir.up do
+                                execute <<-SQL
+                            
+                                    ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                                
+                                SQL
+                            end
+
+                            dir.down do
+                                execute <<-SQL
+                                    ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+
+                                SQL
+                            end
+                        end
+                    end
+                    
+                    create_table :revert_table do |t|
+                        t.string :my_name
+                        t.string :your_name
+                    end
+                end
+            end
+        --------------------------------------------------------------------------------------------------------------
+            * You do not need to require_relative in block method of revert.
+            * Just copy paste the code that you want to be reverted.
+
+
+------------------------------------------------------------------------------------------------------------------------------
