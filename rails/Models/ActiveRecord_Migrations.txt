@@ -811,3 +811,60 @@ Lets Understand :
             say_with_time : outputs a text with time (read further on migrations page)
 
 ----------------------------------------------------------------------------------------------------------------------------------------
+
+5. Schema :
+
+    1. Schema files are used to create the database in one go.
+
+    2. Running all the migrations agin can be error prone but schema files have a perfect copy of your Database structure.
+
+    3. With every db:migrate schema file gets updated automatically.
+
+    4. There are Two types of schema file :
+
+        - schema.rb     :   a file in ruby migrations dsl language
+        - structure.sql :   a simple sql file using the dump method of DB server you are using pg_dump in case of postgre
+
+        * You define which type of file you want to use for dumiping the databse in the "config/application.rb"
+                 
+                    "config/application.rb"
+                -----------------------------------
+                 cofig.active_record.schema_format
+                ------------------------------------
+
+                Options are :ruby or :sql
+
+
+    NOTE : schema.rb file caccot save all things like : triggers, sequences, stored procedures, functions etc.
+
+        db:schema:load
+
+            - to load structure.sql
+
+
+        db:setup
+
+            - to load scema.rb
+------------------------------------------------------------------------------------------------------------------------------------------
+
+6. Seed Data:
+
+    db/seeds.rb
+
+        is used to putr data into database with speed .
+
+            ------------------------------------------------------------
+            5.times do |i|
+                Product.create(name: "Product ##{i}", description: "A product.")
+            end
+            -------------------------------------------------------------
+
+        - Although you can always use ActionRecord objects or Migrations to input data too.
+
+
+        To run a seed file
+
+            $ rails db:seed
+
+            
+----------------------------------------------------------------------------------------------------------------
