@@ -750,3 +750,64 @@ Lets Understand :
 
 
 ------------------------------------------------------------------------------------------------------------------------------
+
+
+4. Running Migrations :
+
+    4.1 db:migrate 
+            
+            --> run its most basic form it just runs the change or up method for all the migrations that have not yet been run.
+
+
+        db:migrate VERSION= number
+
+            --> Migrate down or up till the version number.
+
+        db:migrate:status
+
+            --> Shows the status of which migration have been run or not.
+
+        NOTE : Note that running the db:migrate command also invokes the [db:schema:dump ] command, 
+                which will update your db/schema.rb file to match the structure of your database.
+
+    4.2 db:rollback
+
+            --> down or revert the last change method
+
+        db:rollback STEP=n
+
+            --> Going back that much steps
+
+    4.3 db:setup 
+
+            --> Create database and load "schema.rb" and initialize "seed" data
+
+        db:reset 
+            
+            --> drop the database then again create it
+            --> similar to db:drop + db:setup
+
+        NOTE: these commands will not migrate any migration file. They create DB from schema.rb or structure.sql
+
+    4.4 
+        db:migrate:up VERSION= number
+        db:migrate:down VERSION= number
+
+            --> Run te specific migration's up, down or change.
+
+
+    4.5 Running migration in Different Migration :
+
+        db:migrate RAILS_ENV=test
+
+    4.6 Change the output that is given by running migrations:
+
+        - To change these outputs or add cyustom outputs you need to edit the migration files.
+
+            suppress_messages : whatever given in its block will not give output message.
+
+            say "message", boolean (optional) : outputs the message ... bollean is true then indented.
+
+            say_with_time : outputs a text with time (read further on migrations page)
+
+----------------------------------------------------------------------------------------------------------------------------------------
