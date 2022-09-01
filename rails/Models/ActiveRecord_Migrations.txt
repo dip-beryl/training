@@ -1,0 +1,870 @@
+File Name       : ActiveRecord_Migrations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Migration (Overview) :
+
+    1.1. Rails provides a "domain-specific language" (DSL) for managing a "database schema" called -- Migrations. 
+    
+    1.2. Migrations are stored in files which are executed against any database that "Active Record" supports using [rake ].
+        -> "project/db/migrate/..."
+    
+    
+    - Example of a migration that "creates a table":
+
+    ---------------------------------------------------------------------
+    |                                                                   |
+    |   class CreatePublications < ActiveRecord::Migration[7.0]         |
+    |       def change                                                  |
+    |           create_table :publications do |t|                       |
+    |           t.string :title                                         |
+    |           t.text :description                                     |
+    |           t.references :publication_type                          |
+    |           t.integer :publisher_id                                 |
+    |           t.string :publisher_type                                |
+    |           t.boolean :single_issue                                 |
+    |                                                                   |
+    |           t.timestamps                                            |
+    |           end                                                     |
+    |           add_index :publications, :publication_type_id           |
+    |       end                                                         |
+    |   end                                                             |
+    ---------------------------------------------------------------------
+
+    1.3. Migrations help us to manipulate databases without the need of SQL.
+    
+    1.4. You can think of each migration as being a new 'version' of the database. 
+    
+    1.5. A schema starts off with nothing in it.
+        - With each migration executes - it add or remove tables, columns, or entries. 
+    
+    1.6. Active Record knows how to update your schema along this timeline, bringing it from whatever point it is in the history to the latest version. 
+    
+    1.7. Active Record will also update your "db/schema.rb" file to match the up-to-date structure of your database.
+
+    1.8. Rails keeps track of which files have been committed to the database and provides rollback features. 
+    
+    1.9. To actually create the table, you'd run 
+    
+        $ rails db:migrate 
+        
+            and; to roll it back, 
+        
+        $ rails db:rollback.
+
+    NOTE : Note that in migrations we define the changes in forward direction.
+           Migrations keep track of migration files that have been run or yet to run.
+           You cannot execute a same migration file again. Unless you have rolled back that migration file.
+           You cannot execute the migration again, Even if you have made changes in that file now.
+           
+           To run the migration again with changes :
+                - Make changes
+                - Rollback migration
+                - Migrate the migrations again.
+
+----------------------------------------------------------------------------------------------------------
+
+2. Create Migration File :
+
+    There are 3 ways through which we can create a migration file:
+        - Generate Migration directly
+        - Generate Model
+        - Generat Migration with specific Type-/Modifiers Passed
+
+    i.   Format of migration file is : "YYYYMMDDHHMMSS_migration_name_snake_cased.rb"
+    ii.  In the genrate method you have to provide name in CamelCase format
+    iii. A class of same CamalCase name will be in the migration. But the file name will contain snake_cased name of same class.
+
+-------
+    2.1 Creating / Generating Standalone Migrations : 
+
+    - First we will drop the db so that all tables will be deleted that we created during ActiveRecord_Basics
+        $ rails db:drop
+        $ rails db:create
+
+        2.1.1 CreateTable ---------------------------------->
+
+            $ rails g migration CreateBooks name:string author:string isbn:integer
+            >>
+                invoke  active_record
+                create    db/migrate/20220831095410_create_books.rb
+
+                "db/migrate/20220831095410_create_books.rb"
+            ------------------------------------------------------------------
+            class CreateBooks < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :books do |t|
+                    t.string :name
+                    t.string :author
+                    t.integer :isbn
+
+                    t.timestamps
+                    end
+                end
+            end
+            ---------------------------------------------------------------------
+
+            SIMILARLY,
+
+            $ rails g migration CreateStudents name:string roll_no:integer course:string contact_no:string
+
+                "db/migrate/20220831095622_create_students.rb"
+            --------------------------------------------------------------------
+            class CreateStudents < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :students do |t|
+                        t.string :name
+                        t.integer :roll_no
+                        t.string :course
+                        t.string :contact_no
+
+                        t.timestamps
+                    end
+                end
+            end
+            --------------------------------------------------------------------
+
+
+            $ rails g migration CreateIssuedBooks books:references
+
+                "db/migrate/20220831095705_create_issued_books.rb"
+            ----------------------------------------------------------------
+            class CreateIssuedBooks < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :issued_books do |t|
+                        t.references :books, null: false, foreign_key: true
+
+                        t.timestamps
+                    end
+                end
+            end
+            ----------------------------------------------------------------
+
+
+        2.1.2 AddColumnToTable --------------------->
+
+            $ rails g migration AddEditionToBooks
+            >>
+                invoke  active_record
+                create    db/migrate/20220831084304_add_edition_to_blogs.rb
+
+                "db/migrate/20220831084304_add_edition_to_books.rb"
+            ----------------------------------------------------------
+            class AddEditionToBooks < ActiveRecord::Migration[7.0]
+                def change
+                end
+            end
+            ----------------------------------------------------------
+
+            - The name we used in the above generate command is a special name format:
+                i.e., "AddColumnToTable" or "RemoveColumnFromTable"
+
+                With these type of migration names we can generate "add_column" and "remove_column" migration statements automatically
+
+            
+            ----> Delete the above migration file first or use [--force ] in below generate command
+
+            $ rails g migration AddEditionToBooks edition:string
+            
+                "db/migrate/20220831095842_add_edition_to_books.rb"
+            ----------------------------------------------------------
+            class AddEditionToBooks < ActiveRecord::Migration[7.0]
+                def change
+                    add_column :books, :edition, :string
+                end
+            end
+            ----------------------------------------------------------
+                - As you can see "add_column" is added automatically
+
+
+
+        2.1.3 RemoveColumnFromTable ------->
+            
+            - Similarly, you can generate a migration to remove a column from the command line.
+
+
+            $ rails g migration RemoveIsbnFromBooks isbn:string
+
+                "db/migrate/20220831100052_remove_isbn_from_books"
+            --------------------------------------------------------------
+            class RemoveIsbnFromBooks < ActiveRecord::Migration[7.0]
+                def change
+                    remove_column :books, :isbn, :string
+                end
+            end
+            --------------------------------------------------------------
+        
+
+        2.1.4 AddTableRefToTable
+
+            $ rails g migration AddStudentsRefToIssuedBooks students:references
+
+                "db/migrate/20220831100234_add_students_ref_to_issued_books.rb"
+            --------------------------------------------------------------------------------
+            class AddStudentsRefToIssuedBooks < ActiveRecord::Migration[7.0]
+                def change
+                    add_reference :issued_books, :students, null: false, foreign_key: true
+                end
+            end
+            ----------------------------------------------------------------------------------
+        
+        2.1.5 CreateJoinTableName1Name2
+
+            - There is also a generator which will produce join tables if JoinTable is part of the name:
+
+        ------------------------------------------------------------------------------------------------------------
+    
+    2.2 Model Generators:
+
+        - The model, resource, and scaffold generators:
+            - will create migrations appropriate for adding a new model. 
+            
+        - This migration will already contain instructions for creating the relevant table. 
+        
+        - If you tell Rails what columns you want, then statements for adding these columns will also be created.
+
+            $ rails g model Product name:string description:text
+
+                * Will produce a migration file for CreateProduct containing code for:
+                    "name"        column who has string d-type and;
+                    "description" column who has text d-type
+
+        ------------------------------------------------------------------------------------------------------------
+
+    2.3 Passing Modifiers :
+
+        - Some commonly used type modifiers can be passed directly on the command line.
+        - They are enclosed by curly braces and follow the field type:
+
+            $ rails g migration AddPercentageToStudents 'percentage:decimal{5,2}'
+
+            "db/migrate/20220831103311_add_percentage_to_students.rb"
+        -----------------------------------------------------------------------------------
+            class AddPercentageToStudents < ActiveRecord::Migration[7.0]
+                def change
+                    add_column :students, :percentage, :decimal, precision: 5, scale: 2
+                end
+            end
+        -----------------------------------------------------------------------------------
+            
+            ** You will learn more about Column-Type-Modifiers below. **
+
+--------------------------------------------------------------------------------------------------------------------------
+
+3. Writing Migrations :
+
+    3.1. Creating a Table (create_table)
+
+        - The create_table method is one of the most fundamental, but most of the time, will be generated for you from using a 
+            model, resource, or scaffold generator.
+        
+        - A create_table command will automatically create a "id" column and set it as primary key.
+
+            * Typical Create Table Example :
+
+                ---------------------------
+                create_table :books do |t|
+                    t.string :name
+                    t.integer :isbn
+                end
+                -------------------------
+
+            * Example with various options :
+
+                -----------------------------------------------------------
+                create_table :books, options: "ENGINE=BLACKHOLE" do |t|
+                end
+                -----------------------------------------------------------
+    
+                    - options: is used to add any text or command in the end of sql that will be generated.
+
+
+            * Constraints :
+
+                -----------------------------------------------------
+                create_table :books, id: false do |t|
+    
+                    t.integer :student_id, primary_key: true, null: false
+                    
+                    t.string :name, index: true, null: false
+                    
+                    t.string :email, index: {unique: true, name: "unique_email"}                
+                end
+                -----------------------------------------------------
+
+                    - [id: false] will do not create id column in table
+                    
+            
+            * Valid Values for index: 
+                        :unique, :length, :order, :opclass, :where, :type, :using, :comment, :algorithm.
+
+
+                        --> creating a temporary table for examples:
+
+                            $ rails g migration CreateTempBooks name:string author:string isbn:integer 
+
+        ----------------------------------------------------------------------------------------------------
+    3.2. Creating a Join Table: (create_join_table)
+
+        - It is used to create a joined table of two table's ids column
+
+            -------------------------------------------
+            create_join_table :students, :books
+            
+            OR
+
+            create_join_table :books, :students do |t|
+            end
+            -------------------------------------------
+
+                * the above command will craete a new table named "books_students" (alphabetical order)
+                * the table will contain only two columns "book_id" and "student_id"
+                * By default these column are "null: false" 
+                * By default there is index created.
+
+        - Example to:
+                    Change Table name
+                    Add Index
+                    Setting null: true
+
+            -------------------------------------------
+            create_join_table :students, :books, column_options: {null: false}, table_name: :issues do |t|
+                t.index :student_id
+                t.index :book_id
+            end
+            -------------------------------------------
+
+        ----------------------------------------------------------------------------------------------------
+    3.3. Changing Tables: (change_table)
+
+        - "change_table" is very close in functioning with "create_table" but it is more smart.
+
+            -------------------------------------
+            change_table :temp_books do |t|
+
+                t.remove :name, :author
+                t.string :book_name
+                t.index :book_name
+                t.rename :isbn, :isbn_book
+            end
+            --------------------------------------
+                - removed column :name and :author
+                - created new column :book_name as string
+                - added index to :book_name
+                - renamed :isbn to isbn_book
+
+        -------------------------------------------------------
+    3.4. Changing Columns : 
+                            - add_column
+                            - remove_column
+                            - change_column
+
+        - change data type of column
+
+            ------------------------------------------
+                change_column :books, :isbn, :string
+            ------------------------------------------
+                * changes the datatype of books.isbn to "string"
+
+        
+        - change_column_null is used to chnage the value of NULL
+        - change_column_default is used to change the default value true or false
+
+            -------------------------------------------------------------------
+            change_column_null :products, :name, false
+            
+            change_column_default :products, :approved, from: true, to: false
+            -------------------------------------------------------------------
+                * This sets :name field on products to a NOT NULL column and;
+                * the default value of the :approved field from true to false.
+
+        ---------------------------------------
+    3.5. Column Modifiers:
+
+        - They are used for "add_column" and "change_column" :
+
+            comment     : Adds a comment for the column.
+
+            collation   : Specifies the collation for a string or text column.
+
+            default     : Allows to set a default value on the column. 
+                            Note that if you are using a dynamic value (such as a date), 
+                            the default will only be calculated the first time (i.e. on the date the migration is applied). Use nil for NULL.
+
+            limit       : Sets the maximum number of characters for a string column and the maximum number of bytes for text/binary/integer columns.
+            
+            null        : Allows or disallows NULL values in the column.
+            
+            precision   : Specifies the precision for decimal/numeric/datetime/time columns.
+            scale       : Specifies the scale for the decimal and numeric columns, representing the number of digits after the decimal point.
+
+        Eg:
+            ----------------------------------------------------------------------------------
+            add_column :students, :father_name, :string, null: true, limit: 20, default: "papa"
+            ----------------------------------------------------------------------------------
+                * limit doesn't add a check condition. It specifies the size of data type like VARCHAR(20).
+            
+        Example: of precision and scale is in "2.3" above.
+
+        NOTE : to add index in columns use "add_index"
+        ------------------------------------------------------------------------------------------------------------------
+
+    3.6. References :
+
+            add_reference
+            remove_reference
+        
+        - The add_reference method allows the creation of an appropriately named column.
+
+        - The method [add_belongs_to] is an alias of [add_reference].
+
+        - A foreign key can be created with the foreign_key option.
+
+            
+
+        -------------------------------------
+            add_reference :temp_books, :students, foreign_key: true
+        ------------------------------------
+            * This migration will create a "students_id" column in the "temp_books" table.
+            * The index will automatically be created unless explicitly mentioned not to.
+                index: false
+
+
+        ------------------------------------------------------
+            remove_reference :issued_books, :students, foreign_key: true, index: false
+        -----------------------------------------------------------------
+
+NOTE : References and Foreign Key are different concepts.
+
+        1. References Work on Model Layer. And just adds the column as mentioned above
+        
+        2. Foreign Key is a Database concept. and adds constraint of foreign_key.
+
+        3. While it's not required you might want to add foreign key constraints to guarantee referential integrity.
+            
+        ----------------------------------------------------------------------------------------------------------------
+    
+    3.7. Foreign Keys :
+
+            add_foreign_key
+            remove_foreign_key
+
+        ----------------------------------------------
+            add_foreign_key :issued_books, :students
+        ----------------------------------------------
+            * This adds a new constraint to the :issued_books table. 
+                
+                (foreign_key) issued_books.student_id ---> students.id (primary_key)
+            
+            * A column name with referenced_table_name appended with [_id] is pre-needed
+
+                student_id (is approved)
+                students_id (is NOT-approved)
+
+        NOTE * - add_reference creates a table with plural name.
+                BUT, add_foreign_key connects table with singulat name.
+
+                So, Either USE:
+
+                    add_reference with foreign_key: option
+
+                    OR
+
+                    add_foreign_key and pre-create singular named table.
+
+        - You can use "column:" option for different column name, and; 
+            "primary_key:" option for different named primary key
+
+            ---------------------------------------------------------------
+            add_foreign_key :temp_books, :books, column: :isbn_book, primary_key: :isbn
+            ---------------------------------------------------------------
+
+        - Removing Foreign Key:
+
+            -----------------------------------------------
+            remove_foreign_key :issued_books, :students
+
+            remove_foreign_key :temp_books, column: :isbn_book
+            -----------------------------------------------
+
+        ---> add_foreign_key also supports options such as name, on_delete, if_not_exists, validate, and deferrable.
+        
+
+        --------------------------------------------------------------------------------------------------------------
+
+    3.8. When Helpers aren't Enough: (.connection.execute)
+
+        If the helpers provided by Active Record aren't enough you can use the execute method to execute arbitrary SQL.
+
+            - Product.connection.execute(" UPDATE products SET price = 'free' WHERE 1=1 ")
+
+        -----------------------------------------------------------------------------------------------------------------
+    3.9. Using the change Method :
+
+        - The change method is the primary way of writing migrations.
+
+            add_column
+            add_foreign_key
+            add_index
+            add_reference
+            add_timestamps
+            change_column_comment (must supply a :from and :to option)
+            change_column_default (must supply a :from and :to option)
+            change_column_null
+            change_table_comment (must supply a :from and :to option)
+            create_join_table
+            create_table
+            disable_extension
+            drop_join_table
+            drop_table (must supply a block)
+            enable_extension
+            remove_column (must supply a type) --------------> or ActiveRecord will not able to re-create column
+            remove_foreign_key (must supply a second table)
+            remove_index
+            remove_reference
+            remove_timestamps
+            rename_column
+            rename_index
+            rename_table
+            change_table (except when block contains "change", "change_default" or "remove")
+
+Lets Understand : 
+                    1. Migrations can be roolback. This process is known as reversing.
+                    2. Not every migration is reversible.
+                    3. In some cases ActiveRecord knows how to reverse the migrations on its own.
+                    4. But with some changes ActiveRecord isn't smart enough to reverse the changes on its own.
+
+                    5. In the cases in which ActiveRecord can do reversing on its own are mentioned in change method.
+                        def change
+                        end
+
+                        All the migrations from above list are automatically reversible.
+
+                    6. For manual reversing we use up and down mehod or the reversible method.
+            
+        ---------------------------------------------------------------------------------------------------------------------
+    3.10. Reversible : 
+
+        - Reversible method is used to reverse the changes that are not automatically reversible.
+
+        - Reversible method is used inside change method.
+
+        - We can use reverisble method or the up/down methods.
+
+        -Syntax :
+        
+            def change
+                reversible do |object|
+
+                    obj.up do
+                    end
+
+                    obj.down do
+                    end
+                end
+            end
+
+
+        - Example :
+        ---------------------------------------------------------------------------------------------------------
+            class ExampleMigrationTwo < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :example_table do |t|
+                
+                        t.string :name
+                        t.string :contact_no
+                        t.integer :marks
+                    end
+                
+                    reversible do |dir|
+                        dir.up do
+                            execute <<-SQL
+                        
+                                ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                            
+                            SQL
+                        end
+
+                        dir.down do
+                            execute <<-SQL
+                                ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+
+                            SQL
+                        end
+                    end
+
+                    add_column :example_table, :dob, :datetime
+
+                end
+            end
+        --------------------------------------------------------------------------------------------------------------
+            * when we run db:migrate :
+                - 1st create_table
+                - in reversible on (up) block is executed that is "alter add constraint check"
+                - then add_column
+            
+            * when we run db:rollback :
+
+                - 1st the column is removed.
+                    - add_column is automatically reversible
+                - then in revrsible on (down) block will run that is "alter drop constarint"
+                - last the tabole is dropped.
+                    - create_table is automatically reversible
+
+
+        ------------------------------------------------------------------------
+    3.11. up / down Methods :
+
+        - Up / Down method is the old style of writing reversible migrations.
+        - In this all the reversible actions are provoided by the developer.
+        - In this "change method and reverisble block" is completely removed.
+        - Up is for migrate and Down is for rollback.
+        
+        - the flow of execution should be completely opposite in resepect to each other (Up and Down).
+
+        Example:
+        ------------------------------------------------------------------------------------------------------------------
+            class ExampleMigrationTwo < ActiveRecord::Migration[7.0]
+                def up
+                    create_table :example_table do |t|
+                
+                        t.string :name
+                        t.string :contact_no
+                        t.integer :marks
+                    end
+                
+                    execute <<-SQL
+            
+                        ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                
+                    SQL
+                
+                    add_column :example_table, :dob, :datetime
+                end
+
+                def down
+
+                    remove_column :example_table, :dob
+
+                    execute <<-SQL
+                
+                        ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+                
+                    SQL
+
+                    drop_table :example_table
+                
+                end
+            end
+        ----------------------------------------------------------------------------------------------------------
+
+
+
+        ---------------------------------------
+    3.12. Reverting Previous Migrations :
+
+        revert method.
+
+        Syntax:
+
+            revert [class name of revrting migration]
+
+        (AT TOP)
+            require_relative 'file name of migartion'
+
+
+        - Revert is quite different from down or roll back.
+        - Revert can be execute on db:migrate or db:rollback
+
+        - In revrt you can specify a already migrated migration file whose changes you want to be reverted.
+        - When a migration gets too old in the record you cannot roll back it without roll backing all the between migrations.
+
+        - In these type of cases revert is used.
+
+        - After reverting the actions of that migration file you can specify your changes.
+
+        Example
+        ------------------------------------------------------------------------
+            require_relative '20220901054029_example_migration_two.rb'
+
+            class ExampleRevert < ActiveRecord::Migration[7.0]
+                def change
+                    revert ExampleMigrationTwo
+
+                    create_table :revert_table do |t|
+                        t.string :my_name
+                        t.string :your_name
+                    end
+                end
+            end
+        ------------------------------------------------------------------------
+            * Above revr command will revert all the changes done by ExampleMigrationTwo
+            * and then apply its changes.
+
+            Result :
+                - Table example_table will be removed.
+                - Table revert_table will be created.
+
+
+        - revert method also accepts a block.
+            - Block is used mention a snipped of code from the reverting migration.
+            - You can use this block when you want to revert only some part of the last migration.
+
+
+        Exmpale: lets say we only want to revert the part from ExampleMigrationTwo where check constarint is added.
+
+        --------------------------------------------------------------------------------------------------------------
+            class ExampleRevert < ActiveRecord::Migration[7.0]
+                def change
+                    revert do
+                            # copy pasting code from ExampleMigrationTwo
+                        reversible do |dir|
+                            dir.up do
+                                execute <<-SQL
+                            
+                                    ALTER TABLE example_table ADD CONSTRAINT marks_check CHECK(marks < 100);
+                                
+                                SQL
+                            end
+
+                            dir.down do
+                                execute <<-SQL
+                                    ALTER TABLE example_table DROP CONSTRAINT marks_check CASCADE;
+
+                                SQL
+                            end
+                        end
+                    end
+                    
+                    create_table :revert_table do |t|
+                        t.string :my_name
+                        t.string :your_name
+                    end
+                end
+            end
+        --------------------------------------------------------------------------------------------------------------
+            * You do not need to require_relative in block method of revert.
+            * Just copy paste the code that you want to be reverted.
+
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+4. Running Migrations :
+
+    4.1 db:migrate 
+            
+            --> run its most basic form it just runs the change or up method for all the migrations that have not yet been run.
+
+
+        db:migrate VERSION= number
+
+            --> Migrate down or up till the version number.
+
+        db:migrate:status
+
+            --> Shows the status of which migration have been run or not.
+
+        NOTE : Note that running the db:migrate command also invokes the [db:schema:dump ] command, 
+                which will update your db/schema.rb file to match the structure of your database.
+
+    4.2 db:rollback
+
+            --> down or revert the last change method
+
+        db:rollback STEP=n
+
+            --> Going back that much steps
+
+    4.3 db:setup 
+
+            --> Create database and load "schema.rb" and initialize "seed" data
+
+        db:reset 
+            
+            --> drop the database then again create it
+            --> similar to db:drop + db:setup
+
+        NOTE: these commands will not migrate any migration file. They create DB from schema.rb or structure.sql
+
+    4.4 
+        db:migrate:up VERSION= number
+        db:migrate:down VERSION= number
+
+            --> Run te specific migration's up, down or change.
+
+
+    4.5 Running migration in Different Migration :
+
+        db:migrate RAILS_ENV=test
+
+    4.6 Change the output that is given by running migrations:
+
+        - To change these outputs or add cyustom outputs you need to edit the migration files.
+
+            suppress_messages : whatever given in its block will not give output message.
+
+            say "message", boolean (optional) : outputs the message ... bollean is true then indented.
+
+            say_with_time : outputs a text with time (read further on migrations page)
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+5. Schema :
+
+    1. Schema files are used to create the database in one go.
+
+    2. Running all the migrations agin can be error prone but schema files have a perfect copy of your Database structure.
+
+    3. With every db:migrate schema file gets updated automatically.
+
+    4. There are Two types of schema file :
+
+        - schema.rb     :   a file in ruby migrations dsl language
+        - structure.sql :   a simple sql file using the dump method of DB server you are using pg_dump in case of postgre
+
+        * You define which type of file you want to use for dumiping the databse in the "config/application.rb"
+                 
+                    "config/application.rb"
+                -----------------------------------
+                 cofig.active_record.schema_format
+                ------------------------------------
+
+                Options are :ruby or :sql
+
+
+    NOTE : schema.rb file caccot save all things like : triggers, sequences, stored procedures, functions etc.
+
+        db:schema:load
+
+            - to load structure.sql
+
+
+        db:setup
+
+            - to load scema.rb
+------------------------------------------------------------------------------------------------------------------------------------------
+
+6. Seed Data:
+
+    db/seeds.rb
+
+        is used to putr data into database with speed .
+
+            ------------------------------------------------------------
+            5.times do |i|
+                Product.create(name: "Product ##{i}", description: "A product.")
+            end
+            -------------------------------------------------------------
+
+        - Although you can always use ActionRecord objects or Migrations to input data too.
+
+
+        To run a seed file
+
+            $ rails db:seed
+
+            
+----------------------------------------------------------------------------------------------------------------
