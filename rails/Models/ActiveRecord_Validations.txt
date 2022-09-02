@@ -195,3 +195,34 @@ Organization    : Beryl Systems Pvt. Ltd.
                 validates_associated :books
             end
         --------------------------------------------
+
+    4.3 confirmation :
+
+        - Used when two fields needs to matched like passwords.
+
+        - This helper method creates a "virtual field" with [main_field_name]_confirmation appended.
+
+        - Dafult message : "doesn't match confirmation"
+
+            --------------------------------------------
+            class Book < ApplicationRecord
+                
+                validates :email, confirmation: true
+                validates :email_conformation, presence: true
+
+                validates :email, confirmation: {case_sensitive: false}
+            end
+            --------------------------------------------
+                    * This check is performed only if "email_confirmation" is not [nil ]
+                    * so make sure to add a presence check in _confirmation column.
+
+                    * an option of case_sensitive is also present
+
+
+            Inside View:
+            -----------------------------------------------------------
+                <%= text.field :book, :email%>
+                <%= text.field :book, :email_confirmation%>
+            -----------------------------------------------------------
+        
+        -------------
