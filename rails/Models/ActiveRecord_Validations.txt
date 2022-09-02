@@ -254,3 +254,26 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         
         ------------
+    4.5 exclusion / inclusion:
+
+        Exclusion - Used to reserve some enteries that are not allowed.
+
+        Inclusion - Used to reserve some enteries that are allowed.
+
+        - The helpers has an option ":in" that receives the set of values that will (not) be accepted for the validated attributes.
+
+        -----------------------------------------------------------
+        class Book < ApplicationRecord
+            validates :name, exclusion: { in: ["copy", "book"] }
+        end
+        --------------------------------------------------------
+            * "copy" and "book" will not be accepted as input in :name
+            * %w(copy book) == ["copy", "book"]
+
+
+        Example : inclusion :
+        -----------------------------------------------------------------
+        class Coffee < ApplicationRecord
+            validates :size, inclusion: { in: %w(small medium large)}
+        end
+        -----------------------------------------------------------------

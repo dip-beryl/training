@@ -6,6 +6,8 @@ class Book < ApplicationRecord
 
     validates :isbn, comparison: {greater_than: 100}
 
+    validates :name, exclusion: { in: ["copy", "book"]}
+
     # self.table_name = "book_details"
 	# self.primary_key = "isbn"
 end
