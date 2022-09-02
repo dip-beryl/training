@@ -8,6 +8,8 @@ class Book < ApplicationRecord
 
     validates :name, exclusion: { in: ["copy", "book"]}
 
+    validates :author, format: { with: /\A[a-zA-Z]+\z/ }
+
     # self.table_name = "book_details"
 	# self.primary_key = "isbn"
 end

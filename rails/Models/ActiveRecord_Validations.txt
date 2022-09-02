@@ -277,3 +277,24 @@ Organization    : Beryl Systems Pvt. Ltd.
             validates :size, inclusion: { in: %w(small medium large)}
         end
         -----------------------------------------------------------------
+
+        ------------
+    4.6 format :
+
+        - This helper validates the attributes' values by testing whether they match a given regular expression,
+             which is specified using the ":with" option.
+
+        - Alternatively, you can require that the specified attribute does not match the regular expression by using the ":without" option.
+
+        - The Default error message : "is invalid"
+
+
+        ---------------------------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :author, format: { with: /\A[a-zA-Z]+\z/ }
+        end
+        ---------------------------------------------------------------------------
+            - Accepts only letters in name of author.
+
+        
+        ------------
