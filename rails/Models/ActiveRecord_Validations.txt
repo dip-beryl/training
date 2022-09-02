@@ -1,0 +1,921 @@
+File Name       : ActiveRecord_Validations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Validation : (Overview)
+
+    A simple validation example :
+    
+    ----------------------------------------
+    class Book < ApplicationRecord
+        validates :name, presence: true
+    end
+    ---------------------------------------
+
+        > irb > Person.create(name: "John Doe").valid?
+        >> true
+
+        > irb>  Person.create(name: nil).valid? 
+        >> false
+
+-------------------------------------------------------------------------
+
+2. Types of Validations :
+
+
+    There are different ways of validations :
+
+        - Databse specific validation: 
+                                        Useful but roadblocks in texting. 
+                                        Useful when man application is using same DB.
+
+        - Client Side Validations :
+                                    Good to provide quick feedback to client.
+                                    But, can be bypassed if Javascript is off.
+
+        - Controller Based Validation :
+                                        Becomes difficult to maintain and test.
+
+
+
+        - Model-level validations are the best way to ensure that only valid data is saved into your database. 
+            They are database agnostic, cannot be bypassed by end users, and are convenient to test and maintain
+
+----------------------------------------------------------------------------------------------------------------------
+
+3. Triggering of Validations :
+
+    - There are methods who trigger validations and There are methods who not.
+
+
+    3.1
+
+    Example -> Demo.create
+
+    - They all trigger the validatiions 
+
+        .create
+        .create!
+        .save
+        .save!
+        .update
+        .update!
+
+        - the Bang versions will raise an exception in case record is invalid.
+
+        - update returns object all other returns boolean.
+
+
+    - There can two type of objects in ActiveRecord:
+        
+        * belongs to record 
+        * do not belongs
+
+            - When a record is newly creaded it doesn't belong to any record (.new)
+            - When the record is save it belongs to a record.
+
+
+            .new_record?
+                        : is used to find if a record is new or old(belongs to record).
+
+
+    3.2 Skipping Validations :
+
+        decrement!
+        decrement_counter
+        increment!
+        increment_counter
+        insert
+        insert!
+        insert_all
+        insert_all!
+        toggle!
+        touch
+        touch_all
+        update_all
+        update_attribute
+        update_column
+        update_columns
+        update_counters
+        upsert
+        upsert_all
+
+        - They all skip validations :
+
+        - (.save) also ski[ps valiudations when used like: 
+
+                    : .save(validate: false)
+
+        ------------------------------
+    3.3 .valid? and .invalid?
+
+        - When an object's record is saved into DB all the validations run automatically by ActiveRecord on object data.
+
+        - The valid? method will verify that the errors collection is empty or not, 
+                so Always add cutom errors to the validations when there is not default message or using Custom Validations.
+
+        - You can run these validations on your own.
+
+            > b1 = Book.new(name: "c++")
+            > b2 = Book.new(name: nil)
+
+            > b1.valid?
+            >> true
+
+            > b2.valid?
+            >> false
+
+        -------------------------------------
+
+    --------------------------------------------------------------------------------------------------------------------------
+
+4. Validation Helpers :
+
+    1. Active Record offers many pre-defined validation helpers that you can use directly inside your class definitions.
+
+    2. These helpers provide common validation rules. Every time a validation fails, an error is added to the object's errors collection
+
+    3. Each helper accepts an arbitrary number of attribute names, so with a single line of code you can add the same kind of validation to several attributes.
+
+    4. All of them accept the ":on" and ":message" options, which define when the validation should be run and what message should be added to the errors collection if it fails
+
+    5. The :on option takes one of the values :create or :update
+
+    6. There is a default error message for each one of the validation helpers
+
+
+
+    4.1. acceptance:
+
+        - This method validates that a checkbox on the user interface was checked when a form was submitted.
+
+        - * Default Message: "must be accepted"
+
+        - It can also receive an :accept option, which determines the allowed values that will be considered as accepted. 
+            
+            It defaults to ['1', true] and can be easily changed.
+
+
+            $ rails g migration AddTermsOfServiceToBooks terms_of_service:boolean
+            
+            $ rails db:migrate
+
+            
+            -----------------------------------------------
+            class Book < ApplicationRecord
+
+                #validates :terms_of_service, acceptance: true
+                validates :terms_of_service, acceptance: {message: "Please accept t&c"}
+              
+                #validates :eula, acceptance: {accept: "Yes"}
+                validates :eula, acceptance: {accept: [1, True]}
+            end
+            --------------------------------------------------
+
+        NOTE : This validation is very specific to web applications and this 'acceptance' does not need to be recorded anywhere in your database. 
+        
+                If you don't have a field for it, the helper will create a virtual attribute. 
+                If the field does exist in your database, the accept option must be set to or include "true" or else the validation will not run.
+
+        --------------------------------------------------------------------
+    
+    4.2 validates_associated
+    
+        - You should use this helper when your model has associations with other models and they also need to be validated.
+
+        - When you try to save your object, valid? will be called upon each one of the associated objects.
+
+        - Don't use validates_associated on both ends of your associations. They would call each other in an infinite loop.
+
+        - Deafult Message: "is invalid"
+
+        Example :
+        --------------------------------------------
+            class Library < ApplicationRecord
+                has_many :books
+                validates_associated :books
+            end
+        --------------------------------------------
+
+    4.3 confirmation :
+
+        - Used when two fields needs to matched like passwords.
+
+        - This helper method creates a "virtual field" with [main_field_name]_confirmation appended.
+
+        - Dafult message : "doesn't match confirmation"
+
+            --------------------------------------------
+            class Book < ApplicationRecord
+                
+                validates :email, confirmation: true
+                validates :email_conformation, presence: true
+
+                validates :email, confirmation: {case_sensitive: false}
+            end
+            --------------------------------------------
+                    * This check is performed only if "email_confirmation" is not [nil ]
+                    * so make sure to add a presence check in _confirmation column.
+
+                    * an option of case_sensitive is also present
+
+
+            Inside View:
+            -----------------------------------------------------------
+                <%= text.field :book, :email%>
+                <%= text.field :book, :email_confirmation%>
+            -----------------------------------------------------------
+        
+        -------------
+    4.4 comparison :
+
+        - It is used to compare values of two columns. ( The values must be comparable ).
+
+        
+        
+        ------------------------------------------------------        
+        class Book < ApplicationRecord
+
+            validates :isbn, comparison: {greater_than: 100}
+            
+            #validates :isbn, comparison: {greater_than: :id}
+        end
+        ------------------------------------------------------   
+
+        Options:
+
+            :greater_than
+            :greater_than_or_equal_to
+            :equal_to
+            :less_than
+            :less_than_or_equal_to
+
+            :other_than  : Specifies the value must be other than the supplied value. 
+                            The default error message for this option is "must be other than %{count}".
+
+        
+        ------------
+    4.5 exclusion / inclusion:
+
+        Exclusion - Used to reserve some enteries that are not allowed.
+
+        Inclusion - Used to reserve some enteries that are allowed.
+
+        - The helpers has an option ":in" that receives the set of values that will (not) be accepted for the validated attributes.
+
+        -----------------------------------------------------------
+        class Book < ApplicationRecord
+            validates :name, exclusion: { in: ["copy", "book"] }
+        end
+        --------------------------------------------------------
+            * "copy" and "book" will not be accepted as input in :name
+            * %w(copy book) == ["copy", "book"]
+
+
+        Example : inclusion :
+        -----------------------------------------------------------------
+        class Coffee < ApplicationRecord
+            validates :size, inclusion: { in: %w(small medium large)}
+        end
+        -----------------------------------------------------------------
+
+        ------------
+    4.6 format :
+
+        - This helper validates the attributes' values by testing whether they match a given regular expression,
+             which is specified using the ":with" option.
+
+        - Alternatively, you can require that the specified attribute does not match the regular expression by using the ":without" option.
+
+        - The Default error message : "is invalid"
+
+
+        ---------------------------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :author, format: { with: /\A[a-zA-Z]+\z/ }
+        end
+        ---------------------------------------------------------------------------
+            - Accepts only letters in name of author.
+
+        
+        ------------
+    4.7 length :
+
+        - Checks length
+
+            :maximum
+            :minimum
+            :in or :within (mention a range)
+            :is (must equal to)
+
+        -------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :name, length: {maximum: 25}
+
+            validates :contact_no, length: {within: 8..15}
+
+        end
+        -------------------------------------------------------
+
+        -------------------------
+    4.8 numericality :
+
+        - Checks for different type of numbers. But makes sure that the input is number.
+
+        - If no option is provided then it will try to convert the input into number bu=y using float and d-type for DB will be bigint.
+
+
+
+        -------------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :roll_no, numericality: { only_integer: true}
+        end
+        -------------------------------------------------------------
+
+        - Options:
+
+            :only_integer == uses /\A[+-]?\d+\z/ to check for integer
+            
+            :greater_than
+            :greater_than_or_equal_to
+            :equal_to
+            :less_than
+            :less_than_or_equal_to
+
+            :other_than
+            
+            :in (specifies a range)
+            
+            :odd
+            :even
+
+            allow_nil: true (By default, numericality doesn't allow nil values)
+
+        ----------------
+    4.9 presence :
+
+        - This helper validates that the specified attributes are not empty. 
+            
+        - It uses the "blank?" method to check if the value is either nil or a blank string.
+
+            -------------------------------------------------------------
+            class Student < ApplicationRecord
+                validates :name, :roll_no, :course, presence: true
+            end
+            -------------------------------------------------------------
+
+        - If you have associations . you should appli presence validation on those columns.
+        - This way, it is not only checked that the foreign key is not empty but also that the referenced object exists
+
+            -------------------------------------------------------------
+            class Supplier < ApplicationRecord
+
+                has_one :account
+                validates :account, presence: true
+            end
+
+            -------------------------------------------------------------
+        
+        - Since false.blank? is true, 
+            if you want to validate the presence of a boolean field you should use one of the following validations:
+
+            --------------------------------------------------------------
+                validates :boolean_field_name, inclusion: [true, false]
+                validates :boolean_field_name, exclusion: [nil]
+            --------------------------------------------------------------
+
+        -------------
+    4.10 absence :
+
+        - This helper validates that the specified attributes are "absent".
+            
+        - It uses the "present?" method to check if the value is not either nil or a blank string
+
+            --------------------------------------------------------
+                class Person < ApplicationRecord
+                    validates :name, :login, :email, absence: true
+                end
+            --------------------------------------------------------
+
+        - Since false.present? is false, 
+            if you want to validate the absence of a boolean field you should use : 
+            
+        ----------------------------------------------------------------
+            validates :field_name, exclusion: { in: [true, false] }
+        ----------------------------------------------------------------
+
+        ---------------
+    4.11 uniqueness :
+
+        - This helper validates that the attribute's value is unique right before the object gets saved.
+
+        - It does not create a uniqueness constraint in the database, 
+            so it may happen that two different database connections create two records 
+            with the same value for a column that you intend to be unique.
+
+        - So you should always create Unique indexes in your database with unique validations.
+
+        - The validation happens by performing an SQL query into the model's table, searching for an existing record with the same value in that attribute.
+
+            ---------------------------------------------------------------------
+                class Student < ApplicationRecord
+                    validates :email, uniqueness: true
+                end
+            ---------------------------------------------------------------------
+
+        - Concept of group uniqueness and :scope
+
+            * Group Uniqueness : When two columns are selecetd together to make agroup inique index
+                      
+                                the combination of values in the indicated columns is unique across the whole table, 
+                                though any one of the columns need not be (and ordinarily isn't) unique.
+
+
+        - There is a :scope option that you can use to specify one or more attributes.
+
+            ------------------------------------------------------------------------
+            class Holiday < ApplicationRecord
+                
+                validates :name, uniqueness: { scope: :year,
+                                        message: "should happen once per year" }
+            end
+            ------------------------------------------------------------------------
+
+                    * This will function like a group unique index.
+                    
+                    * But, You still need to add group unique index to DB
+
+
+            -> Synatx to create Group Unique Index in PostgreSQL.
+                --------------------------------
+                    CREATE TABLE example (      |
+                        a integer,              |
+                        b integer,              |
+                        c integer,              |
+                        UNIQUE (a, c)           |
+                    );                          |
+                ---------------------------------
+
+        - There is also a :case_sensitive option
+        - Note that some BD's defaultly search case sensitively.
+
+    -----------
+    4.12 validates_with :
+
+        - This helper passes the record to a separate class for validation.
+        - It is used for complex validations.
+
+        - The class to which the records are passed should inherit from "ActiveModel::Validator"
+
+        - They work on whole records instead of one entry.
+
+        Syntax :
+
+        ----------------------------------------------------------------
+            class WhereRecordIsPassed < ActiveModel::Validator          |
+            end                                                         |
+                                                                        |
+            class MainModelClass < ApplicatioonRecord                   |
+                                                                        |
+            validates_with WhereRecordIsPassed, class2, ....          |
+            end                                                         |
+        -----------------------------------------------------------------
+                * Main model will receive the reord obn .create os .save
+                * "validates_with" will pass the record to mentioned class
+                * 
+
+        Example :
+        ----------------------------------------------------------------
+            class StudentValidator < ActiveModel::Validator
+                def validate(record)
+                    if record.name == "Evil"
+                    record.errors.add :base, "This person is evil"
+                    end
+                end
+            end
+
+            class Student < ApplicationRecord
+                validates_with StudentValidator
+            end
+        ----------------------------------------------------------------
+
+
+        - Like all other validations, validates_with takes the :if, :unless and :on options. 
+        
+        - If you pass any other options, it will send those options to the validator class as options:
+
+    NOTE - Like all other validations, validates_with takes the :if, :unless and :on options. 
+            - If you pass any other options, it will send those options to the validator class as options: options[:fields]
+
+            - Check Conditional Validations
+
+    --------------
+    4.13 validates_each :
+
+        - This helper validates attributes against a block. It doesn't have a predefined validation function.
+
+        - You should create one using a block, and "every attribute" passed to validates_each will be tested against it. 
+
+        - It takes a record and splits it into (record, attribute, value)
+
+            s1 = Student.create(name: "Arun", roll_no: 56)
+
+            :record => name: "Arun", roll_no: 56
+            :attribute => :name, :roll_no
+            :value => "Arun", 56
+
+        Example:
+        --------------------------------------------------------------
+            class Book < ApplicationRecord
+                
+                validates_each :name, :author do |record, attribute, value|
+                
+                    if value =~ /\A[[:lower:]]/
+                        record.errors.add(attribute, "Must start with upper case letter")
+                    end
+                end
+            end
+        --------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+5. Common Validation Options :
+
+    5.1 :allow_nil
+
+        - The :allow_nil option skips the validation when the value being validated is nil.
+
+        Syntax :
+
+            validates :column_name, ... any other validation helper ... , allow_nil: true
+
+    
+    5.2 :allow_blank
+
+        - It is similar to allow_nil. But it uses .blank?
+
+        - "allow_nil" will only allow nil but "alow_blank" will also allow empty string i.e, ""
+
+
+            -- > .valid? will be true
+
+    5.3 :message
+
+        - message option is used to send tghe messages to errors collection.
+
+        - A String :message value can optionally contain any/all of %{value}, %{attribute}, and %{model} which will be dynamically replaced when validation fails.
+
+        - The :message option accepts a String or Proc.
+
+
+        Example:
+        --------------------------------------------------------------------
+            validates :name, presence: { message: "must be given please" }
+
+            validates :age, numericality: { message: "%{value} seems wrong" }
+        -----------------------------------------------------------------------
+
+    5.4 :on
+
+        - The :on option lets you specify when the validation should happen / trriger. 
+        
+        - The default behavior for all the built-in validation helpers is to be run on save 
+            (both when you're creating a new record and when you're updating it). 
+            
+        - If you want to change it, you can use "on: :create" or "on: :update" to run the validation only when a record is created or updated.
+
+
+        Example:
+        ----------------------------------------------------------
+            validates :email, uniqueness: true, on: :create
+        ----------------------------------------------------------
+
+
+        - You can also use on: to define custom contexts.
+
+        - Custom contexts need to be triggered explicitly by passing the name of the context to valid?, invalid?, or save
+
+        Example: 
+        ------------------------------------------------------------
+            validates :age, numericality: true, on: :account_setup
+        ------------------------------------------------------------
+
+            > s1 = Student.new(age: "five")
+
+            > s1.valid?
+            >> true
+
+            > s1.valid?(:account_setup)
+            >> false
+
+            > s1.errors.messages
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+6. Strict Validations :
+
+    - You can also specify validations to be strict and raise "ActiveModel::StrictValidationFailed" when the object is invalid.
+
+    Example:
+    ----------------------------------------------------
+        class Person < ApplicationRecord
+            validates :name, presence: { strict: true }
+        end
+    -----------------------------------------------------
+
+        > Person.valid?
+        >>
+            ActiveModel::StrictValidationFailed: Name can't be blank
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+7. Conditional Validation :
+
+    - Sometimes it will make sense to validate an object only when a given predicate is satisfied. 
+    
+    - You can do that by using the ":if" and ":unless" options, which can take a symbol, a Proc or an Array
+
+    - Remember => "if" and "else" are opposite of each other.
+
+
+    Example:
+    -----------------------------------------------------------------------
+        class Order < ApplicationRecord
+            validates :card_number, presence: true, if: :paid_with_card?
+
+            def paid_with_card?
+                payment_type == "card"
+            end
+        end
+    ------------------------------------------------------------------------
+
+    7.1 Grouping Conditional Validations :
+
+        - with_options
+
+        Example:
+        ------------------------------------------------------------
+            def Student < ApplicationRecord
+            
+                with_options if: :is_admin? do |admin|
+
+                    admin.validates :password, length: {minimum: 6}
+                    admin.validates :email, presence: true
+                end
+            
+            end
+        -------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------
+
+8. Custom Validations :
+
+    - When the built-in validation helpers are not enough for your needs, you can write your own validators or validation methods as you prefer.
+
+     * Custom Validators
+     * Custom Methods
+
+
+     8.1 Custom Validators :
+
+        - Custom validators are classes that inherit from ActiveModel::Validator. 
+        
+        - These classes must implement the "validate" method which takes a "record" as an "argument" and performs the validation on it. 
+
+        ->* Custom validator are similar or somewhat advance version of "validates_with" and "validates_each"
+                
+        - The custom validator is called using the "validates_with" method.
+
+        Example:
+        -------------------------------------------------------------------------------------
+            class MyValidator < ActiveModel::Validator
+                def validate(record)
+                    unless record.name.start_with?("X")
+                        record.errors.add :name, "Name Should start with 'X'"
+                    end
+                end
+            end
+
+            class Student
+                include ActiveModel::Validations
+                validates_with MyValidator
+            end
+        -------------------------------------------------------------------------------------
+
+
+        - The easiest way to add custom validators for validating individual attributes is with the convenient 'ActiveModel::EachValidator'. 
+        
+        - In this case, the custom validator class must implement a "validate_each" method which takes three arguments: record, attribute, and value
+
+        Example:
+        -------------------------------------------------------------------------------------
+        class EmailValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+                unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+                    record.errors[] << (options[:message] || "not a valid email")
+                end
+            end
+        end
+
+        class Stduent < ApplicationRecord
+            
+            include ActiveModel::Validations
+            validate_each EmailValidator
+        end
+        -------------------------------------------------------------------------------------
+
+    8.2 Custom Methods :
+
+        - You can also create methods that verify the state of your models and add errors to the errors collection when they are invalid. 
+        
+        - You must then register these methods by using the validate class method, passing in the symbols for the validation methods' names.
+
+        - The valid? method will verify that the errors collection is empty, 
+                so your custom validation methods should add errors to it when you wish validation to fail:
+
+        Example :
+        -----------------------------------------------------------------------------------
+            class Invoice < ApplicationRecord
+                validate :expiration_date_cannot_be_in_the_past, on: create
+                validate :discount_cannot_be_greater_than_total_value
+
+                def expiration_date_cannot_be_in_the_past
+                    if expiration_date.present? && expiration_date < Date.today
+                        errors.add(:expiration_date, "can't be in the past")
+                    end
+                end
+
+                def discount_cannot_be_greater_than_total_value
+                    if discount > total_value
+                        errors.add(:discount, "can't be greater than total value")
+                    end
+                end
+            end
+        ----------------------------------------------------------------------------------------
+
+--------------------------------------------
+
+9. Errors in Validations :
+
+    - The valid? and invalid? methods only provide a summary status on validity. 
+    
+    - However you can dig deeper into each individual error by using various methods from the errors collection.
+
+    - The following is a list of the most commonly used methods.
+    
+    
+    9.1 errors
+
+        - The gateway through which you can get into various details of each error.
+    
+        - This returns an instance of the class ActiveModel::Errors containing all errors, each error is represented by an ActiveModel::Error object.
+
+
+        ------------
+    9.2 errors[]
+
+        - errors[] is used when you want to check the error messages for a specific attribute. 
+        
+        - It returns an array of strings with all error messages for the given attribute, each string with one error message
+
+            
+            Example :
+            -----------------------------------------------------------------
+            def Student < ApplicationRecord
+            
+                validates :name, presence: true, length: {minimum: 3}
+            end
+            -----------------------------------------------------------------
+
+                > s1 = Student.new(name: "Arun")
+                > s1.valid?
+                >> true
+
+                > s1.errors[:name]
+                >> []
+
+
+
+                > s2 = Student.new(name: "A")
+                > s1.valid?
+                >> false
+
+                > s1.errors[:name]
+                >> ["is too short (minimum is 3 characters)"]
+        
+        --------
+    9.3 errors.where
+
+        - Sometimes we may need more information about each error beside its message. 
+        
+        - Each error is encapsulated as an ActiveModel::Error object, and where method is the most common way of access.
+
+        - .where returns an array of error objects, filtered by various degree of conditions.
+
+        Example:
+
+            > s3 = Student.new
+            > s3.errors.where(:name)
+
+            >> [#<ActiveModel::Error attribute=name, type=blank, options={}>,                  
+                #<ActiveModel::Error attribute=name, type=too_short, options={:count=>3}>] 
+                
+                    # all errors for :name attribute
+
+            > s3.errors.where(:name, :too_short)
+            >>
+                [#<ActiveModel::Error attribute=name, type=too_short, options={:count=>3}>] 
+
+                    # only too_short errors
+
+            > s3.errors.where(:name, :too_long)
+            >> []
+
+                    # as there is no too_long error available.
+
+
+        - These ActiveModel::Error objects have many more objects of there own.
+
+            > s3_error = s3.errors.where(:name).last
+
+            > s3_error.type
+            >> :too_short
+
+            > s3_error.details
+            >> {:error=>:too_short, :count=>3}
+
+            > s3_error.options
+            >> {:count=>3}
+
+            > s3_error.message
+            >> "is too short (minimum is 3 characters)"
+
+            > s3_error.full_message
+            >> "Name is too short (minimum is 3 characters)" 
+
+
+        -------
+    9.4 errors.add
+
+        - The add method creates the error object by taking the attribute, the error type and additional options hash
+
+        - This is useful for writing your own validator.
+
+        Example:
+        ---------------------------------------------------------
+            class Student < ApplicationRecord
+                validate do |student|
+                    errors.add :name, :too_short, message: "write longer name"
+                end
+            end
+        ---------------------------------------------------------
+
+        -------
+    9.5 errors[:base]
+
+        - You can add errors that are related to the object's state as a whole, instead of being related to a specific attribute. 
+        
+        - You can add errors to :base when you want to say that the object is invalid, no matter the values of its attributes.
+
+        Example:
+        ---------------------------------------------------------
+            class Student < ApplicationRecord
+                validate do |student|
+                    errors.add :base, :invalid, message: "This students data is invalid"
+                end
+            end
+        ---------------------------------------------------------
+
+        ----
+    9.6 errors.clear
+
+        - The clear method is used when you intentionally want to clear the errors collection. 
+
+        Example:
+
+            > s3.errors[:name]
+            >> ["can't be blank", "is too short (minimum is 3 characters)"]
+
+            > s3.errors.clear
+            >> []
+
+            > s3.errors[:name]
+            >> []
+
+        
+        ----
+    9.7 errros.size
+
+        - The size method returns the total number of errors for the object.
+
+        Example:
+
+            > s3.valid?
+            >> false
+
+            > s3.errors.size
+            >> 2
+
+                # as there are two errors
