@@ -351,3 +351,57 @@ Organization    : Beryl Systems Pvt. Ltd.
             allow_nil: true (By default, numericality doesn't allow nil values)
 
         ----------------
+    4.9 presence :
+
+        - This helper validates that the specified attributes are not empty. 
+            
+        - It uses the "blank?" method to check if the value is either nil or a blank string.
+
+            -------------------------------------------------------------
+            class Student < ApplicationRecord
+                validates :name, :roll_no, :course, presence: true
+            end
+            -------------------------------------------------------------
+
+        - If you have associations . you should appli presence validation on those columns.
+        - This way, it is not only checked that the foreign key is not empty but also that the referenced object exists
+
+            -------------------------------------------------------------
+            class Supplier < ApplicationRecord
+
+                has_one :account
+                validates :account, presence: true
+            end
+
+            -------------------------------------------------------------
+        
+        - Since false.blank? is true, 
+            if you want to validate the presence of a boolean field you should use one of the following validations:
+
+            --------------------------------------------------------------
+                validates :boolean_field_name, inclusion: [true, false]
+                validates :boolean_field_name, exclusion: [nil]
+            --------------------------------------------------------------
+
+        -------------
+    4.10 absence :
+
+        - This helper validates that the specified attributes are "absent".
+            
+        - It uses the "present?" method to check if the value is not either nil or a blank string
+
+            --------------------------------------------------------
+                class Person < ApplicationRecord
+                    validates :name, :login, :email, absence: true
+                end
+            --------------------------------------------------------
+
+        - Since false.present? is false, 
+            if you want to validate the absence of a boolean field you should use : 
+            
+        ----------------------------------------------------------------
+            validates :field_name, exclusion: { in: [true, false] }
+        ----------------------------------------------------------------
+
+        ---------------
+
