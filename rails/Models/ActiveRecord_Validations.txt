@@ -226,3 +226,31 @@ Organization    : Beryl Systems Pvt. Ltd.
             -----------------------------------------------------------
         
         -------------
+    4.4 comparison :
+
+        - It is used to compare values of two columns. ( The values must be comparable ).
+
+        
+        
+        ------------------------------------------------------        
+        class Book < ApplicationRecord
+
+            validates :isbn, comparison: {greater_than: 100}
+            
+            #validates :isbn, comparison: {greater_than: :id}
+        end
+        ------------------------------------------------------   
+
+        Options:
+
+            :greater_than
+            :greater_than_or_equal_to
+            :equal_to
+            :less_than
+            :less_than_or_equal_to
+
+            :other_than  : Specifies the value must be other than the supplied value. 
+                            The default error message for this option is "must be other than %{count}".
+
+        
+        ------------
