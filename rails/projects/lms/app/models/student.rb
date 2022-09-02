@@ -4,4 +4,6 @@ class Student < ApplicationRecord
 
     validates :contact_no, length: {within: 8..15}
 
+    validates :roll_no, numericality: { only_integer: true}
+
 end

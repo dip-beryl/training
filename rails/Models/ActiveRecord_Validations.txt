@@ -317,3 +317,37 @@ Organization    : Beryl Systems Pvt. Ltd.
         -------------------------------------------------------
 
         -------------------------
+    4.8 numericality :
+
+        - Checks for different type of numbers. But makes sure that the input is number.
+
+        - If no option is provided then it will try to convert the input into number bu=y using float and d-type for DB will be bigint.
+
+
+
+        -------------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :roll_no, numericality: { only_integer: true}
+        end
+        -------------------------------------------------------------
+
+        - Options:
+
+            :only_integer == uses /\A[+-]?\d+\z/ to check for integer
+            
+            :greater_than
+            :greater_than_or_equal_to
+            :equal_to
+            :less_than
+            :less_than_or_equal_to
+
+            :other_than
+            
+            :in (specifies a range)
+            
+            :odd
+            :even
+
+            allow_nil: true (By default, numericality doesn't allow nil values)
+
+        ----------------
