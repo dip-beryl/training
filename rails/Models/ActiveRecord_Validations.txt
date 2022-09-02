@@ -607,6 +607,58 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 --------------------------------------------------------------------------------------------------------------------------------
 
+6. Strict Validations :
+
+    - You can also specify validations to be strict and raise "ActiveModel::StrictValidationFailed" when the object is invalid.
+
+    Example:
+    ----------------------------------------------------
+        class Person < ApplicationRecord
+            validates :name, presence: { strict: true }
+        end
+    -----------------------------------------------------
+
+        > Person.valid?
+        >>
+            ActiveModel::StrictValidationFailed: Name can't be blank
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+7. Conditional Validation :
+
+    - Sometimes it will make sense to validate an object only when a given predicate is satisfied. 
+    
+    - You can do that by using the ":if" and ":unless" options, which can take a symbol, a Proc or an Array
+
+    - Remember => "if" and "else" are opposite of each other.
 
 
+    Example:
+    -----------------------------------------------------------------------
+        class Order < ApplicationRecord
+            validates :card_number, presence: true, if: :paid_with_card?
 
+            def paid_with_card?
+                payment_type == "card"
+            end
+        end
+    ------------------------------------------------------------------------
+
+    7.1 Grouping Conditional Validations :
+
+        - with_options
+
+        Example:
+        ------------------------------------------------------------
+            def Student < ApplicationRecord
+            
+                with_options if: :is_admin? do |admin|
+
+                    admin.validates :password, length: {minimum: 6}
+                    admin.validates :email, presence: true
+                end
+            
+            end
+        -------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------
