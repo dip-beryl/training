@@ -755,4 +755,167 @@ Organization    : Beryl Systems Pvt. Ltd.
             end
         ----------------------------------------------------------------------------------------
 
+--------------------------------------------
+
+9. Errors in Validations :
+
+    - The valid? and invalid? methods only provide a summary status on validity. 
+    
+    - However you can dig deeper into each individual error by using various methods from the errors collection.
+
+    - The following is a list of the most commonly used methods.
+    
+    
+    9.1 errors
+
+        - The gateway through which you can get into various details of each error.
+    
+        - This returns an instance of the class ActiveModel::Errors containing all errors, each error is represented by an ActiveModel::Error object.
+
+
+        ------------
+    9.2 errors[]
+
+        - errors[] is used when you want to check the error messages for a specific attribute. 
         
+        - It returns an array of strings with all error messages for the given attribute, each string with one error message
+
+            
+            Example :
+            -----------------------------------------------------------------
+            def Student < ApplicationRecord
+            
+                validates :name, presence: true, length: {minimum: 3}
+            end
+            -----------------------------------------------------------------
+
+                > s1 = Student.new(name: "Arun")
+                > s1.valid?
+                >> true
+
+                > s1.errors[:name]
+                >> []
+
+
+
+                > s2 = Student.new(name: "A")
+                > s1.valid?
+                >> false
+
+                > s1.errors[:name]
+                >> ["is too short (minimum is 3 characters)"]
+        
+        --------
+    9.3 errors.where
+
+        - Sometimes we may need more information about each error beside its message. 
+        
+        - Each error is encapsulated as an ActiveModel::Error object, and where method is the most common way of access.
+
+        - .where returns an array of error objects, filtered by various degree of conditions.
+
+        Example:
+
+            > s3 = Student.new
+            > s3.errors.where(:name)
+
+            >> [#<ActiveModel::Error attribute=name, type=blank, options={}>,                  
+                #<ActiveModel::Error attribute=name, type=too_short, options={:count=>3}>] 
+                
+                    # all errors for :name attribute
+
+            > s3.errors.where(:name, :too_short)
+            >>
+                [#<ActiveModel::Error attribute=name, type=too_short, options={:count=>3}>] 
+
+                    # only too_short errors
+
+            > s3.errors.where(:name, :too_long)
+            >> []
+
+                    # as there is no too_long error available.
+
+
+        - These ActiveModel::Error objects have many more objects of there own.
+
+            > s3_error = s3.errors.where(:name).last
+
+            > s3_error.type
+            >> :too_short
+
+            > s3_error.details
+            >> {:error=>:too_short, :count=>3}
+
+            > s3_error.options
+            >> {:count=>3}
+
+            > s3_error.message
+            >> "is too short (minimum is 3 characters)"
+
+            > s3_error.full_message
+            >> "Name is too short (minimum is 3 characters)" 
+
+
+        -------
+    9.4 errors.add
+
+        - The add method creates the error object by taking the attribute, the error type and additional options hash
+
+        - This is useful for writing your own validator.
+
+        Example:
+        ---------------------------------------------------------
+            class Student < ApplicationRecord
+                validate do |student|
+                    errors.add :name, :too_short, message: "write longer name"
+                end
+            end
+        ---------------------------------------------------------
+
+        -------
+    9.5 errors[:base]
+
+        - You can add errors that are related to the object's state as a whole, instead of being related to a specific attribute. 
+        
+        - You can add errors to :base when you want to say that the object is invalid, no matter the values of its attributes.
+
+        Example:
+        ---------------------------------------------------------
+            class Student < ApplicationRecord
+                validate do |student|
+                    errors.add :base, :invalid, message: "This students data is invalid"
+                end
+            end
+        ---------------------------------------------------------
+
+        ----
+    9.6 errors.clear
+
+        - The clear method is used when you intentionally want to clear the errors collection. 
+
+        Example:
+
+            > s3.errors[:name]
+            >> ["can't be blank", "is too short (minimum is 3 characters)"]
+
+            > s3.errors.clear
+            >> []
+
+            > s3.errors[:name]
+            >> []
+
+        
+        ----
+    9.7 errros.size
+
+        - The size method returns the total number of errors for the object.
+
+        Example:
+
+            > s3.valid?
+            >> false
+
+            > s3.errors.size
+            >> 2
+
+                # as there are two errors
