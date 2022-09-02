@@ -531,3 +531,82 @@ Organization    : Beryl Systems Pvt. Ltd.
                 end
             end
         --------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+5. Common Validation Options :
+
+    5.1 :allow_nil
+
+        - The :allow_nil option skips the validation when the value being validated is nil.
+
+        Syntax :
+
+            validates :column_name, ... any other validation helper ... , allow_nil: true
+
+    
+    5.2 :allow_blank
+
+        - It is similar to allow_nil. But it uses .blank?
+
+        - "allow_nil" will only allow nil but "alow_blank" will also allow empty string i.e, ""
+
+
+            -- > .valid? will be true
+
+    5.3 :message
+
+        - message option is used to send tghe messages to errors collection.
+
+        - A String :message value can optionally contain any/all of %{value}, %{attribute}, and %{model} which will be dynamically replaced when validation fails.
+
+        - The :message option accepts a String or Proc.
+
+
+        Example:
+        --------------------------------------------------------------------
+            validates :name, presence: { message: "must be given please" }
+
+            validates :age, numericality: { message: "%{value} seems wrong" }
+        -----------------------------------------------------------------------
+
+    5.4 :on
+
+        - The :on option lets you specify when the validation should happen / trriger. 
+        
+        - The default behavior for all the built-in validation helpers is to be run on save 
+            (both when you're creating a new record and when you're updating it). 
+            
+        - If you want to change it, you can use "on: :create" or "on: :update" to run the validation only when a record is created or updated.
+
+
+        Example:
+        ----------------------------------------------------------
+            validates :email, uniqueness: true, on: :create
+        ----------------------------------------------------------
+
+
+        - You can also use on: to define custom contexts.
+
+        - Custom contexts need to be triggered explicitly by passing the name of the context to valid?, invalid?, or save
+
+        Example: 
+        ------------------------------------------------------------
+            validates :age, numericality: true, on: :account_setup
+        ------------------------------------------------------------
+
+            > s1 = Student.new(age: "five")
+
+            > s1.valid?
+            >> true
+
+            > s1.valid?(:account_setup)
+            >> false
+
+            > s1.errors.messages
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
