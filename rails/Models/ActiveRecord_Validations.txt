@@ -459,4 +459,49 @@ Organization    : Beryl Systems Pvt. Ltd.
         - Note that some BD's defaultly search case sensitively.
 
     -----------
+    4.12 validates_with :
+
+        - This helper passes the record to a separate class for validation.
+        - It is used for complex validations.
+
+        - The class to which the records are passed should inherit from "ActiveModel::Validator"
+
+        - They work on whole records instead of one entry.
+
+        Syntax :
+
+        ----------------------------------------------------------------
+            class WhereRecordIsPassed < ActiveModel::Validator          |
+            end                                                         |
+                                                                        |
+            class MainModelClass < ApplicatioonRecord                   |
+                                                                        |
+            validates_with WhereRecordIsPassed, class2, ....          |
+            end                                                         |
+        -----------------------------------------------------------------
+                * Main model will receive the reord obn .create os .save
+                * "validates_with" will pass the record to mentioned class
+                * 
+
+        Example :
+        ----------------------------------------------------------------
+            class StudentValidator < ActiveModel::Validator
+                def validate(record)
+                    if record.name == "Evil"
+                    record.errors.add :base, "This person is evil"
+                    end
+                end
+            end
+
+            class Student < ApplicationRecord
+                validates_with StudentValidator
+            end
+        ----------------------------------------------------------------
+
+
+        - Like all other validations, validates_with takes the :if, :unless and :on options. 
+        
+        - If you pass any other options, it will send those options to the validator class as options:
+
+
 
