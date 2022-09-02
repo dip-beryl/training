@@ -504,4 +504,30 @@ Organization    : Beryl Systems Pvt. Ltd.
         - If you pass any other options, it will send those options to the validator class as options:
 
 
+    --------------
+    4.13 validates_each :
 
+        - This helper validates attributes against a block. It doesn't have a predefined validation function.
+
+        - You should create one using a block, and "every attribute" passed to validates_each will be tested against it. 
+
+        - It takes a record and splits it into (record, attribute, value)
+
+            s1 = Student.create(name: "Arun", roll_no: 56)
+
+            :record => name: "Arun", roll_no: 56
+            :attribute => :name, :roll_no
+            :value => "Arun", 56
+
+        Example:
+        --------------------------------------------------------------
+            class Book < ApplicationRecord
+                
+                validates_each :name, :author do |record, attribute, value|
+                
+                    if value =~ /\A[[:lower:]]/
+                        record.errors.add(attribute, "Must start with upper case letter")
+                    end
+                end
+            end
+        --------------------------------------------------------------
