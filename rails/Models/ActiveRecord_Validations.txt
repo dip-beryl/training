@@ -44,3 +44,86 @@ Organization    : Beryl Systems Pvt. Ltd.
             They are database agnostic, cannot be bypassed by end users, and are convenient to test and maintain
 
 ----------------------------------------------------------------------------------------------------------------------
+
+3. Triggering of Validations :
+
+    - There are methods who trigger validations and There are methods who not.
+
+
+    3.1
+
+    Example -> Demo.create
+
+    - They all trigger the validatiions 
+
+        .create
+        .create!
+        .save
+        .save!
+        .update
+        .update!
+
+        - the Bang versions will raise an exception in case record is invalid.
+
+        - update returns object all other returns boolean.
+
+
+    - There can two type of objects in ActiveRecord:
+        
+        * belongs to record 
+        * do not belongs
+
+            - When a record is newly creaded it doesn't belong to any record (.new)
+            - When the record is save it belongs to a record.
+
+
+            .new_record?
+                        : is used to find if a record is new or old(belongs to record).
+
+
+    3.2 Skipping Validations :
+
+        decrement!
+        decrement_counter
+        increment!
+        increment_counter
+        insert
+        insert!
+        insert_all
+        insert_all!
+        toggle!
+        touch
+        touch_all
+        update_all
+        update_attribute
+        update_column
+        update_columns
+        update_counters
+        upsert
+        upsert_all
+
+        - They all skip validations :
+
+        - (.save) also ski[ps valiudations when used like: 
+
+                    : .save(validate: false)
+
+        ------------------------------
+    3.3 .valid? and .invalid?
+
+        - When an object's record is saved into DB all the validations run automatically by ActiveRecord on object data.
+
+        - You can run these validations on your own.
+
+            > b1 = Book.new(name: "c++")
+            > b2 = Book.new(name: nil)
+
+            > b1.valid?
+            >> true
+
+            > b2.valid?
+            >> false
+
+        -------------------------------------
+
+    --------------------------------------------------------------------------------------------------------------------------
