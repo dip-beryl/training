@@ -298,3 +298,22 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         
         ------------
+    4.7 length :
+
+        - Checks length
+
+            :maximum
+            :minimum
+            :in or :within (mention a range)
+            :is (must equal to)
+
+        -------------------------------------------------------
+        class Student < ApplicationRecord
+            validates :name, length: {maximum: 25}
+
+            validates :contact_no, length: {within: 8..15}
+
+        end
+        -------------------------------------------------------
+
+        -------------------------
