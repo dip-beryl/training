@@ -1,0 +1,46 @@
+File Name       : ActiveRecord_Validations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Validation : (Overview)
+
+    A simple validation example :
+    
+    ----------------------------------------
+    class Book < ApplicationRecord
+        validates :name, presence: true
+    end
+    ---------------------------------------
+
+        > irb > Person.create(name: "John Doe").valid?
+        >> true
+
+        > irb>  Person.create(name: nil).valid? 
+        >> false
+
+-------------------------------------------------------------------------
+
+2. Types of Validations :
+
+
+    There are different ways of validations :
+
+        - Databse specific validation: 
+                                        Useful but roadblocks in texting. 
+                                        Useful when man application is using same DB.
+
+        - Client Side Validations :
+                                    Good to provide quick feedback to client.
+                                    But, can be bypassed if Javascript is off.
+
+        - Controller Based Validation :
+                                        Becomes difficult to maintain and test.
+
+
+
+        - Model-level validations are the best way to ensure that only valid data is saved into your database. 
+            They are database agnostic, cannot be bypassed by end users, and are convenient to test and maintain
+
+----------------------------------------------------------------------------------------------------------------------
