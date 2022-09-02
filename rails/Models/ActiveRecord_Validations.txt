@@ -177,3 +177,21 @@ Organization    : Beryl Systems Pvt. Ltd.
                 If the field does exist in your database, the accept option must be set to or include "true" or else the validation will not run.
 
         --------------------------------------------------------------------
+    
+    4.2 validates_associated
+    
+        - You should use this helper when your model has associations with other models and they also need to be validated.
+
+        - When you try to save your object, valid? will be called upon each one of the associated objects.
+
+        - Don't use validates_associated on both ends of your associations. They would call each other in an infinite loop.
+
+        - Deafult Message: "is invalid"
+
+        Example :
+        --------------------------------------------
+            class Library < ApplicationRecord
+                has_many :books
+                validates_associated :books
+            end
+        --------------------------------------------
