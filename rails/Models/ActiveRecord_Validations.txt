@@ -404,4 +404,59 @@ Organization    : Beryl Systems Pvt. Ltd.
         ----------------------------------------------------------------
 
         ---------------
+    4.11 uniqueness :
+
+        - This helper validates that the attribute's value is unique right before the object gets saved.
+
+        - It does not create a uniqueness constraint in the database, 
+            so it may happen that two different database connections create two records 
+            with the same value for a column that you intend to be unique.
+
+        - So you should always create Unique indexes in your database with unique validations.
+
+        - The validation happens by performing an SQL query into the model's table, searching for an existing record with the same value in that attribute.
+
+            ---------------------------------------------------------------------
+                class Student < ApplicationRecord
+                    validates :email, uniqueness: true
+                end
+            ---------------------------------------------------------------------
+
+        - Concept of group uniqueness and :scope
+
+            * Group Uniqueness : When two columns are selecetd together to make agroup inique index
+                      
+                                the combination of values in the indicated columns is unique across the whole table, 
+                                though any one of the columns need not be (and ordinarily isn't) unique.
+
+
+        - There is a :scope option that you can use to specify one or more attributes.
+
+            ------------------------------------------------------------------------
+            class Holiday < ApplicationRecord
+                
+                validates :name, uniqueness: { scope: :year,
+                                        message: "should happen once per year" }
+            end
+            ------------------------------------------------------------------------
+
+                    * This will function like a group unique index.
+                    
+                    * But, You still need to add group unique index to DB
+
+
+            -> Synatx to create Group Unique Index in PostgreSQL.
+                --------------------------------
+                    CREATE TABLE example (      |
+                        a integer,              |
+                        b integer,              |
+                        c integer,              |
+                        UNIQUE (a, c)           |
+                    );                          |
+                ---------------------------------
+
+        - There is also a :case_sensitive option
+        - Note that some BD's defaultly search case sensitively.
+
+    -----------
 
