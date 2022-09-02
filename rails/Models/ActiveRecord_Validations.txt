@@ -113,6 +113,9 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         - When an object's record is saved into DB all the validations run automatically by ActiveRecord on object data.
 
+        - The valid? method will verify that the errors collection is empty or not, 
+                so Always add cutom errors to the validations when there is not default message or using Custom Validations.
+
         - You can run these validations on your own.
 
             > b1 = Book.new(name: "c++")
@@ -503,6 +506,10 @@ Organization    : Beryl Systems Pvt. Ltd.
         
         - If you pass any other options, it will send those options to the validator class as options:
 
+    NOTE - Like all other validations, validates_with takes the :if, :unless and :on options. 
+            - If you pass any other options, it will send those options to the validator class as options: options[:fields]
+
+            - Check Conditional Validations
 
     --------------
     4.13 validates_each :
@@ -662,3 +669,90 @@ Organization    : Beryl Systems Pvt. Ltd.
         -------------------------------------------------------------
 
 -------------------------------------------------------------------------------------------------------------------
+
+8. Custom Validations :
+
+    - When the built-in validation helpers are not enough for your needs, you can write your own validators or validation methods as you prefer.
+
+     * Custom Validators
+     * Custom Methods
+
+
+     8.1 Custom Validators :
+
+        - Custom validators are classes that inherit from ActiveModel::Validator. 
+        
+        - These classes must implement the "validate" method which takes a "record" as an "argument" and performs the validation on it. 
+
+        ->* Custom validator are similar or somewhat advance version of "validates_with" and "validates_each"
+                
+        - The custom validator is called using the "validates_with" method.
+
+        Example:
+        -------------------------------------------------------------------------------------
+            class MyValidator < ActiveModel::Validator
+                def validate(record)
+                    unless record.name.start_with?("X")
+                        record.errors.add :name, "Name Should start with 'X'"
+                    end
+                end
+            end
+
+            class Student
+                include ActiveModel::Validations
+                validates_with MyValidator
+            end
+        -------------------------------------------------------------------------------------
+
+
+        - The easiest way to add custom validators for validating individual attributes is with the convenient 'ActiveModel::EachValidator'. 
+        
+        - In this case, the custom validator class must implement a "validate_each" method which takes three arguments: record, attribute, and value
+
+        Example:
+        -------------------------------------------------------------------------------------
+        class EmailValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+                unless value =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+                    record.errors[] << (options[:message] || "not a valid email")
+                end
+            end
+        end
+
+        class Stduent < ApplicationRecord
+            
+            include ActiveModel::Validations
+            validate_each EmailValidator
+        end
+        -------------------------------------------------------------------------------------
+
+    8.2 Custom Methods :
+
+        - You can also create methods that verify the state of your models and add errors to the errors collection when they are invalid. 
+        
+        - You must then register these methods by using the validate class method, passing in the symbols for the validation methods' names.
+
+        - The valid? method will verify that the errors collection is empty, 
+                so your custom validation methods should add errors to it when you wish validation to fail:
+
+        Example :
+        -----------------------------------------------------------------------------------
+            class Invoice < ApplicationRecord
+                validate :expiration_date_cannot_be_in_the_past, on: create
+                validate :discount_cannot_be_greater_than_total_value
+
+                def expiration_date_cannot_be_in_the_past
+                    if expiration_date.present? && expiration_date < Date.today
+                        errors.add(:expiration_date, "can't be in the past")
+                    end
+                end
+
+                def discount_cannot_be_greater_than_total_value
+                    if discount > total_value
+                        errors.add(:discount, "can't be greater than total value")
+                    end
+                end
+            end
+        ----------------------------------------------------------------------------------------
+
+        
