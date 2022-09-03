@@ -158,4 +158,39 @@ Example on All callbacks :
                 - when we used .valid? it changes the value of :status to "true" as the record validness is confirmed now.
 
         ---------------------------
-    
+    3. before_save :
+
+        - Registers a callback to be called before a record is saved.
+
+        Example:
+        ------------------------------------------------------------
+            before_save do
+                self.name.upcase!
+            end
+        ------------------------------------------------------------
+
+            > u1 = User.new(name: "Ajay", email: "ajay@gmail.com")
+            
+            > u1
+            >>
+                id: nil,                                                 
+                name: "Ajay",                  # :name has same case as user entered
+                email: "ajay@gmail.com",                                 
+                contact: nil,                                            
+                status: nil,                                             
+                created_at: nil,                                         
+                updated_at: nil>
+
+            > u1.valid?
+            >> true
+
+            > u1.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Create (0.9ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "status", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "AJAY"], ["email", "ajay@gmail.com"], ["contact", nil], ["status", true], ["created_at", "2022-09-03 04:31:52.222297"], ["updated_at", "2022-09-03 04:31:52.222297"]]                                               
+                TRANSACTION (16.1ms)  COMMIT                              
+                => true 
+
+                        *- :name has be changed to upper case then saved

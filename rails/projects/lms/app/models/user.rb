@@ -8,6 +8,10 @@ class User < ApplicationRecord
         self.status = true unless(name.blank? and email.blank?)
     end
 
+    before_save do
+        self.name.upcase!
+    end
+
     private
     def ensure_name_has_a_value
         if name.nil?
