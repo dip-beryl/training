@@ -8,8 +8,12 @@ class User < ApplicationRecord
         self.status = true unless(name.blank? and email.blank?)
     end
 
-    before_save do
-        self.name.upcase!
+    # before_save do
+    #     self.name.upcase!
+    # end
+
+    after_save do
+        self.name.downcase!
     end
 
     private
