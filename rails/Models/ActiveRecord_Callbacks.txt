@@ -485,6 +485,11 @@ Example on All callbacks :
         - Also "after_rollback" have same Syntax as "after_commit".
 
 
+    
+    NOTE - These callbacks (after_commit & after_rollback) are very similar to the "after_save" callback.
+             Except that they don't execute until after database changes have either been committed or rolled back. 
+
+
     -----------
     13. after_initialize & after_find
 
