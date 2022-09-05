@@ -486,9 +486,19 @@ Example on All callbacks :
 
 
     
-    NOTE - These callbacks (after_commit & after_rollback) are very similar to the "after_save" callback.
-             Except that they don't execute until after database changes have either been committed or rolled back. 
+    NOTE_1 - These callbacks (after_commit & after_rollback) are very similar to the "after_save" callback.
+             
+            - Except that they don't execute until after database changes have either been committed or rolled back. 
 
+
+    NOTE_2 - When a transaction completes, the "after_commit" or "after_rollback" callbacks are called for all models created, updated, or destroyed within that transaction. 
+            
+            - However, if an exception is raised within one of these callbacks, the exception will bubble up and any remaining "after_commit" or "after_rollback" methods will not be executed. 
+            
+            - As such, if your callback code could raise an exception, you'll need to rescue it and handle it within the callback in order to allow other callbacks to run.
+
+
+    NOTE_3 - The code executed within "after_commit" or "after_rollback" callbacks is itself not enclosed within a transaction.
 
     -----------
     13. after_initialize & after_find
