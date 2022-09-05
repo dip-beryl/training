@@ -201,26 +201,78 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 
         ----------------------------------------------------------------------------------------------
-        class CreateCustomersAndAccounts < ActiveRecord::Migration[7.0]
-            def change
-                
-                create_table :customers do |t|
-                    t.string :name
-                    t.string :contact
+            class CreateCustomersAndAccounts < ActiveRecord::Migration[7.0]
+                def change
+                    
+                    create_table :customers do |t|
+                        t.string :name
+                        t.string :contact
+
+                        t.timestamps
+                    end
+
+                    create_table :accounts do |t|
+                        t.string :variant
+                        t.string :amount
+                        t.references :customer, index: {unique: true}, foreign_key: true
+
 
                     t.timestamps
+                    end
+
                 end
-
-                create_table :accounts do |t|
-                    t.string :variant
-                    t.string :amount
-                    t.references :customer, index: {unique: true}, foreign_key: true
-
-
-                t.timestamps
-                end
-
             end
-        end
-
         ----------------------------------------------------------------------------------------------
+
+    2.3 has_many :
+
+        - A "has_many" association is similar to "has_one", but indicates a one-to-many connection with another model
+
+        - You'll often find this association on the "other side" of a belongs_to association.
+
+        - This association indicates that "each instance of the model has zero or more" instances of another model.
+
+        Example:
+
+            Taking the Blog-Author table / model.
+
+        Model :
+        --------------------------------------------------------------------
+            class Author < ApplicationRecord
+                has_many :blogs, dependent: :destroy        
+                
+            end
+            
+            class Blog < ApplicationRecord
+                    belongs_to :author
+            end
+        --------------------------------------------------------------------
+            *- the dependent option makes sure that when we delete any author its all blogs are also deleted.
+
+            - Now we can access blogs through authors.
+
+        > author = Author.last
+
+        > author.blogs.all
+        >>
+
+            Blog Load (1.0ms)  SELECT "blogs".* FROM "blogs" WHERE "blogs"."author_id" = $1  [["author_id", 2]]
+
+            =>
+            [#<Blog:0x0000564c8a4a0998
+            id: 1,
+            name: "Blog_1",
+            author_id: 2,
+            created_at: Mon, 05 Sep 2022 11:48:17.622306000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:33.764925000 UTC +00:00>,
+
+            #<Blog:0x0000564c8a4a07b8
+            id: 2,
+            name: "Blog_2",
+            author_id: 2,                      
+            created_at: Mon, 05 Sep 2022 12:14:39.092795000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:36.728128000 UTC +00:00>]
+            
+
+        > author.destroy
+        >> will delete the author and also all its blogs
