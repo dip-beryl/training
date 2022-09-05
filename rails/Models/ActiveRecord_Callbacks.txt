@@ -363,7 +363,7 @@ Example on All callbacks :
                 created_at: nil,                                                
                 updated_at: nil>
 
-                    *- the object have same casing as the input provided because no .save method is hit yet.
+                    *- the object have same case as the input provided because no .save method is hit yet.
 
 
             > u1.save
@@ -435,3 +435,51 @@ Example on All callbacks :
         - You can check if a record is new or not
             by:
                 .new_record?
+
+
+        ----------
+    10. before_destroy
+        after_destroy
+        around_destroy
+
+        - when ever a "DELETE FROM" statement / query is executed these callback functions will get registered_triggered.
+
+
+    -----------
+    11. after_commit
+
+        - This you can say is an all-in-one after_" callback.
+
+        - Whenever a ActiveRecord is executed all the code is execute in BEGIN -- COMMIT block.
+
+        - Whenever a COMMIT is hit this callback will be triggerd. Irrespective of Query type or ActiveRecord logic.
+
+        
+
+        Example:
+        ------------------------------------------------------------------------------------------------------------------
+
+            after_commit :[function name]                           # will get trigered on al commits
+
+            after_commit :[function name] on: DESTROY               # will get trigered on al commits that contain DELETE FROM Query
+
+            after_commit :[function name] on: [CREATE, UPDATE]      # will get trigered on al commits that contain INSERT or UPDATE Query
+
+        -------------------------------------------------------------------------------------------------------------------
+
+    ----------
+    12. after_rollback
+
+        - Not all transactions complete their BEGIN --> COMMIT block.
+
+        - Sometimes because of some validation or DB restrictions the transactions goes into ROLLBACK.
+
+        - Then the block changes to BEGIN --> ROLLBACK.
+
+        - In a roll back transaction all the changes are reversered so that no record is alter.
+
+        - "after_rollback" have same working as "after_commit" but it only triggers on ROLLBACK transactions.
+
+        - Also "after_rollback" have same Syntax as "after_commit".
+
+
