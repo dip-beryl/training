@@ -1,0 +1,737 @@
+File Name       : ActiveRecord_Callbacks.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Object and Its Life Cycle :
+
+    - During the normal operation of a Rails application, objects may be created, updated, and destroyed. 
+    
+    - Active Record provides hooks into this object life cycle so that you can control your application and its data.
+
+-------------------------
+
+2. Callbacks :
+
+    - Callbacks allow you to trigger logic before or after an alteration of an object's state.
+
+    - Callbacks are methods that get called at certain moments of an object's life cycle
+    
+    - With callbacks it is possible to write code that will run whenever an Active Record object is created, saved, updated, deleted, validated, or loaded from the database.
+
+
+    2.1 Callback Registration
+
+        - In order to use the available callbacks, you need to register them. 
+        
+        - You can implement the callbacks as ordinary methods 
+        
+        - Can use a macro-style class method to register them as callbacks:
+
+
+            $ rails g migration CreateUsers name:string email:string contact:string status:boolean 
+
+            $ rails db:migrate
+
+
+        Example: create app/models/user.rb
+        -----------------------------------------------------------------------
+            class User < ApplicationRecord
+
+                validates :name, :email, presence: true
+                
+                before_validation :ensure_name_has_a_value
+                
+                private
+                    def ensure_name_has_a_value
+                        if name.nil?
+                            self.name = email unless email.blank?
+                        end
+                    end
+            end
+        --------------------------------------------------------------------------
+
+            > u1 = User.create!(email: "")
+            >> Validation failed: Name can't be blank, Email can't be blank (ActiveRecord::RecordInvalid)
+
+            > u1 = User.create!(email: "user@mail.com")
+            >>
+                TRANSACTION (0.5ms)  
+                BEGIN
+                User Create (0.9ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "login", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "user@mail.com"], ["email", "user@mail.com"], ["contact", nil], ["login", nil], ["created_at", "2022-09-02 12:14:23.529178"], ["updated_at", "2022-09-02 12:14:23.529178"]]
+                TRANSACTION (13.3ms)  
+                COMMIT
+                => 
+                #<User:0x000055a4398a71d0
+
+                    - here validation is passed because calbakc "before_validation" calls the method "ensure_name_has_a_value"
+                            Which puts the same values of :email into :name if name donot have value
+
+---------------------------------------------------------------------------------------------------------------------
+
+3. Available Callbacks:
+
+    3.1. Creating an Object
+        
+            before_validation
+            after_validation
+            before_save
+            around_save
+            before_create
+            around_create
+            after_create
+            after_save
+            after_commit / after_rollback
+
+        ---------------------------------
+    3.2 Updating an Object
+
+            before_validation
+            after_validation
+            before_save
+            around_save
+            before_update
+            around_update
+            after_update
+            after_save
+            after_commit / after_rollback
+
+        ------------------------------------
+    3.3 Destroying an Object
+            before_destroy
+            around_destroy
+            after_destroy
+            after_commit / after_rollback
+
+
+----------------------------------------------------------------------------------
+Example on All callbacks :
+
+    1. before_validation :
+
+        - Defines a callback that will get called right before validation.
+
+        Example :
+
+            See above in 2.1
+
+    
+        ----------------------------------
+    2. after_validation :
+
+        - Defines a callback that will get called right after validation.
+
+        
+        Example:
+        ----------------------------------------------------------
+            class User < ApplicationRecord
+
+                validates :name, :email, presence: true
+                
+                after_validation do
+                    self.status = true unless(name.blank? and email.blank?)
+                end
+            end
+        --------------------------------------------------------------------------
+
+        > u1 = User.new(name: "Arun", email: "arun@mail.com")
+        >> 
+            #<User:0x000055f946d89420 id: nil, name: "Arun", email: "arun@mail.com", contact: nil, status: nil, created_at: nil, updated_at: nil> 
+        
+        > u1
+        >> 
+            #<User:0x000055f946d89420 id: nil, name: "Arun", email: "arun@mail.com", contact: nil, status: nil, created_at: nil, updated_at: nil> 
+        
+        > u1.valid?
+        >> true 
+
+        > u1
+        >> 
+            #<User:0x000055f946d89420 id: nil, name: "Arun", email: "arun@mail.com", contact: nil, status: true, created_at: nil, updated_at: nil> 
+
+
+                - Here when we .new a object the :status column is nil because the record has yet don't know if its valid or not.
+
+                - when we used .valid? it changes the value of :status to "true" as the record validness is confirmed now.
+
+        ---------------------------
+    3. before_save :
+
+        - Registers a callback to be called before a record is saved.
+
+        Example:
+        ------------------------------------------------------------
+            before_save do
+                self.name.upcase!
+            end
+        ------------------------------------------------------------
+
+            > u1 = User.new(name: "Ajay", email: "ajay@gmail.com")
+            
+            > u1
+            >>
+                id: nil,                                                 
+                name: "Ajay",                  # :name has same case as user entered
+                email: "ajay@gmail.com",                                 
+                contact: nil,                                            
+                status: nil,                                             
+                created_at: nil,                                         
+                updated_at: nil>
+
+            > u1.valid?
+            >> true
+
+            > u1.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Create (0.9ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "status", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "AJAY"], ["email", "ajay@gmail.com"], ["contact", nil], ["status", true], ["created_at", "2022-09-03 04:31:52.222297"], ["updated_at", "2022-09-03 04:31:52.222297"]]                                               
+                TRANSACTION (16.1ms)  COMMIT                              
+                => true 
+
+                        *- :name has be changed to upper case then saved
+    
+        ----------
+    4. after_save :
+
+        - Registers a callback to be called after a record is saved.
+
+        Example :
+        -------------------------------------------------
+            after_save do
+                self.name.downcase!
+            end
+        -------------------------------------------------
+
+            > u2 = User.new(name: "VIJAY", email: "vijay@gmail.com")
+            
+            > u2
+            >> 
+                id: nil,               
+                name: "VIJAY",         
+                email: "vijay@gmail.com",
+                contact: nil,          
+                status: nil,           
+                created_at: nil,       
+                updated_at: nil>  
+
+            > u2.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Create (0.8ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "status", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "VIJAY"], ["email", "vijay@gmail.com"], ["contact", nil], ["status", true], ["created_at", "2022-09-03 06:52:03.154637"], ["updated_at", "2022-09-03 06:52:03.154637"]]                                           
+                TRANSACTION (347.2ms)  COMMIT                           
+                => true
+                        
+                        *- Record insetred.
+
+            > u2
+            >>
+                id: 7,                                                   
+                name: "vijay",                                           
+                email: "vijay@gmail.com",                                
+                contact: nil,                                            
+                status: true,          
+                created_at: Sat, 03 Sep 2022 06:52:03.154637000 UTC +00:00,
+                updated_at: Sat, 03 Sep 2022 06:52:03.154637000 UTC +00:00> 
+
+
+                        *- But, Now when you see the details saved in the object. :name has downcase values.
+                        *- But, the database have the same case as user mentioned for values.
+
+            > u2.new_record?
+            >> false
+
+                        *- and its also not a new record.
+
+                    IMP. *- What happens here is
+
+                            - After the .save callback is trigger and it updates the ActiveRecord object but not the database values.
+
+                        *- when we run the .save again. It will call UPDATE SQL query insted of INSERT query.
+
+            > u2.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Update (0.9ms)  
+                    UPDATE "users" SET "name" = $1, "updated_at" = $2 WHERE "users"."id" = $3  [["name", "aman"], ["updated_at", "2022-09-03 07:33:05.541517"], ["id", 9]]                                   
+                TRANSACTION (39.9ms)  COMMIT                            
+                => true
+
+    NOTE : - [ after_save, befor_save ] runs both on .create(INSERT INTO) and .update(UPDATE SET).
+
+
+        -----------
+    5. after_create
+
+        - It work similar to "after_save"
+
+        - Only difference is that it only get registered / triggered on (INSERT INTO query) that is creating of new records.
+
+            -- > Either you create record through (.new, .save) or wirh .create this callback will be triggered.
+
+            -- > But not in the case when the object.new_record? is "false".
+                 This will be triggered only for new objects that are not yet .save
+
+            -- > Already saved objects are old objects and on changing their value and saving them will trigger UPDATE query.
+
+
+        -----------
+    6. before_create
+
+        - It work similar to "before_save"
+
+        - Only difference is that it only get registered / triggered on (INSERT INTO query) that is creating of new records.
+
+            -- > Either you create record through (.new, .save) or wirh .create this callback will be triggered.
+
+            -- > But not in the case when the object.new_record? is "false".
+                 This will be triggered only for new objects that are not yet .save
+
+            -- > Already saved objects are old objects and on changing their value and saving them will trigger UPDATE query.
+
+
+        ------------
+    7. after_update
+
+        - It work similar to "after_save" or "after_create"
+
+        - Only difference is that it only get registered / triggered on (UPDATE SET query) that is updating of records.
+
+            -- > It gets triggered either you update record with .update or with .save (after updating values in object)
+
+            -- > If the query performed be ActiveRecord is UPDATE SET then it will get trigger.
+
+        -----------
+    7. before_update
+
+        - It work similar to "before_save" or "before_create"
+
+        - Only difference is that it only get registered / triggered on (UPDATE SET query) that is updating of records.
+
+            -- > It gets triggered either you update record with .update or with .save (after updating values in object)
+
+            -- > If the query performed be ActiveRecord is UPDATE SET then it will get trigger.
+
+        
+    NOTE :   after_save registers always after the more specific callbacks i.e., "after_create" and "after_update", 
+              no matter the order in which the macro calls were executed.
+
+
+    NOTE : [ befor_create, after_create ] and [ before_update, after_update ] are completely same.
+
+            One works on .create other works on .update
+
+            ----------
+    8. around_save :
+
+        - "around_save" is the middle ground of "before_save" and "after_save"
+
+        - You can mention both the conditions in it.
+
+
+        Example:
+        ---------------------------------------------------------------------
+            around_save :around_save_func
+
+            private
+                
+                def around_save_func
+                    self.name.upcase!       # all the code before [ yield ] is processed as before_save
+
+                    yield
+
+                    self.name.downcase!     # all the code after [ yield ] is processed as after_save
+                end
+
+        ---------------------------------------------------------------------
+        
+            > u1 = User.new(name: "RaNvIJaY", email: "ranvijay@gmail.com")
+
+            > u1
+            >>
+                id: nil,                                                        
+                name: "RaNvIJaY",                                               
+                email: "ranvijay@gmail.com",                                    
+                contact: nil,                                                   
+                status: nil,                                                    
+                created_at: nil,                                                
+                updated_at: nil>
+
+                    *- the object have same case as the input provided because no .save method is hit yet.
+
+
+            > u1.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Create (0.8ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "status", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "RANVIJAY"], ["email", "ranvijay@gmail.com"], ["contact", nil], ["status", true], ["created_at", "2022-09-05 04:42:47.066719"], ["updated_at", "2022-09-05 04:42:47.066719"]]                                     
+                TRANSACTION (12.3ms)  COMMIT
+                
+                => true 
+
+                    *- The values o f:name saved in the DB is uppercased as mentioned in "around_save_func" before [ yield ].
+
+
+            > u1
+            >>
+                id: 15,                                                  
+                name: "ranvijay",                                        
+                email: "ranvijay@gmail.com",                             
+                contact: nil,                                            
+                status: true,          
+                created_at: Mon, 05 Sep 2022 04:42:47.066719000 UTC +00:00,
+                updated_at: Mon, 05 Sep 2022 04:42:47.066719000 UTC +00:00>
+
+                    *- after [ yield ] is executed after_save features of around_save is processed
+
+                        so the :name values converted to downase.
+
+                    *- but similiarly after_save these changes aren't in the DB yet. 
+                        If you hit .save now it will execute an UPDATE Query.
+
+        
+        ---------
+    9. around_create :
+
+        - This works similarly to "around_save".
+
+        - Only difference is that it will get registered / triggered only when an INSERT INTO is executed by ActiveRecord.
+
+        - INSERT INTO is executed on new object saving that is not yet in DB.
+            by:
+                .new --> .save
+
+                or
+
+                .create
+
+        - You can check if a record is new or not 
+            by:
+                .new_record?
+
+
+        ---------
+    9. around_update :
+
+        - This works similarly to "around_save".
+
+        - Only difference is that it will get registered / triggered only when an UPDATE SET is executed by ActiveRecord.
+
+        - UPDATE_SET is executed on updating an already saved object (that is already in DB)
+            by:
+                .new --> .save      (only on already saved values)
+
+                or
+
+                .update
+
+        - You can check if a record is new or not
+            by:
+                .new_record?
+
+
+        ----------
+    10. before_destroy
+        after_destroy
+        around_destroy
+
+        - when ever a "DELETE FROM" statement / query is executed these callback functions will get registered_triggered.
+
+        - before_destroy callbacks should be placed before dependent: :destroy associations (or use the prepend: true option), to ensure they execute before the records are deleted by dependent: :destroy.
+
+
+    -----------
+    11. after_commit
+
+        - This you can say is an all-in-one after_" callback.
+
+        - Whenever a ActiveRecord is executed all the code is execute in BEGIN -- COMMIT block.
+
+        - Whenever a COMMIT is hit this callback will be triggerd. Irrespective of Query type or ActiveRecord logic.
+
+        
+
+        Example:
+        ------------------------------------------------------------------------------------------------------------------
+
+            after_commit :[function name]                           # will get trigered on al commits
+
+            after_commit :[function name] on: DESTROY               # will get trigered on al commits that contain DELETE FROM Query
+
+            after_commit :[function name] on: [CREATE, UPDATE]      # will get trigered on al commits that contain INSERT or UPDATE Query
+
+        -------------------------------------------------------------------------------------------------------------------
+
+    ----------
+    12. after_rollback
+
+        - Not all transactions complete their BEGIN --> COMMIT block.
+
+        - Sometimes because of some validation or DB restrictions the transactions goes into ROLLBACK.
+
+        - Then the block changes to BEGIN --> ROLLBACK.
+
+        - In a roll back transaction all the changes are reversered so that no record is alter.
+
+        - "after_rollback" have same working as "after_commit" but it only triggers on ROLLBACK transactions.
+
+        - Also "after_rollback" have same Syntax as "after_commit".
+
+
+    
+    NOTE - These callbacks (after_commit & after_rollback) are very similar to the "after_save" callback.
+             Except that they don't execute until after database changes have either been committed or rolled back. 
+
+
+    -----------
+    13. after_initialize & after_find
+
+        - The "after_initialize" callback will be called whenever an Active Record object is instantiated, 
+            either by directly using "new" or when a record is "loaded" from the database.
+
+        - The "after_find" callback will be called whenever Active Record loads a record from the database. 
+        
+        - "after_find" is called BEFORE "after_initialize" if both are defined.
+
+        - The "after_initialize" and "after_find" callbacks have no before_* counterparts, 
+            but they can be registered just like the other Active Record callbacks.
+
+
+        Example:
+        ---------------------------------------------------------------
+            class User < ApplicationRecord
+                
+                after_initialize do
+                    puts "You have initialized an object!"
+                end
+
+                after_find do
+                    puts "You have found an object!"
+                end
+            end
+        ---------------------------------------------------------------
+
+            > n1 = User.new
+            >>
+                You have initialized an object!
+                => #<User:0x0000558cce0f2f48 id: nil, name: nil, email: nil, contact: nil, status: nil, created_at: nil, updated_at: nil> 
+
+
+            > n2 = User.find(17)
+            >>
+                User Load (0.6ms)  SELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2  [["id", 17], ["LIMIT", 1]]
+                You have found an object!                                        
+                You have initialized an object!
+
+        
+        -------------
+    14. after_touch
+
+        - The after_touch callback will be called whenever an Active Record object is touched.
+
+        - .touch is a method for ActiveRecord Objects. 
+            In simple mode it updates the "updated_at" time stamp to time when you call this method.
+
+        -  It also works with "belongs_to" association.
+
+        Example:
+        --------------------------------------------------------------------
+            after_touch do
+                puts "You have updated the time stamps."
+            end
+        --------------------------------------------------------------------
+
+            > n2.touch
+            >>
+                TRANSACTION (0.7ms)  BEGIN
+                    User Update (1.1ms)  
+                        UPDATE "users" SET "updated_at" = $1 WHERE "users"."id" = $2  [["updated_at", "2022-09-05 06:45:20.100888"], ["id", 17]]
+                
+                You have updated the time stamps.                                
+                
+                TRANSACTION (30.7ms)  COMMIT                                   
+                => true
+
+    -----------------------------------------------------------------------
+
+4. Running Callbacks
+
+    - create
+    - create!
+    - destroy
+    - destroy!
+    - destroy_all
+    - destroy_by
+    - save
+    - save!
+    - save(validate: false)
+    - toggle!
+    - touch
+    - update_attribute
+    - update
+    - update!
+    - valid?
+
+    Additionally, the "after_find" callback is triggered by the following finder methods:
+
+    - all
+    - first
+    - find
+    - find_by
+    - find_by_*
+    - find_by_*!
+    - find_by_sql
+    - last
+
+
+    The "after_initialize" callback is triggered every time a new object of the class is initialized.
+
+    -----------------------------------------------------------------------------------------------------------
+
+5. Skipping Callback
+
+    Just as with validations, it is also possible to skip callbacks by using the following methods:
+
+    - decrement!
+    - decrement_counter
+    - delete
+    - delete_all
+    - delete_by
+    - increment!
+    - increment_counter
+    - insert
+    - insert!
+    - insert_all
+    - insert_all!
+    - touch_all
+    - update_column
+    - update_columns
+    - update_all
+    - update_counters
+    - upsert
+    - upsert_all
+
+    -----------------------------------------------------------------------------------------------------------
+
+6. Halting Execution :
+
+    - As you start registering new callbacks for your models, they will be queued for execution. 
+    
+    - This queue will include all your model's validations, the registered callbacks, and the database operation to be executed.
+
+    - The whole callback chain is wrapped in a transaction. 
+    
+    - If any callback raises an exception, the execution chain gets halted and a ROLLBACK is issued. 
+    
+    To intentionally stop a chain use: 
+
+                                throw :abort
+
+    Example :
+    ----------------------------------------------------------
+        after_touch do
+            
+            throw :abort
+            
+            puts "You have updated the time stamps."
+        end
+    ----------------------------------------------------------
+
+        > n2
+        >>
+            id: 17,
+            name: "VIJAY",
+            email: "vijay@gmail.com",
+            contact: nil,
+            status: true,
+            created_at: Mon, 05 Sep 2022 05:24:55.448965000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 07:10:11.047592000 UTC +00:00>
+
+
+        > n2.touch
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+                User Update (1.0ms)  
+                    UPDATE "users" SET "updated_at" = $1 WHERE "users"."id" = $2  [["updated_at", "2022-09-05 07:17:31.031596"], ["id", 17]]
+            TRANSACTION (0.5ms)  
+            ROLLBACK                           
+            
+            ..........rb:31:in `throw': uncaught throw :abort (UncaughtThrowError)
+
+                *- Update of "updated_at" column is not completed.
+
+
+        > n2.reload
+        >>
+            User Load (1.1ms)  
+                SELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2  [["id", 17], ["LIMIT", 1]]
+            
+            You have found an object!                                 
+            You have initialized an object!                           
+            
+            =>                                                       
+            #<User:0x00007f0970477428                                 
+            
+            id: 17,                                                  
+            name: "VIJAY",                                           
+            email: "vijay@gmail.com",                                
+            contact: nil,                                            
+            status: true,                                            
+            created_at: Mon, 05 Sep 2022 05:24:55.448965000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 07:10:11.047592000 UTC +00:00>
+
+                *- now for confirmation we will refetch the value from database.
+
+                *- But, if You checked the values of "n2" before .reload then you have found that it has updated date but that data was not saved yet.
+
+        
+        NOTE - Any exception that is not ActiveRecord::Rollback or ActiveRecord::RecordInvalid will be re-raised by Rails after the callback chain is halted.
+
+    
+    ---------------------------------------------------------------------------------------------------
+7. Relational Callbacks :
+
+    - Callbacks work through model relationships, and can even be defined by them. 
+    
+    - Suppose an example where a user has many articles. 
+    
+    - A user's articles should be destroyed if the user is destroyed. 
+        
+    Example :
+        
+        Add an "after_destroy" callback to the User model by way of its relationship to the Article model.
+
+    
+    ---------------------------------------------------------------------------------------------------
+8. Conditional Callbacks :
+
+    - Like validations we can also add conditions to callbacks to execute them on specific conditions.
+
+    - In this process we need a predicate-method (another method in the program for check condition)
+
+    - You can use if: and unless: or both
+
+    Exmaple:
+    -----------------------------------------------------------------------
+        
+        before_save :capitalize_name, if: :name_only_alphabets?
+
+        
+            # multiple conditional callback
+        before_save :normalize_number, if: [:paid_with_card?, :card_have_sixteen_digits?]
+
+    -----------------------------------------------------------------------
+
+9. Callback Classes :
+
+    - Rails and Ruby allow us to make classes for callbacks.
+
+    - This is usefull when you want to use the same code for different callbacks.
