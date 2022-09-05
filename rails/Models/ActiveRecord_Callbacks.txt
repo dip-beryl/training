@@ -524,3 +524,32 @@ Example on All callbacks :
                 You have initialized an object!
 
         
+        -------------
+    14. after_touch
+
+        - The after_touch callback will be called whenever an Active Record object is touched.
+
+        - .touch is a method for ActiveRecord Objects. 
+            In simple mode it updates the "updated_at" time stamp to time when you call this method.
+
+        -  It also works with "belongs_to" association.
+
+        Example:
+        --------------------------------------------------------------------
+            after_touch do
+                puts "You have updated the time stamps."
+            end
+        --------------------------------------------------------------------
+
+            > n2.touch
+            >>
+                TRANSACTION (0.7ms)  BEGIN
+                    User Update (1.1ms)  
+                        UPDATE "users" SET "updated_at" = $1 WHERE "users"."id" = $2  [["updated_at", "2022-09-05 06:45:20.100888"], ["id", 17]]
+                
+                You have updated the time stamps.                                
+                
+                TRANSACTION (30.7ms)  COMMIT                                   
+                => true
+
+                

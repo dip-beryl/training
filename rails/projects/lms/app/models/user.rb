@@ -29,6 +29,10 @@ class User < ApplicationRecord
         puts "You have found an object!"
     end
 
+    after_touch do
+        puts "You have updated the time stamps."
+    end
+
     private
         def ensure_name_has_a_value
             if name.nil?
