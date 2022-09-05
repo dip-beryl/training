@@ -552,4 +552,61 @@ Example on All callbacks :
                 TRANSACTION (30.7ms)  COMMIT                                   
                 => true
 
-                
+    -----------------------------------------------------------------------
+
+4. Running Callbacks
+
+    - create
+    - create!
+    - destroy
+    - destroy!
+    - destroy_all
+    - destroy_by
+    - save
+    - save!
+    - save(validate: false)
+    - toggle!
+    - touch
+    - update_attribute
+    - update
+    - update!
+    - valid?
+
+    Additionally, the "after_find" callback is triggered by the following finder methods:
+
+    - all
+    - first
+    - find
+    - find_by
+    - find_by_*
+    - find_by_*!
+    - find_by_sql
+    - last
+
+
+    The "after_initialize" callback is triggered every time a new object of the class is initialized.
+
+    -----------------------------------------------------------------------------------------------------------
+
+5. Skipping Callback
+
+    Just as with validations, it is also possible to skip callbacks by using the following methods:
+
+    - decrement!
+    - decrement_counter
+    - delete
+    - delete_all
+    - delete_by
+    - increment!
+    - increment_counter
+    - insert
+    - insert!
+    - insert_all
+    - insert_all!
+    - touch_all
+    - update_column
+    - update_columns
+    - update_all
+    - update_counters
+    - upsert
+    - upsert_all
