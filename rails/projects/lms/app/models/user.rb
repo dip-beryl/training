@@ -30,6 +30,7 @@ class User < ApplicationRecord
     end
 
     after_touch do
+        throw :abort
         puts "You have updated the time stamps."
     end
 

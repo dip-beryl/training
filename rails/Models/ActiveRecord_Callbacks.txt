@@ -444,6 +444,8 @@ Example on All callbacks :
 
         - when ever a "DELETE FROM" statement / query is executed these callback functions will get registered_triggered.
 
+        - before_destroy callbacks should be placed before dependent: :destroy associations (or use the prepend: true option), to ensure they execute before the records are deleted by dependent: :destroy.
+
 
     -----------
     11. after_commit
@@ -610,3 +612,82 @@ Example on All callbacks :
     - update_counters
     - upsert
     - upsert_all
+
+    -----------------------------------------------------------------------------------------------------------
+
+6. Halting Execution :
+
+    - As you start registering new callbacks for your models, they will be queued for execution. 
+    
+    - This queue will include all your model's validations, the registered callbacks, and the database operation to be executed.
+
+    - The whole callback chain is wrapped in a transaction. 
+    
+    - If any callback raises an exception, the execution chain gets halted and a ROLLBACK is issued. 
+    
+    To intentionally stop a chain use: 
+
+                                throw :abort
+
+    Example :
+    ----------------------------------------------------------
+        after_touch do
+            
+            throw :abort
+            
+            puts "You have updated the time stamps."
+        end
+    ----------------------------------------------------------
+
+        > n2
+        >>
+            id: 17,
+            name: "VIJAY",
+            email: "vijay@gmail.com",
+            contact: nil,
+            status: true,
+            created_at: Mon, 05 Sep 2022 05:24:55.448965000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 07:10:11.047592000 UTC +00:00>
+
+
+        > n2.touch
+        >>
+            TRANSACTION (0.6ms)  
+            BEGIN
+                User Update (1.0ms)  
+                    UPDATE "users" SET "updated_at" = $1 WHERE "users"."id" = $2  [["updated_at", "2022-09-05 07:17:31.031596"], ["id", 17]]
+            TRANSACTION (0.5ms)  
+            ROLLBACK                           
+            
+            ..........rb:31:in `throw': uncaught throw :abort (UncaughtThrowError)
+
+                *- Update of "updated_at" column is not completed.
+
+
+        > n2.reload
+        >>
+            User Load (1.1ms)  
+                SELECT "users".* FROM "users" WHERE "users"."id" = $1 LIMIT $2  [["id", 17], ["LIMIT", 1]]
+            
+            You have found an object!                                 
+            You have initialized an object!                           
+            
+            =>                                                       
+            #<User:0x00007f0970477428                                 
+            
+            id: 17,                                                  
+            name: "VIJAY",                                           
+            email: "vijay@gmail.com",                                
+            contact: nil,                                            
+            status: true,                                            
+            created_at: Mon, 05 Sep 2022 05:24:55.448965000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 07:10:11.047592000 UTC +00:00>
+
+                *- now for confirmation we will refetch the value from database.
+
+                *- But, if You checked the values of "n2" before .reload then you have found that it has updated date but that data was not saved yet.
+
+        
+        NOTE - Any exception that is not ActiveRecord::Rollback or ActiveRecord::RecordInvalid will be re-raised by Rails after the callback chain is halted.
+
+        
