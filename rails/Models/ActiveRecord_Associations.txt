@@ -1,0 +1,157 @@
+File Name       : ActiveRecord_Associations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Associations Overview:
+
+    - In Rails, an association is a connection between two Active Record models.
+
+    - Because they make common operations simpler and easier in your code.
+
+    Example:
+
+        Each author can have many blogs. Without associations, the model declarations would look like this:
+
+        Normal :
+            ------------------------------------------------------
+            class Author < ApplicationRecord
+            end
+
+            class Blog < ApplicationRecord
+            end
+            ------------------------------------------------------
+
+            # creating a blog entry
+            > @blog = Blog.create(published_at: Time.now, author_id: @author.id)
+
+            # deleting an author an their blogs
+            > @blogs = Blog.where(author_id: @author.id)
+
+            > @blogs.each do |blog|
+                blog.destroy
+              end
+            
+            > @author.destroy
+
+
+        With Associations :
+            ------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :blogs, dependent: :destroy
+                end
+
+                class Blog < ApplicationRecord
+                    belongs_to :author
+                end
+            ------------------------------------------------------
+
+            # creating a new blog entry
+            > @blog = @author.blogs.create(published_at: Time.now)
+
+            # deleting author and all its blogs
+            > @author.destroy
+
+    -------------------------------------------------------------------------------------------------------------
+
+2. Types of Association :
+
+    Rails support 6 types of association
+
+    - belongs_to
+    - has_one
+    - has_many
+    - has_many :through
+    - has_one :through
+    - has_and_belongs_to_many
+
+    Associations are implemented using macro-style calls, so that you can declaratively add features to your models. 
+
+        
+        ------------
+    2.1 belongs_to :
+
+        - A "belongs_to" association sets up a connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model.
+
+        Example:
+
+            Each Blog has one author.
+
+            $ rails g migration CreateAuthorsAndBlogs
+
+            Model file: "blog.rb"
+            ----------------------------------------
+                class Blog < ApplicationRecord
+                    belongs_to :author
+                end
+            ----------------------------------------
+
+            Migration file:
+            ------------------------------------------------------
+                class CreateAuthorsAndBlogs < ActiveRecord::Migration[7.0]
+                    def change
+                        
+                        create_table :authors do |t|
+                            t.string :name
+
+                            t.timestamps
+                        end
+
+                        create_table :blogs do |t|
+                            t.string :name
+                            t.belongs_to: author, foreign_key: true
+                            
+                            t.timestamps
+                        end
+                    end
+                end
+            ------------------------------------------------------
+
+                - When used alone, belongs_to produces a one-directional one-to-one connection. 
+                
+                - Therefore each blog in the above example "knows" its author, but the authors don't know about their blogs.
+
+                - "belongs_to" does not ensure reference consistency. So its always best to also have a "foreign_key"
+
+
+            NOTE: To setup a bi-directional association - use "belongs_to" in combination with a "has_one" or "has_many" on the other model.
+
+
+            Inserting Data for cheking:
+
+                > a1 = Author.create(name: "Raj Kumar")
+                > a2 = Author.create(name: "Vijay Rana")
+
+
+                    - Now we want to add a new blog of "Vijay Rana"
+
+                > b1 = Blog.create(name: "Book_1", author_id: 3)
+                >>
+                    TRANSACTION (0.5ms)  BEGIN
+                    Author Load (0.5ms)  
+                        SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 3], ["LIMIT", 1]]
+                    TRANSACTION (0.4ms)  ROLLBACK
+
+                        *- ROLLBACKed because foreign_key is not found.
+
+                
+                > b1 = Blog.create(name: "Book_1", author_id: 2)
+                >>
+                    TRANSACTION (0.6ms)  BEGIN
+                    Author Load (0.7ms)  
+                        SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+                    Blog Create (1.8ms)  
+                        INSERT INTO "blogs" ("name", "author_id", "created_at", "updated_at") 
+                            VALUES ($1, $2, $3, $4) RETURNING "id"  [["name", "Book_1"], ["author_id", 2], ["created_at", "2022-09-05 11:48:17.622306"], ["updated_at", "2022-09-05 11:48:17.622306"]]
+                    TRANSACTION (29.0ms)  COMMIT
+
+
+                    - Now, Because of the association we can find the name of any blog's author without joinning.
+
+                > b1.author.name
+                >> "Vijay Rana"
+
+                    *- Because, Every book belongs to an author.
+
+
