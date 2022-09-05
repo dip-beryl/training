@@ -411,10 +411,15 @@ Organization    : Beryl Systems Pvt. Ltd.
         NOTE : to add index in columns use "add_index"
         ------------------------------------------------------------------------------------------------------------------
 
-    3.6. References :
+    3.6. References : (belongs_to)
 
-            add_reference
+            add_reference, add_belongs_to
             remove_reference
+
+            also they can be used inside "create_table" migration method.
+
+                eg:     t.reference
+                        t.belongs_to
         
         - The add_reference method allows the creation of an appropriately named column.
 
@@ -422,18 +427,22 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         - A foreign key can be created with the foreign_key option.
 
+        - Always must use the singular term. for the referenced table
+            or the column created also have pluralization in it that will give complications in foreign key 
+            and errors like:
+                                "uninitialized constant ......"
             
 
         -------------------------------------
             add_reference :temp_books, :students, foreign_key: true
         ------------------------------------
-            * This migration will create a "students_id" column in the "temp_books" table.
+            * This migration will create a "student_id" column in the "temp_books" table.
             * The index will automatically be created unless explicitly mentioned not to.
                 index: false
 
 
         ------------------------------------------------------
-            remove_reference :issued_books, :students, foreign_key: true, index: false
+            remove_reference :issued_books, :student, foreign_key: true, index: false
         -----------------------------------------------------------------
 
 NOTE : References and Foreign Key are different concepts.
@@ -458,21 +467,6 @@ NOTE : References and Foreign Key are different concepts.
                 
                 (foreign_key) issued_books.student_id ---> students.id (primary_key)
             
-            * A column name with referenced_table_name appended with [_id] is pre-needed
-
-                student_id (is approved)
-                students_id (is NOT-approved)
-
-        NOTE * - add_reference creates a table with plural name.
-                BUT, add_foreign_key connects table with singulat name.
-
-                So, Either USE:
-
-                    add_reference with foreign_key: option
-
-                    OR
-
-                    add_foreign_key and pre-create singular named table.
 
         - You can use "column:" option for different column name, and; 
             "primary_key:" option for different named primary key
