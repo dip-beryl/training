@@ -262,4 +262,176 @@ Example on All callbacks :
                     UPDATE "users" SET "name" = $1, "updated_at" = $2 WHERE "users"."id" = $3  [["name", "aman"], ["updated_at", "2022-09-03 07:33:05.541517"], ["id", 9]]                                   
                 TRANSACTION (39.9ms)  COMMIT                            
                 => true
+
+    NOTE : - [ after_save, befor_save ] runs both on .create(INSERT INTO) and .update(UPDATE SET).
+
+
+        -----------
+    5. after_create
+
+        - It work similar to "after_save"
+
+        - Only difference is that it only get registered / triggered on (INSERT INTO query) that is creating of new records.
+
+            -- > Either you create record through (.new, .save) or wirh .create this callback will be triggered.
+
+            -- > But not in the case when the object.new_record? is "false".
+                 This will be triggered only for new objects that are not yet .save
+
+            -- > Already saved objects are old objects and on changing their value and saving them will trigger UPDATE query.
+
+
+        -----------
+    6. before_create
+
+        - It work similar to "before_save"
+
+        - Only difference is that it only get registered / triggered on (INSERT INTO query) that is creating of new records.
+
+            -- > Either you create record through (.new, .save) or wirh .create this callback will be triggered.
+
+            -- > But not in the case when the object.new_record? is "false".
+                 This will be triggered only for new objects that are not yet .save
+
+            -- > Already saved objects are old objects and on changing their value and saving them will trigger UPDATE query.
+
+
+        ------------
+    7. after_update
+
+        - It work similar to "after_save" or "after_create"
+
+        - Only difference is that it only get registered / triggered on (UPDATE SET query) that is updating of records.
+
+            -- > It gets triggered either you update record with .update or with .save (after updating values in object)
+
+            -- > If the query performed be ActiveRecord is UPDATE SET then it will get trigger.
+
+        -----------
+    7. before_update
+
+        - It work similar to "before_save" or "before_create"
+
+        - Only difference is that it only get registered / triggered on (UPDATE SET query) that is updating of records.
+
+            -- > It gets triggered either you update record with .update or with .save (after updating values in object)
+
+            -- > If the query performed be ActiveRecord is UPDATE SET then it will get trigger.
+
+        
+    NOTE :   after_save registers always after the more specific callbacks i.e., "after_create" and "after_update", 
+              no matter the order in which the macro calls were executed.
+
+
+    NOTE : [ befor_create, after_create ] and [ before_update, after_update ] are completely same.
+
+            One works on .create other works on .update
+
+            ----------
+    8. around_save :
+
+        - "around_save" is the middle ground of "before_save" and "after_save"
+
+        - You can mention both the conditions in it.
+
+
+        Example:
+        ---------------------------------------------------------------------
+            around_save :around_save_func
+
+            private
                 
+                def around_save_func
+                    self.name.upcase!       # all the code before [ yield ] is processed as before_save
+
+                    yield
+
+                    self.name.downcase!     # all the code after [ yield ] is processed as after_save
+                end
+
+        ---------------------------------------------------------------------
+        
+            > u1 = User.new(name: "RaNvIJaY", email: "ranvijay@gmail.com")
+
+            > u1
+            >>
+                id: nil,                                                        
+                name: "RaNvIJaY",                                               
+                email: "ranvijay@gmail.com",                                    
+                contact: nil,                                                   
+                status: nil,                                                    
+                created_at: nil,                                                
+                updated_at: nil>
+
+                    *- the object have same casing as the input provided because no .save method is hit yet.
+
+
+            > u1.save
+            >>
+                TRANSACTION (0.5ms)  BEGIN
+                User Create (0.8ms)  
+                    INSERT INTO "users" ("name", "email", "contact", "status", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["name", "RANVIJAY"], ["email", "ranvijay@gmail.com"], ["contact", nil], ["status", true], ["created_at", "2022-09-05 04:42:47.066719"], ["updated_at", "2022-09-05 04:42:47.066719"]]                                     
+                TRANSACTION (12.3ms)  COMMIT
+                
+                => true 
+
+                    *- The values o f:name saved in the DB is uppercased as mentioned in "around_save_func" before [ yield ].
+
+
+            > u1
+            >>
+                id: 15,                                                  
+                name: "ranvijay",                                        
+                email: "ranvijay@gmail.com",                             
+                contact: nil,                                            
+                status: true,          
+                created_at: Mon, 05 Sep 2022 04:42:47.066719000 UTC +00:00,
+                updated_at: Mon, 05 Sep 2022 04:42:47.066719000 UTC +00:00>
+
+                    *- after [ yield ] is executed after_save features of around_save is processed
+
+                        so the :name values converted to downase.
+
+                    *- but similiarly after_save these changes aren't in the DB yet. 
+                        If you hit .save now it will execute an UPDATE Query.
+
+        
+        ---------
+    9. around_create :
+
+        - This works similarly to "around_save".
+
+        - Only difference is that it will get registered / triggered only when an INSERT INTO is executed by ActiveRecord.
+
+        - INSERT INTO is executed on new object saving that is not yet in DB.
+            by:
+                .new --> .save
+
+                or
+
+                .create
+
+        - You can check if a record is new or not 
+            by:
+                .new_record?
+
+
+        ---------
+    9. around_update :
+
+        - This works similarly to "around_save".
+
+        - Only difference is that it will get registered / triggered only when an UPDATE SET is executed by ActiveRecord.
+
+        - UPDATE_SET is executed on updating an already saved object (that is already in DB)
+            by:
+                .new --> .save      (only on already saved values)
+
+                or
+
+                .update
+
+        - You can check if a record is new or not
+            by:
+                .new_record?
