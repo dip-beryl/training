@@ -690,4 +690,43 @@ Example on All callbacks :
         
         NOTE - Any exception that is not ActiveRecord::Rollback or ActiveRecord::RecordInvalid will be re-raised by Rails after the callback chain is halted.
 
+    
+    ---------------------------------------------------------------------------------------------------
+7. Relational Callbacks :
+
+    - Callbacks work through model relationships, and can even be defined by them. 
+    
+    - Suppose an example where a user has many articles. 
+    
+    - A user's articles should be destroyed if the user is destroyed. 
         
+    Example :
+        
+        Add an "after_destroy" callback to the User model by way of its relationship to the Article model.
+
+    
+    ---------------------------------------------------------------------------------------------------
+8. Conditional Callbacks :
+
+    - Like validations we can also add conditions to callbacks to execute them on specific conditions.
+
+    - In this process we need a predicate-method (another method in the program for check condition)
+
+    - You can use if: and unless: or both
+
+    Exmaple:
+    -----------------------------------------------------------------------
+        
+        before_save :capitalize_name, if: :name_only_alphabets?
+
+        
+            # multiple conditional callback
+        before_save :normalize_number, if: [:paid_with_card?, :card_have_sixteen_digits?]
+
+    -----------------------------------------------------------------------
+
+9. Callback Classes :
+
+    - Rails and Ruby allow us to make classes for callbacks.
+
+    - This is usefull when you want to use the same code for different callbacks.
