@@ -21,6 +21,14 @@ class User < ApplicationRecord
 
     around_save :around_save_func
 
+    after_initialize do
+        puts "You have initialized an object!"
+    end
+
+    after_find do
+        puts "You have found an object!"
+    end
+
     private
         def ensure_name_has_a_value
             if name.nil?
