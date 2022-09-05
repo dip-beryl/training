@@ -74,6 +74,12 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         - A "belongs_to" association sets up a connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model.
 
+        - When used alone, belongs_to produces a one-directional one-to-one connection. 
+        
+        - Therefore each blog in the above example "knows" its author, but the authors don't know about their blogs.
+
+        - To setup a bi-directional association - use "belongs_to" in combination with a "has_one" or "has_many" on the other model.
+
         Example:
 
             Each Blog has one author.
@@ -126,7 +132,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
                     - Now we want to add a new blog of "Vijay Rana"
 
-                > b1 = Blog.create(name: "Book_1", author_id: 3)
+                > b1 = Blog.create(name: "Blog_1", author_id: 3)
                 >>
                     TRANSACTION (0.5ms)  BEGIN
                     Author Load (0.5ms)  
@@ -136,14 +142,14 @@ Organization    : Beryl Systems Pvt. Ltd.
                         *- ROLLBACKed because foreign_key is not found.
 
                 
-                > b1 = Blog.create(name: "Book_1", author_id: 2)
+                > b1 = Blog.create(name: "Blog_1", author_id: 2)
                 >>
                     TRANSACTION (0.6ms)  BEGIN
                     Author Load (0.7ms)  
                         SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
                     Blog Create (1.8ms)  
                         INSERT INTO "blogs" ("name", "author_id", "created_at", "updated_at") 
-                            VALUES ($1, $2, $3, $4) RETURNING "id"  [["name", "Book_1"], ["author_id", 2], ["created_at", "2022-09-05 11:48:17.622306"], ["updated_at", "2022-09-05 11:48:17.622306"]]
+                            VALUES ($1, $2, $3, $4) RETURNING "id"  [["name", "Blog_1"], ["author_id", 2], ["created_at", "2022-09-05 11:48:17.622306"], ["updated_at", "2022-09-05 11:48:17.622306"]]
                     TRANSACTION (29.0ms)  COMMIT
 
 
@@ -152,6 +158,69 @@ Organization    : Beryl Systems Pvt. Ltd.
                 > b1.author.name
                 >> "Vijay Rana"
 
-                    *- Because, Every book belongs to an author.
+                    *- Because, Every blog belongs to an author.
+
+                
+                    - Adding another blog to same writer / author:
+                
+                > b2 = Blog.create(name: "Blog_2", author_id: 2)
+                > b2.author.name
+                >> "Vijay Rana"
 
 
+        ------------------------------------------------------------------------------------------------------------
+    
+    2.2 has_one :
+
+        - A "has_one" association indicates that one other model has a reference to this model. 
+        
+        - That model can be fetched through this association.
+
+        - The main difference from belongs_to is that the link column is located in the other table:
+
+        - Depending on the use case, you might also need to create a unique index and/or a foreign key constraint on the customer column for the accounts table.
+
+        - This relation can be bi-directional when used in combination with "belongs_to" on the other model.
+
+
+        Example:
+
+            A bank where one customer can have only one account.
+
+        Model files.
+        ---------------------------------------------------------------
+            class Customer < ApplicationRecord
+                has_one :account
+            end
+
+            class Account < ApplicationRecord
+            end
+        ---------------------------------------------------------------
+
+        $ rails g migration CreateCustomersAndAccounts
+
+
+        ----------------------------------------------------------------------------------------------
+        class CreateCustomersAndAccounts < ActiveRecord::Migration[7.0]
+            def change
+                
+                create_table :customers do |t|
+                    t.string :name
+                    t.string :contact
+
+                    t.timestamps
+                end
+
+                create_table :accounts do |t|
+                    t.string :variant
+                    t.string :amount
+                    t.references :customer, index: {unique: true}, foreign_key: true
+
+
+                t.timestamps
+                end
+
+            end
+        end
+
+        ----------------------------------------------------------------------------------------------
