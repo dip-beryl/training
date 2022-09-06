@@ -565,3 +565,161 @@ Organization    : Beryl Systems Pvt. Ltd.
                 end
 
             ------------------------------------------------------------------------------
+
+        ------------------------------------------------------------------------------------------------
+    
+    2.7 Concept of "has_one" and "belongs_to" :
+
+        - If you want to set up a [one-to-one] relationship between two models, 
+            
+                you'll need to add "belongs_to" to one, and "has_one" to the other.
+
+        - Therefor, both is used for complete one-to-one connection.
+
+        - Wherever the foreign key is placed. That table is used for "belongs_to".
+
+        - The has_one relationship says that one of something is yours - that is, that something points back to you. 
+
+        Example:
+
+                It makes more sense to say that a supplier owns an account than that an account owns a supplier.
+
+            Model :
+            ------------------------------------------------------------------------------
+                def Suplier < ApplicationRecord
+                    has_one :account
+                end
+
+                def Account < ApplicationRecord
+                    belongs_to :supplier
+                end
+            ------------------------------------------------------------------------------
+
+                *- accounts table will have column "supplier_id" that will be a foreign_key of column supplier.id
+
+        
+        ----------------------------------------------------------------------------------------------------------------
+    
+    2.8 Choosing Between "has_many :through" and "has_and_belongs_to_many"
+
+        - Both of these implement many-to-many relation.
+
+        - "has_and_belongs_to_many" makes the Assosiations directly.
+        - "has_many :through"       makes the Association in-directly.
+
+
+
+        - has_many :through 
+                         - should be set up, if you need to work with the relationship model as an "independent entity".
+
+
+        - has_and_belongs_to_many
+                         - If you don't need to do anything with the relationship model
+                            (though you'll need to remember to create the joining table in the database)
+
+    
+    NOTE-- You should use "has_many :through" if you need validations, callbacks, or extra attributes on the join model.
+
+        
+        Model: has_and_belongs_to_many
+        --------------------------------------------------------
+            class Assembly < ApplicationRecord
+                has_and_belongs_to_many :parts
+            end
+
+            class Part < ApplicationRecord
+                has_and_belongs_to_many :assemblies
+            end
+        --------------------------------------------------------
+
+
+        Model: has_many :through
+        --------------------------------------------------------
+           class Assembly < ApplicationRecord
+                has_many :manifests
+                has_many :parts, through: :manifests
+            end
+
+            class Manifest < ApplicationRecord
+                belongs_to :assembly
+                belongs_to :part
+            end
+
+            class Part < ApplicationRecord
+                has_many :manifests
+                has_many :assemblies, through: :manifests
+            end
+        --------------------------------------------------------
+
+        ---------------------------------------------------------------------------------------------------------------
+
+    2.9 Polymorphic Associations
+
+        - It is a more advanced version of "belongs_to" Associations.
+
+        - With polymorphic associations, a model can belong to more than one other model, on a single association.
+
+        Example :
+
+                A picture model that belongs to either an employee model or a product model.
+
+            ---------------------------------------------------------------------------
+                class Picture < ApplicationRecord
+                    belongs_to :imageable, polymorphic: true
+                end
+
+
+
+                class Employee < ApplicationRecord
+                    has_many :pictures, as: :imageable
+                end
+
+                class Product < ApplicationRecord
+                    has_many :pictures, as: :imageable
+                end
+            ---------------------------------------------------------------------------
+
+        - You can think of a polymorphic "belongs_to" declaration as setting up an interface that any other model can use.
+
+        - From an innstance of "Employee" we can retrive all the pictures.
+
+                    > @employee.pictures
+
+        - If we have an instance of "Picture" we can gets parents value :
+
+                    > @picture.imageable
+
+                - To make this work we need a foreign_key column and a Type column.
+
+            
+            -------------------------------------------------------------------------------------
+                class CreatePictures < ActiveRecord::Migration[7.0]
+                    def change
+                        create_table :pictures do |t|
+                          t.string  :name
+                            t.bigint  :imageable_id
+                            t.string  :imageable_type
+            
+                            t.timestamps
+                        end
+
+                        add_index :pictures, [:imageable_type, :imageable_id]
+                    end
+                end
+            -------------------------------------------------------------------------------------
+                    *- There is no real table as imageable
+
+
+            Alternate of above Migration :
+            -----------------------------------------------------------
+            class CreatePictures < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :pictures do |t|
+                    t.string :name
+                    t.references :imageable, polymorphic: true      # this automatically makes those columns
+            
+                    t.timestamps
+                    end
+                end
+            end
+            ------------------------------------------------------------
