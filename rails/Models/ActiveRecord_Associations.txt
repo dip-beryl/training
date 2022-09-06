@@ -276,3 +276,207 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         > author.destroy
         >> will delete the author and also all its blogs
+
+        ----------------------------------------------------------------------------------------------------
+    
+    2.4 has_many :through
+
+            - A "has_many :through" association is often used to set up a many-to-many connection with another model. 
+            
+            - This association indicates that the declaring model can be matched with zero or more instances of another model by proceeding through a third model.
+
+            - Used when a connection is going or based on another table.
+
+            Example: 1 (check out 2nd example too)
+
+                    A medical practice where patients make appointments to see physicians.
+
+                Model:
+                -------------------------------------------------------------------------
+                    class Physician < ApplicationRecord
+                        has_many :appointments, dependent: :destroy
+                        has_many :patients, through: :appointments
+                    end
+
+                    class Appointment < ApplicationRecord
+                        belongs_to :physician
+                        belongs_to :patient
+                    end
+
+                    class Patient < ApplicationRecord
+                        has_many :appointments, dependent: :destroy
+                        has_many :physicians, through: :appointments
+                    end
+                -------------------------------------------------------------------------
+
+
+                Migration:
+                ------------------------------------------------------------------------
+                    class CreateHospitalTables < ActiveRecord::Migration[7.0]
+                        
+                        def change
+                            create_table :physicians do |t|
+                                t.string :name
+                                t.timestamps
+                            end
+
+                            create_table :patients do |t|
+                                t.string :name
+                                t.timestamps
+                            end
+
+                            create_table :appointments do |t|
+                                t.belongs_to :physician
+                                t.belongs_to :patient
+                                t.datetime :appointment_date
+                                t.timestamps
+                            end
+                        end
+
+                    end
+                --------------------------------------------------------------------------
+
+                Insering Values:
+
+                    > physician_1 = Physician.create(name: "Karan Sachdeva")
+                    > physician_2 = Physician.create(name: "Ravi Shashtri")
+
+                    > patient_1 = Patient.create(name: "Sameer")
+                    > patient_2 = Patient.create(name: "Roshan")
+
+
+                    > appointment_1 = Appointment.create(physician_id: 1, patient_id: 2)
+                    >>
+                        TRANSACTION (0.5ms)  
+                        BEGIN
+                        
+                        Physician Load (0.7ms)  
+                            SELECT "physicians".* FROM "physicians" WHERE "physicians"."id" = $1 LIMIT $2  [["id", 1], ["LIMIT", 1]]
+                        
+                        Patient Load (0.8ms)  
+                            SELECT "patients".* FROM "patients" WHERE "patients"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+                        
+                        Appointment Create (1.1ms)  
+                            INSERT INTO "appointments" ("physician_id", "patient_id", "appointment_date", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["physician_id", 1], ["patient_id", 2], ["appointment_date", nil], ["created_at", "2022-09-06 06:16:15.417358"], ["updated_at", "2022-09-06 06:16:15.417358"]]                        
+                        
+                        TRANSACTION (35.9ms)  
+                        COMMIT
+                    
+                    > appointment_2 = Appointment.create(physician_id: 2, patient_id: 2)
+                    > appointment_3 = Appointment.create(physician_id: 2, patient_id: 1)
+
+
+                Getting Values Through Assosiation:
+
+                    > appointment_1.physician
+                    >>  
+                        id: 1,                                                    
+                        name: "Karan Sachdeva",                                      
+                        created_at: Tue, 06 Sep 2022 05:38:11.973940000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 05:38:11.973940000 UTC +00:00> 
+
+
+                    > appointment_1.patient
+                    >> 
+                        id: 2,                                                    
+                        name: "Roshan",       
+                        created_at: Tue, 06 Sep 2022 05:39:52.484836000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 05:39:52.484836000 UTC +00:00> 
+
+
+                    > physician_2.appointments
+                    >>
+                        Appointment Load (0.8ms)  SELECT "appointments".* FROM "appointments" WHERE "appointments"."physician_id" = $1  [["physician_id", 2]]
+ 
+                        =>          
+ 
+                        [#<Appointment:0x00007fc45cae2568                                              
+                        id: 6,     
+                        physician_id: 2,                                                             
+                        patient_id: 2,                                                               
+                        appointment_date: nil,                                                       
+                        created_at: Tue, 06 Sep 2022 06:17:51.639768000 UTC +00:00,                  
+                        updated_at: Tue, 06 Sep 2022 06:17:51.639768000 UTC +00:00>,                 
+ 
+                        #<Appointment:0x00007fc45cae2360                                              
+                        id: 7,     
+                        physician_id: 2,                                                             
+                        patient_id: 1,                                                               
+                        appointment_date: nil,                                                       
+                        created_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00,                  
+                        updated_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00>] 
+                        
+
+                    > patient_1.appointments
+                    >>
+                        Appointment Load (0.9ms)  
+                            SELECT "appointments".* FROM "appointments" WHERE "appointments"."patient_id" = $1  [["patient_id", 1]]
+                        
+                        =>      
+                        
+                        [#<Appointment:0x00007fc45ce209a0                                          
+                        id: 7, 
+                        physician_id: 2,
+                        patient_id: 1,
+                        appointment_date: nil,
+                        created_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00>]
+
+
+                Deleting Appointments When any Patient or Physician is deleted :
+
+                    > physician_2.destroy
+                    >>
+                        TRANSACTION (0.4ms)  BEGIN
+ 
+                        Appointment Destroy (0.7ms)  DELETE FROM "appointments" WHERE "appointments"."id" = $1  [["id", 6]]
+                        Appointment Destroy (1.0ms)  DELETE FROM "appointments" WHERE "appointments"."id" = $1  [["id", 7]]
+                        Physician Destroy (0.8ms)  DELETE FROM "physicians" WHERE "physicians"."id" = $1  [["id", 2]]
+ 
+                        TRANSACTION (36.3ms)  COMMIT                                             
+                        =>                                                   
+                        
+                        #<Physician:0x00007fc45cdfd388
+                        id: 2,
+                        name: "Ravi Shashtri",
+                        created_at: Tue, 06 Sep 2022 06:12:28.196842000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 06:15:13.211670000 UTC +00:00> 
+
+                    
+                Creating enteries(appointments) through patient or physician object / record :
+
+                    > appointment_2 = patient_2.appointments.create(physician_id: 1)
+                    >>
+                        TRANSACTION (0.4ms)  BEGIN
+                        
+                        Physician Load (0.4ms)  SELECT "physicians".* FROM "physicians" WHERE "physicians"."id" = $1 LIMIT $2  [["id", 1], ["LIMIT", 1]]
+                        Appointment Create (0.8ms)  INSERT INTO "appointments" ("physician_id", "patient_id", "appointment_date", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["physician_id", 1], ["patient_id", 2], ["appointment_date", nil], ["created_at", "2022-09-06 06:32:24.983379"], ["updated_at", "2022-09-06 06:32:24.983379"]]
+                        
+                        TRANSACTION (414.2ms)  COMMIT
+
+
+                Example : 2  (Nested Association)
+                ------------------------------------------------------------------------
+                    class Document < ApplicationRecord
+                        has_many :sections
+                        has_many :paragraphs, through: :sections
+                    end
+
+                    class Section < ApplicationRecord
+                        belongs_to :document
+                        has_many :paragraphs
+                    end
+
+                    class Paragraph < ApplicationRecord
+                        belongs_to :section
+                    end
+                ------------------------------------------------------------------------
+
+                    *- "Document" have many "Sections" 
+                                                        and;
+                                                             "Secions" have many "Paragraphs"
+
+
+        -------------------------------------------------------------------------------------------------------------------------------
+    
+    
