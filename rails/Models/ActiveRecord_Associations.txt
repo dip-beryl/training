@@ -723,3 +723,47 @@ Organization    : Beryl Systems Pvt. Ltd.
                 end
             end
             ------------------------------------------------------------
+
+        
+        ------------------------------------------------------------------------------------------------------------------
+    
+    2.10 Self Joins :
+
+        - In designing a data model, you will sometimes find a model that should have a relation to itself.
+
+        Example:
+                You may want to store all employees in a single database model, 
+                
+                but be able to trace relationships such as between manager and subordinates.
+
+            Model:
+            ------------------------------------------------------------------
+                class Employee < ApplicationRecord
+                    
+                    has_many :subordinates, class_name: "Employee", foreign_key: "manager_id"
+
+                    belongs_to :manager, class_name: "Employee", optional: true
+
+                end
+            ------------------------------------------------------------------
+
+            Migration:
+            ------------------------------------------------------------------
+                class CreateEmployees < ActiveRecord::Migration[7.0]
+                    def change
+                        create_table :employees do |t|
+                            
+                            t.references :manager, foreign_key: { to_table: :employees }
+                            
+                            t.timestamps
+                        end
+                    end
+                end
+            ------------------------------------------------------------------
+
+
+                *- Now you can retrieve:
+
+                    > @employee.manager
+
+                    > @employee.subordinates
