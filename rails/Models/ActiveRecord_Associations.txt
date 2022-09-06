@@ -479,4 +479,33 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         -------------------------------------------------------------------------------------------------------------------------------
     
-    
+    2.5 has_one :through
+
+        - A "has_one :through" association sets up a one-to-one connection with another model. 
+        
+        - This association indicates that the declaring model can be matched with one instance of another model by proceeding through a third model.
+
+        Example:
+                    Supplier --> 1 --> Account --> 1 --> Account History
+
+            Model :
+            --------------------------------------------------------------------------------------
+                class Supplier < ApplicationRecord
+                    has_one :account
+                    has_one :account_history, through: :account
+                end
+
+                class Account < ApplicationRecord
+                    belongs_to :supplier
+                    has_one :account_history
+                end
+
+                class AccountHistory < ApplicationRecord
+                    belongs_to :account
+                end
+            --------------------------------------------------------------------------------------
+
+                *- apply foreign_keys wherever needed.
+
+
+            
