@@ -1,0 +1,925 @@
+File Name       : ActiveRecord_Associations.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+1. Associations Overview:
+
+    - In Rails, an association is a connection between two Active Record models.
+
+    - Because they make common operations simpler and easier in your code.
+
+    Example:
+
+        Each author can have many blogs. Without associations, the model declarations would look like this:
+
+        Normal :
+            ------------------------------------------------------
+            class Author < ApplicationRecord
+            end
+
+            class Blog < ApplicationRecord
+            end
+            ------------------------------------------------------
+
+            # creating a blog entry
+            > @blog = Blog.create(published_at: Time.now, author_id: @author.id)
+
+            # deleting an author an their blogs
+            > @blogs = Blog.where(author_id: @author.id)
+
+            > @blogs.each do |blog|
+                blog.destroy
+              end
+            
+            > @author.destroy
+
+
+        With Associations :
+            ------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :blogs, dependent: :destroy
+                end
+
+                class Blog < ApplicationRecord
+                    belongs_to :author
+                end
+            ------------------------------------------------------
+
+            # creating a new blog entry
+            > @blog = @author.blogs.create(published_at: Time.now)
+
+            # deleting author and all its blogs
+            > @author.destroy
+
+    -------------------------------------------------------------------------------------------------------------
+
+2. Types of Association :
+
+    Rails support 6 types of association
+
+    - belongs_to
+    - has_one
+    - has_many
+    - has_many :through
+    - has_one :through
+    - has_and_belongs_to_many
+
+        NOTE: when using one-to-one associations use Singularized table name and;
+                When using many-to-many or one-to-many use pluralized table names.
+
+
+    Associations are implemented using macro-style calls, so that you can declaratively add features to your models. 
+
+        
+        ------------
+    2.1 belongs_to :        (one-to-one)
+
+        - A "belongs_to" association sets up a connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model.
+
+        - When used alone, belongs_to produces a one-directional one-to-one connection. 
+        
+        - Therefore each blog in the above example "knows" its author, but the authors don't know about their blogs.
+
+        - To setup a bi-directional association - use "belongs_to" in combination with a "has_one" or "has_many" on the other model.
+
+        Example:
+
+            Each Blog has one author.
+
+            $ rails g migration CreateAuthorsAndBlogs
+
+            Model file: "blog.rb"
+            ----------------------------------------
+                class Blog < ApplicationRecord
+                    belongs_to :author
+                end
+            ----------------------------------------
+
+            Migration file:
+            ------------------------------------------------------
+                class CreateAuthorsAndBlogs < ActiveRecord::Migration[7.0]
+                    def change
+                        
+                        create_table :authors do |t|
+                            t.string :name
+
+                            t.timestamps
+                        end
+
+                        create_table :blogs do |t|
+                            t.string :name
+                            t.belongs_to: author, foreign_key: true
+                            
+                            t.timestamps
+                        end
+                    end
+                end
+            ------------------------------------------------------
+
+                - When used alone, belongs_to produces a one-directional one-to-one connection. 
+                
+                - Therefore each blog in the above example "knows" its author, but the authors don't know about their blogs.
+
+                - "belongs_to" does not ensure reference consistency. So its always best to also have a "foreign_key"
+
+
+            NOTE: To setup a bi-directional association - use "belongs_to" in combination with a "has_one" or "has_many" on the other model.
+
+
+            Inserting Data for cheking:
+
+                > a1 = Author.create(name: "Raj Kumar")
+                > a2 = Author.create(name: "Vijay Rana")
+
+
+                    - Now we want to add a new blog of "Vijay Rana"
+
+                > b1 = Blog.create(name: "Blog_1", author_id: 3)
+                >>
+                    TRANSACTION (0.5ms)  BEGIN
+                    Author Load (0.5ms)  
+                        SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 3], ["LIMIT", 1]]
+                    TRANSACTION (0.4ms)  ROLLBACK
+
+                        *- ROLLBACKed because foreign_key is not found.
+
+                
+                > b1 = Blog.create(name: "Blog_1", author_id: 2)
+                >>
+                    TRANSACTION (0.6ms)  BEGIN
+                    Author Load (0.7ms)  
+                        SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+                    Blog Create (1.8ms)  
+                        INSERT INTO "blogs" ("name", "author_id", "created_at", "updated_at") 
+                            VALUES ($1, $2, $3, $4) RETURNING "id"  [["name", "Blog_1"], ["author_id", 2], ["created_at", "2022-09-05 11:48:17.622306"], ["updated_at", "2022-09-05 11:48:17.622306"]]
+                    TRANSACTION (29.0ms)  COMMIT
+
+
+                    - Now, Because of the association we can find the name of any blog's author without joinning.
+
+                > b1.author.name
+                >> "Vijay Rana"
+
+                    *- Because, Every blog belongs to an author.
+
+                
+                    - Adding another blog to same writer / author:
+                
+                > b2 = Blog.create(name: "Blog_2", author_id: 2)
+                > b2.author.name
+                >> "Vijay Rana"
+
+
+        ------------------------------------------------------------------------------------------------------------
+    
+    2.2 has_one :           (one-to-one)
+
+        - A "has_one" association indicates that one other model has a reference to this model. 
+        
+        - That model can be fetched through this association.
+
+        - The main difference from belongs_to is that the link column is located in the other table:
+
+        - Depending on the use case, you might also need to create a unique index and/or a foreign key constraint on the customer column for the accounts table.
+
+        - This relation can be bi-directional when used in combination with "belongs_to" on the other model.
+
+
+        Example:
+
+            A bank where one customer can have only one account.
+
+        Model files.
+        ---------------------------------------------------------------
+            class Customer < ApplicationRecord
+                has_one :account
+            end
+
+            class Account < ApplicationRecord
+            end
+        ---------------------------------------------------------------
+
+        $ rails g migration CreateCustomersAndAccounts
+
+
+        ----------------------------------------------------------------------------------------------
+            class CreateCustomersAndAccounts < ActiveRecord::Migration[7.0]
+                def change
+                    
+                    create_table :customers do |t|
+                        t.string :name
+                        t.string :contact
+
+                        t.timestamps
+                    end
+
+                    create_table :accounts do |t|
+                        t.string :variant
+                        t.string :amount
+                        t.references :customer, index: {unique: true}, foreign_key: true
+
+
+                    t.timestamps
+                    end
+
+                end
+            end
+        ----------------------------------------------------------------------------------------------
+
+    2.3 has_many :          (one-to-many)
+
+        - A "has_many" association is similar to "has_one", but indicates a one-to-many connection with another model
+
+        - You'll often find this association on the "other side" of a belongs_to association.
+
+        - This association indicates that "each instance of the model has zero or more" instances of another model.
+
+        Example:
+
+            Taking the Blog-Author table / model.
+
+        Model :
+        --------------------------------------------------------------------
+            class Author < ApplicationRecord
+                has_many :blogs, dependent: :destroy        
+                
+            end
+            
+            class Blog < ApplicationRecord
+                    belongs_to :author
+            end
+        --------------------------------------------------------------------
+            *- the dependent option makes sure that when we delete any author its all blogs are also deleted.
+
+            - Now we can access blogs through authors.
+
+        > author = Author.last
+
+        > author.blogs.all
+        >>
+
+            Blog Load (1.0ms)  SELECT "blogs".* FROM "blogs" WHERE "blogs"."author_id" = $1  [["author_id", 2]]
+
+            =>
+            [#<Blog:0x0000564c8a4a0998
+            id: 1,
+            name: "Blog_1",
+            author_id: 2,
+            created_at: Mon, 05 Sep 2022 11:48:17.622306000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:33.764925000 UTC +00:00>,
+
+            #<Blog:0x0000564c8a4a07b8
+            id: 2,
+            name: "Blog_2",
+            author_id: 2,                      
+            created_at: Mon, 05 Sep 2022 12:14:39.092795000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:36.728128000 UTC +00:00>]
+            
+
+        > author.destroy
+        >> will delete the author and also all its blogs
+
+        ----------------------------------------------------------------------------------------------------
+    
+    2.4 has_many :through           (many-to-many)
+
+            - A "has_many :through" association is often used to set up a many-to-many connection with another model. 
+            
+            - This association indicates that the declaring model can be matched with zero or more instances of another model by proceeding through a third model.
+
+            - Used when a connection is going or based on another table.
+
+            Example: 1 (check out 2nd example too)
+
+                    A medical practice where patients make appointments to see physicians.
+
+                Model:
+                -------------------------------------------------------------------------
+                    class Physician < ApplicationRecord
+                        has_many :appointments, dependent: :destroy
+                        has_many :patients, through: :appointments
+                    end
+
+                    class Appointment < ApplicationRecord
+                        belongs_to :physician
+                        belongs_to :patient
+                    end
+
+                    class Patient < ApplicationRecord
+                        has_many :appointments, dependent: :destroy
+                        has_many :physicians, through: :appointments
+                    end
+                -------------------------------------------------------------------------
+
+
+                Migration:
+                ------------------------------------------------------------------------
+                    class CreateHospitalTables < ActiveRecord::Migration[7.0]
+                        
+                        def change
+                            create_table :physicians do |t|
+                                t.string :name
+                                t.timestamps
+                            end
+
+                            create_table :patients do |t|
+                                t.string :name
+                                t.timestamps
+                            end
+
+                            create_table :appointments do |t|
+                                t.belongs_to :physician
+                                t.belongs_to :patient
+                                t.datetime :appointment_date
+                                t.timestamps
+                            end
+                        end
+
+                    end
+                --------------------------------------------------------------------------
+
+                Insering Values:
+
+                    > physician_1 = Physician.create(name: "Karan Sachdeva")
+                    > physician_2 = Physician.create(name: "Ravi Shashtri")
+
+                    > patient_1 = Patient.create(name: "Sameer")
+                    > patient_2 = Patient.create(name: "Roshan")
+
+
+                    > appointment_1 = Appointment.create(physician_id: 1, patient_id: 2)
+                    >>
+                        TRANSACTION (0.5ms)  
+                        BEGIN
+                        
+                        Physician Load (0.7ms)  
+                            SELECT "physicians".* FROM "physicians" WHERE "physicians"."id" = $1 LIMIT $2  [["id", 1], ["LIMIT", 1]]
+                        
+                        Patient Load (0.8ms)  
+                            SELECT "patients".* FROM "patients" WHERE "patients"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+                        
+                        Appointment Create (1.1ms)  
+                            INSERT INTO "appointments" ("physician_id", "patient_id", "appointment_date", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["physician_id", 1], ["patient_id", 2], ["appointment_date", nil], ["created_at", "2022-09-06 06:16:15.417358"], ["updated_at", "2022-09-06 06:16:15.417358"]]                        
+                        
+                        TRANSACTION (35.9ms)  
+                        COMMIT
+                    
+                    > appointment_2 = Appointment.create(physician_id: 2, patient_id: 2)
+                    > appointment_3 = Appointment.create(physician_id: 2, patient_id: 1)
+
+
+                Getting Values Through Assosiation:
+
+                    > appointment_1.physician
+                    >>  
+                        id: 1,                                                    
+                        name: "Karan Sachdeva",                                      
+                        created_at: Tue, 06 Sep 2022 05:38:11.973940000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 05:38:11.973940000 UTC +00:00> 
+
+
+                    > appointment_1.patient
+                    >> 
+                        id: 2,                                                    
+                        name: "Roshan",       
+                        created_at: Tue, 06 Sep 2022 05:39:52.484836000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 05:39:52.484836000 UTC +00:00> 
+
+
+                    > physician_2.appointments
+                    >>
+                        Appointment Load (0.8ms)  SELECT "appointments".* FROM "appointments" WHERE "appointments"."physician_id" = $1  [["physician_id", 2]]
+ 
+                        =>          
+ 
+                        [#<Appointment:0x00007fc45cae2568                                              
+                        id: 6,     
+                        physician_id: 2,                                                             
+                        patient_id: 2,                                                               
+                        appointment_date: nil,                                                       
+                        created_at: Tue, 06 Sep 2022 06:17:51.639768000 UTC +00:00,                  
+                        updated_at: Tue, 06 Sep 2022 06:17:51.639768000 UTC +00:00>,                 
+ 
+                        #<Appointment:0x00007fc45cae2360                                              
+                        id: 7,     
+                        physician_id: 2,                                                             
+                        patient_id: 1,                                                               
+                        appointment_date: nil,                                                       
+                        created_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00,                  
+                        updated_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00>] 
+                        
+
+                    > patient_1.appointments
+                    >>
+                        Appointment Load (0.9ms)  
+                            SELECT "appointments".* FROM "appointments" WHERE "appointments"."patient_id" = $1  [["patient_id", 1]]
+                        
+                        =>      
+                        
+                        [#<Appointment:0x00007fc45ce209a0                                          
+                        id: 7, 
+                        physician_id: 2,
+                        patient_id: 1,
+                        appointment_date: nil,
+                        created_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 06:17:57.424980000 UTC +00:00>]
+
+
+                Deleting Appointments When any Patient or Physician is deleted :
+
+                    > physician_2.destroy
+                    >>
+                        TRANSACTION (0.4ms)  BEGIN
+ 
+                        Appointment Destroy (0.7ms)  DELETE FROM "appointments" WHERE "appointments"."id" = $1  [["id", 6]]
+                        Appointment Destroy (1.0ms)  DELETE FROM "appointments" WHERE "appointments"."id" = $1  [["id", 7]]
+                        Physician Destroy (0.8ms)  DELETE FROM "physicians" WHERE "physicians"."id" = $1  [["id", 2]]
+ 
+                        TRANSACTION (36.3ms)  COMMIT                                             
+                        =>                                                   
+                        
+                        #<Physician:0x00007fc45cdfd388
+                        id: 2,
+                        name: "Ravi Shashtri",
+                        created_at: Tue, 06 Sep 2022 06:12:28.196842000 UTC +00:00,
+                        updated_at: Tue, 06 Sep 2022 06:15:13.211670000 UTC +00:00> 
+
+                    
+                Creating enteries(appointments) through patient or physician object / record :
+
+                    > appointment_2 = patient_2.appointments.create(physician_id: 1)
+                    >>
+                        TRANSACTION (0.4ms)  BEGIN
+                        
+                        Physician Load (0.4ms)  SELECT "physicians".* FROM "physicians" WHERE "physicians"."id" = $1 LIMIT $2  [["id", 1], ["LIMIT", 1]]
+                        Appointment Create (0.8ms)  INSERT INTO "appointments" ("physician_id", "patient_id", "appointment_date", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["physician_id", 1], ["patient_id", 2], ["appointment_date", nil], ["created_at", "2022-09-06 06:32:24.983379"], ["updated_at", "2022-09-06 06:32:24.983379"]]
+                        
+                        TRANSACTION (414.2ms)  COMMIT
+
+
+                Example : 2  (Nested Association)
+                ------------------------------------------------------------------------
+                    class Document < ApplicationRecord
+                        has_many :sections
+                        has_many :paragraphs, through: :sections
+                    end
+
+                    class Section < ApplicationRecord
+                        belongs_to :document
+                        has_many :paragraphs
+                    end
+
+                    class Paragraph < ApplicationRecord
+                        belongs_to :section
+                    end
+                ------------------------------------------------------------------------
+
+                    *- "Document" have many "Sections" 
+                                                        and;
+                                                             "Secions" have many "Paragraphs"
+
+
+        -------------------------------------------------------------------------------------------------------------------------------
+    
+    2.5 has_one :through            (one-to-one)
+
+        - A "has_one :through" association sets up a one-to-one connection with another model. 
+        
+        - This association indicates that the declaring model can be matched with one instance of another model by proceeding through a third model.
+
+        Example:
+                    Supplier --> 1 --> Account --> 1 --> Account History
+
+            Model :
+            --------------------------------------------------------------------------------------
+                class Supplier < ApplicationRecord
+                    has_one :account
+                    has_one :account_history, through: :account
+                end
+
+                class Account < ApplicationRecord
+                    belongs_to :supplier
+                    has_one :account_history
+                end
+
+                class AccountHistory < ApplicationRecord
+                    belongs_to :account
+                end
+            --------------------------------------------------------------------------------------
+
+                *- apply foreign_keys wherever needed.
+
+        
+        ----------------------------------------------------------------------------------------------------------------------
+    
+    2.6 has_and_belongs_to_many         (many-to-many)
+
+        - A has_and_belongs_to_many association creates a direct many-to-many connection with another model, with no intervening model. 
+        
+        - This association indicates that each instance of the declaring model refers to zero or more instances of another model.
+
+        - This is the association in which we create a seperate table that will contain only two columns for ids of these tables.
+
+        Example:
+
+                    Assembly and Parts  (Manufaturing Unit)
+
+            Model :
+            --------------------------------------------------------------------------------
+                def Asssembly < ApplicationRecord
+                    has_and_belongs_to_many :parts
+                end
+
+                def Part < ApplicationRecord
+                    has_and_belongs_to_many :assemblies             # ruby is smart enough to understand pluralization
+                end
+            --------------------------------------------------------------------------------
+
+
+
+            Migration :
+            ------------------------------------------------------------------------------
+                class CreateAssembliesAndParts < ActiveRecord::Migration[7.0]
+                    def change
+
+                        create_table :parts do |t|
+                            t.string :part_number
+
+                            t.timestamps
+                        end
+
+                        create_table :assemblies do |t|
+                            t.string :name
+
+                            t.timestamps
+                        end
+
+                        create_table :assemblies_parts, id: false do |t|
+                            t.belongs_to :assembly
+                            t.belongs_to :part
+                        end
+
+                    end
+                end
+
+            ------------------------------------------------------------------------------
+
+        ------------------------------------------------------------------------------------------------
+    
+    2.7 Concept of "has_one" and "belongs_to" :
+
+        - If you want to set up a [one-to-one] relationship between two models, 
+            
+                you'll need to add "belongs_to" to one, and "has_one" to the other.
+
+        - Therefor, both is used for complete one-to-one connection.
+
+        - Wherever the foreign key is placed. That table is used for "belongs_to".
+
+        - The has_one relationship says that one of something is yours - that is, that something points back to you. 
+
+        Example:
+
+                It makes more sense to say that a supplier owns an account than that an account owns a supplier.
+
+            Model :
+            ------------------------------------------------------------------------------
+                def Suplier < ApplicationRecord
+                    has_one :account
+                end
+
+                def Account < ApplicationRecord
+                    belongs_to :supplier
+                end
+            ------------------------------------------------------------------------------
+
+                *- accounts table will have column "supplier_id" that will be a foreign_key of column supplier.id
+
+        
+        ----------------------------------------------------------------------------------------------------------------
+    
+    2.8 Choosing Between "has_many :through" and "has_and_belongs_to_many"
+
+        - Both of these implement many-to-many relation.
+
+        - "has_and_belongs_to_many" makes the Assosiations directly.
+        - "has_many :through"       makes the Association in-directly.
+
+
+
+        - has_many :through 
+                         - should be set up, if you need to work with the relationship model as an "independent entity".
+
+
+        - has_and_belongs_to_many
+                         - If you don't need to do anything with the relationship model
+                            (though you'll need to remember to create the joining table in the database)
+
+    
+    NOTE-- You should use "has_many :through" if you need validations, callbacks, or extra attributes on the join model.
+
+        
+        Model: has_and_belongs_to_many
+        --------------------------------------------------------
+            class Assembly < ApplicationRecord
+                has_and_belongs_to_many :parts
+            end
+
+            class Part < ApplicationRecord
+                has_and_belongs_to_many :assemblies
+            end
+        --------------------------------------------------------
+
+
+        Model: has_many :through
+        --------------------------------------------------------
+           class Assembly < ApplicationRecord
+                has_many :manifests
+                has_many :parts, through: :manifests
+            end
+
+            class Manifest < ApplicationRecord
+                belongs_to :assembly
+                belongs_to :part
+            end
+
+            class Part < ApplicationRecord
+                has_many :manifests
+                has_many :assemblies, through: :manifests
+            end
+        --------------------------------------------------------
+
+        ---------------------------------------------------------------------------------------------------------------
+
+    2.9 Polymorphic Associations
+
+        - It is a more advanced version of "belongs_to" Associations.
+
+        - With polymorphic associations, a model can belong to more than one other model, on a single association.
+
+        Example :
+
+                A picture model that belongs to either an employee model or a product model.
+
+            ---------------------------------------------------------------------------
+                class Picture < ApplicationRecord
+                    belongs_to :imageable, polymorphic: true
+                end
+
+
+
+                class Employee < ApplicationRecord
+                    has_many :pictures, as: :imageable
+                end
+
+                class Product < ApplicationRecord
+                    has_many :pictures, as: :imageable
+                end
+            ---------------------------------------------------------------------------
+
+        - You can think of a polymorphic "belongs_to" declaration as setting up an interface that any other model can use.
+
+        - From an innstance of "Employee" we can retrive all the pictures.
+
+                    > @employee.pictures
+
+        - If we have an instance of "Picture" we can gets parents value :
+
+                    > @picture.imageable
+
+                - To make this work we need a foreign_key column and a Type column.
+
+            
+            -------------------------------------------------------------------------------------
+                class CreatePictures < ActiveRecord::Migration[7.0]
+                    def change
+                        create_table :pictures do |t|
+                          t.string  :name
+                            t.bigint  :imageable_id
+                            t.string  :imageable_type
+            
+                            t.timestamps
+                        end
+
+                        add_index :pictures, [:imageable_type, :imageable_id]
+                    end
+                end
+            -------------------------------------------------------------------------------------
+                    *- There is no real table as imageable
+
+
+            Alternate of above Migration :
+            -----------------------------------------------------------
+            class CreatePictures < ActiveRecord::Migration[7.0]
+                def change
+                    create_table :pictures do |t|
+                    t.string :name
+                    t.references :imageable, polymorphic: true      # this automatically makes those columns
+            
+                    t.timestamps
+                    end
+                end
+            end
+            ------------------------------------------------------------
+
+        
+        ------------------------------------------------------------------------------------------------------------------
+    
+    2.10 Self Joins :
+
+        - In designing a data model, you will sometimes find a model that should have a relation to itself.
+
+        Example:
+                You may want to store all employees in a single database model, 
+                
+                but be able to trace relationships such as between manager and subordinates.
+
+            Model:
+            ------------------------------------------------------------------
+                class Employee < ApplicationRecord
+                    
+                    has_many :subordinates, class_name: "Employee", foreign_key: "manager_id"
+
+                    belongs_to :manager, class_name: "Employee", optional: true
+
+                end
+            ------------------------------------------------------------------
+
+            Migration:
+            ------------------------------------------------------------------
+                class CreateEmployees < ActiveRecord::Migration[7.0]
+                    def change
+                        create_table :employees do |t|
+                            
+                            t.references :manager, foreign_key: { to_table: :employees }
+                            
+                            t.timestamps
+                        end
+                    end
+                end
+            ------------------------------------------------------------------
+
+
+                *- Now you can retrieve:
+
+                    > @employee.manager
+
+                    > @employee.subordinates
+
+    --------------------------------------------------------------------------------------------------------------------------------
+
+3. Tips, Tricks and Warnings
+
+    - Some things you need to take care of.
+
+
+    3.1 Caching :
+
+        - All of the association methods are built around caching
+
+        - This keeps the result of the most recent query available for further operations.
+
+
+            > author.length     #retrieves from DB
+
+            > author.size       
+                                # both will use the cache of .length
+            > author.empty?
+
+
+        - To refresh any object: .reload .load
+
+            > author.reload
+
+            > author.size
+
+            OR
+
+            > author.reload.size
+
+        --------------------------------------------------------------------------------------------
+
+    3.2 Name Collisions :
+
+        - You are not free to use just any name for your associations. 
+
+        - Because creating an association adds a method with that name to the model.
+
+        - It is a bad idea to give an association a name that is already used for an instance method of "ActiveRecord::Base"
+
+        - The association method would override the base method and break things
+
+        --------------------------------------------------------------------------------------------------------
+    
+    3.3 Updating Schema :
+
+        - Associations are extremely useful, but they are not magic. 
+
+        - You are responsible for maintaining your database schema to match your associations.
+
+            --> belongs_to  :
+                                create foreign_keys
+
+
+            --> has_and_belongs_to_many :
+                                            create a appropriate Join Table.
+
+                NOTE:
+                    - Joining (red & blue) ---> blue_red
+
+                    - They uses <=> operator for comparsion. It uses Lexical Order.
+
+        -------------------------------------------------------------------------------------------------------
+
+    3.4 Scope :
+
+        - By default, associations look for objects only within the current module's scope. 
+
+        - This can be important when you declare Active Record models within a module.
+
+        - There is no problem untill the associations are declared under same scope / module.
+
+
+            Declaration in Different Modules:
+            ---------------------------------------------
+                module MyApplication
+                    module Business
+                        class Supplier < ApplicationRecord
+                            has_one :account
+                        end
+                    end
+
+                    module Billing
+                        class Account < ApplicationRecord
+                            belongs_to :supplier
+                        end
+                    end
+                end
+            ---------------------------------------------
+                *- this ave two diff. modules so the associations cannot make relations or contact each other.
+
+                *- To use / To associate a model with a model in a different namespace, 
+                        
+                        you must specify the "complete class name" in your association declaration:
+
+            
+            Diff. module declaration with complete class name mentioned :
+            ----------------------------------------------------------------
+                module MyApplication
+                    module Business
+                        class Supplier < ApplicationRecord
+                            has_one :account, class_name: "MyApplication::Billing::Account"
+                        end
+                    end
+
+                    module Billing
+                        class Account < ApplicationRecord
+                            belongs_to :supplier, class_name: "MyApplication::Business::Supplier"
+                        end
+                    end
+                end
+            ----------------------------------------------------------------
+
+        ----------------------------------------------------------------------------------------------------------
+
+    3.5 Bi-directional Association :
+
+        - Although Associations automatically identify who shares bi-directional relation.
+
+        - However, Active Record will not automatically identify bi-directional associations that contain the :
+                        
+                        - :through
+                        
+                        - :foreign_key
+
+                        - Custom Scopes on the opposite association
+
+        - We use ":inverse_of" option in these cases.
+
+        Example:
+
+            Below Models' association will not automatically identify Bi-directional.
+            ----------------------------------------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :books
+                end
+
+                class Book < ApplicationRecord
+                    belongs_to :writer, class_name: 'Author', foreign_key: 'author_id'
+                end
+            ----------------------------------------------------------------------------------------
+
+
+            Making Bi-directionality correct through ":inverse_of" :
+            ----------------------------------------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :books, inverse_of: 'writer'
+                end
+
+                class Book < ApplicationRecord
+                    belongs_to :writer, class_name: 'Author', foreign_key: 'author_id'
+                end
+            ----------------------------------------------------------------------------------------
+        
