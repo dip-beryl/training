@@ -66,11 +66,15 @@ Organization    : Beryl Systems Pvt. Ltd.
     - has_one :through
     - has_and_belongs_to_many
 
+        NOTE: when using one-to-one associations use Singularized table name and;
+                When using many-to-many or one-to-many use pluralized table names.
+
+
     Associations are implemented using macro-style calls, so that you can declaratively add features to your models. 
 
         
         ------------
-    2.1 belongs_to :
+    2.1 belongs_to :        (one-to-one)
 
         - A "belongs_to" association sets up a connection with another model, such that each instance of the declaring model "belongs to" one instance of the other model.
 
@@ -170,7 +174,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         ------------------------------------------------------------------------------------------------------------
     
-    2.2 has_one :
+    2.2 has_one :           (one-to-one)
 
         - A "has_one" association indicates that one other model has a reference to this model. 
         
@@ -224,7 +228,7 @@ Organization    : Beryl Systems Pvt. Ltd.
             end
         ----------------------------------------------------------------------------------------------
 
-    2.3 has_many :
+    2.3 has_many :          (one-to-many)
 
         - A "has_many" association is similar to "has_one", but indicates a one-to-many connection with another model
 
@@ -279,7 +283,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         ----------------------------------------------------------------------------------------------------
     
-    2.4 has_many :through
+    2.4 has_many :through           (many-to-many)
 
             - A "has_many :through" association is often used to set up a many-to-many connection with another model. 
             
@@ -479,7 +483,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         -------------------------------------------------------------------------------------------------------------------------------
     
-    2.5 has_one :through
+    2.5 has_one :through            (one-to-one)
 
         - A "has_one :through" association sets up a one-to-one connection with another model. 
         
@@ -507,5 +511,57 @@ Organization    : Beryl Systems Pvt. Ltd.
 
                 *- apply foreign_keys wherever needed.
 
+        
+        ----------------------------------------------------------------------------------------------------------------------
+    
+    2.6 has_and_belongs_to_many         (many-to-many)
 
-            
+        - A has_and_belongs_to_many association creates a direct many-to-many connection with another model, with no intervening model. 
+        
+        - This association indicates that each instance of the declaring model refers to zero or more instances of another model.
+
+        - This is the association in which we create a seperate table that will contain only two columns for ids of these tables.
+
+        Example:
+
+                    Assembly and Parts  (Manufaturing Unit)
+
+            Model :
+            --------------------------------------------------------------------------------
+                def Asssembly < ApplicationRecord
+                    has_and_belongs_to_many :parts
+                end
+
+                def Part < ApplicationRecord
+                    has_and_belongs_to_many :assemblies             # ruby is smart enough to understand pluralization
+                end
+            --------------------------------------------------------------------------------
+
+
+
+            Migration :
+            ------------------------------------------------------------------------------
+                class CreateAssembliesAndParts < ActiveRecord::Migration[7.0]
+                    def change
+
+                        create_table :parts do |t|
+                            t.string :part_number
+
+                            t.timestamps
+                        end
+
+                        create_table :assemblies do |t|
+                            t.string :name
+
+                            t.timestamps
+                        end
+
+                        create_table :assemblies_parts, id: false do |t|
+                            t.belongs_to :assembly
+                            t.belongs_to :part
+                        end
+
+                    end
+                end
+
+            ------------------------------------------------------------------------------
