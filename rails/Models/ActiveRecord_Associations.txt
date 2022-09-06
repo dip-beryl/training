@@ -767,3 +767,159 @@ Organization    : Beryl Systems Pvt. Ltd.
                     > @employee.manager
 
                     > @employee.subordinates
+
+    --------------------------------------------------------------------------------------------------------------------------------
+
+3. Tips, Tricks and Warnings
+
+    - Some things you need to take care of.
+
+
+    3.1 Caching :
+
+        - All of the association methods are built around caching
+
+        - This keeps the result of the most recent query available for further operations.
+
+
+            > author.length     #retrieves from DB
+
+            > author.size       
+                                # both will use the cache of .length
+            > author.empty?
+
+
+        - To refresh any object: .reload .load
+
+            > author.reload
+
+            > author.size
+
+            OR
+
+            > author.reload.size
+
+        --------------------------------------------------------------------------------------------
+
+    3.2 Name Collisions :
+
+        - You are not free to use just any name for your associations. 
+
+        - Because creating an association adds a method with that name to the model.
+
+        - It is a bad idea to give an association a name that is already used for an instance method of "ActiveRecord::Base"
+
+        - The association method would override the base method and break things
+
+        --------------------------------------------------------------------------------------------------------
+    
+    3.3 Updating Schema :
+
+        - Associations are extremely useful, but they are not magic. 
+
+        - You are responsible for maintaining your database schema to match your associations.
+
+            --> belongs_to  :
+                                create foreign_keys
+
+
+            --> has_and_belongs_to_many :
+                                            create a appropriate Join Table.
+
+                NOTE:
+                    - Joining (red & blue) ---> blue_red
+
+                    - They uses <=> operator for comparsion. It uses Lexical Order.
+
+        -------------------------------------------------------------------------------------------------------
+
+    3.4 Scope :
+
+        - By default, associations look for objects only within the current module's scope. 
+
+        - This can be important when you declare Active Record models within a module.
+
+        - There is no problem untill the associations are declared under same scope / module.
+
+
+            Declaration in Different Modules:
+            ---------------------------------------------
+                module MyApplication
+                    module Business
+                        class Supplier < ApplicationRecord
+                            has_one :account
+                        end
+                    end
+
+                    module Billing
+                        class Account < ApplicationRecord
+                            belongs_to :supplier
+                        end
+                    end
+                end
+            ---------------------------------------------
+                *- this ave two diff. modules so the associations cannot make relations or contact each other.
+
+                *- To use / To associate a model with a model in a different namespace, 
+                        
+                        you must specify the "complete class name" in your association declaration:
+
+            
+            Diff. module declaration with complete class name mentioned :
+            ----------------------------------------------------------------
+                module MyApplication
+                    module Business
+                        class Supplier < ApplicationRecord
+                            has_one :account, class_name: "MyApplication::Billing::Account"
+                        end
+                    end
+
+                    module Billing
+                        class Account < ApplicationRecord
+                            belongs_to :supplier, class_name: "MyApplication::Business::Supplier"
+                        end
+                    end
+                end
+            ----------------------------------------------------------------
+
+        ----------------------------------------------------------------------------------------------------------
+
+    3.5 Bi-directional Association :
+
+        - Although Associations automatically identify who shares bi-directional relation.
+
+        - However, Active Record will not automatically identify bi-directional associations that contain the :
+                        
+                        - :through
+                        
+                        - :foreign_key
+
+                        - Custom Scopes on the opposite association
+
+        - We use ":inverse_of" option in these cases.
+
+        Example:
+
+            Below Models' association will not automatically identify Bi-directional.
+            ----------------------------------------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :books
+                end
+
+                class Book < ApplicationRecord
+                    belongs_to :writer, class_name: 'Author', foreign_key: 'author_id'
+                end
+            ----------------------------------------------------------------------------------------
+
+
+            Making Bi-directionality correct through ":inverse_of" :
+            ----------------------------------------------------------------------------------------
+                class Author < ApplicationRecord
+                    has_many :books, inverse_of: 'writer'
+                end
+
+                class Book < ApplicationRecord
+                    belongs_to :writer, class_name: 'Author', foreign_key: 'author_id'
+                end
+            ----------------------------------------------------------------------------------------
+        
