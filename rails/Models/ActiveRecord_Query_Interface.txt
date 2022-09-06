@@ -1,0 +1,121 @@
+File Name       : ActiveRecord_Query_Interfacec.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------------------
+1. Active Record Query Interface:
+
+    - In Active Record we have better ways to find data instead of SQL Queries.
+    
+    - Active Record will perform queries on the database for you and is compatible with MySQL, MariaDB, PostgreSQL and SQLite3.
+
+    ------------------
+
+2. Retrieving Objects from The Database :
+
+    - This is done by finder methods.
+
+        - annotate
+        - find
+        - create_with
+        - distinct
+        - eager_load
+        - extending
+        - extract_associated
+        - from
+        - group
+        - having
+        - includes
+        - joins
+        - left_outer_joins
+        - limit
+        - lock
+        - none
+        - offset
+        - optimizer_hints
+        - order
+        - preload
+        - readonly
+        - references
+        - reorder
+        - reselect
+        - reverse_order
+        - select
+        - where
+
+    NOTE : Finder methods that return a collection, such as where and group, return an instance of ActiveRecord::Relation. 
+            
+            Methods that find a single entity, such as find and first, return a single instance of the model.
+
+        
+        ------------------------------ Retrieving a Single Object -----------------------------
+        
+    * .find
+
+        - Using the find method, you can retrieve the object corresponding to the specified primary key that matches any supplied options.
+
+        > Blog.find(2)
+        >>
+            Blog Load (0.6ms)  SELECT "blogs".* FROM "blogs" WHERE "blogs"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+            =>                                                         
+            #<Blog:0x0000560696bed640                                   
+            id: 2,                                                     
+            name: "Blog_2",                                            
+            author_id: 2,                                              
+            created_at: Mon, 05 Sep 2022 12:14:39.092795000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:36.728128000 UTC +00:00> 
+
+
+        > Person.find(1, 2, 6)    # returns an array for objects with IDs in (1, 2, 6)
+
+        > Person.find([7, 17])    # returns an array for objects with IDs in (7, 17)
+
+        NOTE : The find method will raise an ActiveRecord::RecordNotFound exception unless a matching record is found for all of the supplied primary keys.
+
+        ---------------------------------
+
+    * .take
+
+        - The take method retrieves a record without any implicit ordering.
+        
+        
+        > Blog.take
+        >> 
+            Blog Load (0.9ms)  SELECT "blogs".* FROM "blogs" LIMIT $1  [["LIMIT", 1]]
+            =>                    
+            #<Blog:0x0000560696dd52f0
+            id: 1,
+            name: "Blog_1",
+            author_id: 2,
+            created_at: Mon, 05 Sep 2022 11:48:17.622306000 UTC +00:00,
+            updated_at: Mon, 05 Sep 2022 12:17:33.764925000 UTC +00:00> 
+
+            
+        > Blog.take(3)
+        >>
+            3 results of top.
+
+        -------------------------------------------------------------------------------------
+
+        * .first / .last
+
+            - returns the value which has smallest Primary Key or first pimary key.
+
+        
+        -----------------------------------------------------------------------------------------
+
+    *- .find_by
+
+        - The find_by method finds the first record matching some conditions.
+
+        Example:
+
+            > Customer.find_by first_name: 'Lifo'
+            > Customer.find_by first_name: 'Jon'
+
+
+                - It is similar to :
+
+            > Customer.where(first_name: 'Lifo').take
+
+        -----------------------------------------------------------------------------------------
