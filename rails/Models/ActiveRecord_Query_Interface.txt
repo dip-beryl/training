@@ -304,3 +304,63 @@ Organization    : Beryl Systems Pvt. Ltd.
         
         
         -----------------------------------------------------------------------------------------------------
+
+    4. ORDER :
+
+        - To retrieve records from the database in a specific order, you can use the order method.
+
+        Example :
+
+            > Book.order(:created_at)
+                OR
+            > Book.order("created_at")
+
+
+            > Book.order(created_at: :asc)
+                OR
+            > Book.order("created_at DESC")
+
+
+        --------------------------------------------------------------------------------------------------
+
+    5. SELECT :
+
+        - By default, "Model.find" selects all the fields from the result set using [ select * ].
+
+        - To select only a subset of fields from the result set, you can specify the subset via the ".select" method.
+
+        Example :
+
+            > Book.select(:isbn, :out_of_print)
+                    OR
+            > Book.select("isbn, out_of_print")
+
+                    Equivalent to - " SELECT isbn, out_of_print FROM books "
+
+
+            > Blog.select(:name)
+            >> 
+                Blog Load (1.1ms)  SELECT "blogs"."name" FROM "blogs"
+
+                =>                                                                             
+                [#<Blog:0x00007f22fc9a20d8 id: nil, name: "Blog_1">,                            
+                #<Blog:0x00007f22fc9a1f48 id: nil, name: "Blog_2">]                            
+
+
+        - DISTINCT SELECT :
+
+            > Customer.select(:last_name).distinct
+
+        --------------------------------------------------------------------------------------------------
+
+    6. LIMIT and OFFSET :
+
+        - To apply LIMIT to the SQL fired by the "Model.find", you can specify the LIMIT using limit and offset methods on the relation.
+
+
+        > Blog.limit(5)     # will select top five records
+
+
+        > Blog.limit(5).offset(2)   # will first skip 2 records then select 5 records
+
+        --------------------------------------------------------------------------------------------------
