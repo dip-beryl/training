@@ -411,18 +411,123 @@ Organization    : Beryl Systems Pvt. Ltd.
         > cities[0].city_count
         >>      # will return first entry from "city_count" column of above query.
 
+        
         -----------------------------------------------------------------------------------------------------------------------------------
 
-        ---------------------------------------------------------------------------------------------------
+    9. Overriding :
 
+        9.1 unscope :
 
+            - You can specify certain conditions to be removed using the "unscope" method.
+            
+            Example:
 
+                > Book.where('id > 100').limit(20).order('id desc').unscope(:order)
 
+                    Equivalent to : SELECT * 
+                                    FROM books 
+                                    WHERE id > 100 
+                                    LIMIT 20
 
+                        - If we haven't used [ .unscope ]
 
+                                  : SELECT * 
+                                    FROM books 
+                                    WHERE id > 100 
+                                    ORDER BY id DESC
+                                    LIMIT 20
 
             
+            - Can remove specific .where conditions too :
+
+                > Student.where(first_name: "Rahul",  last_name: "Gandh").unscope(where: :last_name)
+
+                        Equivalent to - SELECT * FROM students WHERE first_name = "Rahul";
+
+            -------------------------------------------------------------------------------------------------
+
+        9.2 only :
+
+            - Only is opposite of unscope
+
+            - In .only only the methods you mention will get performed.
 
 
+                > Book.where('id > 10').limit(20).order('id desc').only(:order, :where)
 
-        
+                        Equivalent to : SELECT * FROM books
+                                        WHERE id > 10
+                                        ORDER BY id DESC
+
+                                        # .limit method is skipped as it wasn't mentioned in .only
+
+            -------------------------------------------------------------------------------------------------------
+
+        9.3 reselect :
+
+            - The reselect method overrides an existing select statement. For example:
+
+                > Student.select(:name, :roll_no).reselect(:age)
+
+                    Equivalent to :  SELECT age FROM students;
+
+            --------------------------------------------------------------------------------------------------
+
+        9.4 reorder :
+
+            - If your association have already specified any ordering way. Then you can use .reorder to override it.
+
+            Example:
+
+            Model:
+            -----------------------------------------------------
+                def Author < ApplicationRecord
+                    has_many :blogs, -> { order(isbn: :desc) }
+                end
+            -----------------------------------------------------
+
+            --> When we run
+
+                > Author.find(10).blogs
+                >>  # result will be order by isbn: :desc (default)
+
+                    Equivalent to : SELECT * FROM blogs
+                                    WHERE author_id = 10
+                                    ORDER BY isbn DESC
+
+            --> Overriding Order:
+
+                > Author.find(10).blogs.reorder(:name)
+                >>  # result will be ordered by :name
+
+                    Equivalent to : SELECT * FROM blogs
+                                    WHERE author_id = 10
+                                    ORDER BY name
+
+            -------------------------------------------------------------------------------------------------------
+
+        9.5 reverse_order :
+
+            - The reverse_order method reverses the ordering clause if specified.
+
+                > Blog.order(:id).reverse_order
+
+
+            - If no ordering clause is specified in the query, the reverse_order orders by the primary key in reverse order.
+
+                > Book.where("author_id > 10").reverse_order
+
+
+            ---------------------------------------------------------------------------
+
+        9.6 rewhere
+
+            - The rewhere method overrides an existing, named where condition.
+
+            Example :
+
+                > Student.where(age > 10).rewhere(age < 10)
+
+                    Equivalent to : SELECT * FROM students WHERE age < 10;
+
+        -------------------------------------------------------------------------------------------------------------------
