@@ -191,3 +191,116 @@ Organization    : Beryl Systems Pvt. Ltd.
         - Options : :batchsize, ,:start, ,:finish, :error_on_ignore
 
     -----------------------------------------------------------------------
+
+3. Conditions : (.where)
+
+    - The "where method" allows you to specify conditions to limit the records returned, representing the WHERE-part of the SQL statement. 
+    
+    - Conditions can either be specified as:
+            
+            - String
+            - Array
+            - Hash.
+
+
+        3.1 Pure String Conditions :
+
+            - If you'd like to add conditions to your find, you could just specify them in there,
+            
+            Example:
+                
+                > Book.where("title = 'Introduction to Algorithms'")
+
+                    - finds all the books where the title field value is 'Introduction to Algorithms'.
+
+
+            NOTE : String Conditions are not safe with SQL Injection
+
+            -----------
+        3.2 Array Conditions :
+
+            - Now what if that title could vary:
+
+            Example:
+
+                1. > Book.where("title =?", params[:title])
+
+            NOTE : Book.where("title = #{params[:title]}")  <----- this way is NOT reccomended over the Example-1
+
+                
+                2. > Book.where("title = ? AND out_of_print = ?", params[:title], false)
+
+                    - (?) will get replaced by the array values one by one.
+
+                    - In example-2 the 1st(?) will take values from array and 2nd(?) will get value "false" for approach
+
+
+                3. Placeholder Example:
+                
+                        > Book.where("created_at >= :start_date AND created_at <= :end_date", 
+                                                                        {start_date: params[:start_date], end_date: params[:end_date]})
+
+                4. LIKE Example :
+
+                    - Although condition arguments are automatically escaped to prevent SQL injection.
+                    
+                    - But, SQL LIKE wildcards (i.e., % and _) are not escaped
+
+                    - So we will use "sanitize_sql_like" in these type of cases
+
+                    Example:
+
+                        > Book.where("title LIKE ?", Book.sanitize_sql_like(params[:title]) + "%")
+
+            -------------------------------------------
+        3.3 Hash Conditions :
+
+            - Active Record also allows you to pass in hash conditions which can increase the readability of your conditions syntax. 
+
+            - Only :
+                    Equality, Range, and Subset 
+                                                checking are possible with Hash conditions.
+
+            Example:
+
+                3.3.1 Equality Condition :
+
+                > Book.where(out_of_print: true)
+
+                    Equivalent to - "SELECT * FROM books WHERE (books.out_of_print = 1)"
+
+                    ---------------------------------------------------------------------
+                
+                3.3.2 Range Condition :
+
+                    > Book.where(created_at: (Time.now.midnight - 1.day)..Time.now.midnight)
+
+                    -----------------------------------------------------------------------
+                
+                3.3.3 Subset Condition :
+
+                    > Customer.where(orders_count: [1,3,5])
+
+                        Equivalent to - "SELECT * FROM customers WHERE (orders_count IN (1,3,5))"
+
+            --------------------------------------------------------------------------------
+        3.4 NOT Condition :
+
+            > Customer.where.not(name: "Rahul")
+
+            --------------------------------------------------
+        3.5 OR Condition :
+
+            > Cutomer.where(name: "Rahul").or(Cutomer.where(name: "Suhani"))
+            
+            --------------------------------------------------------------------------
+        3.6 AND Condition :
+
+            > Customer.where(age > 18).and(Cutomer.where(name: "Rahul"))    # .and method
+
+            OR
+
+            > Customer.where(age > 18).where(name: "Rahul"))                # chaining where method
+        
+        
+        -----------------------------------------------------------------------------------------------------
