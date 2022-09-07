@@ -49,7 +49,7 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         
         ------------------------------ Retrieving a Single Object -----------------------------
-        
+
     * .find
 
         - Using the find method, you can retrieve the object corresponding to the specified primary key that matches any supplied options.
@@ -119,3 +119,75 @@ Organization    : Beryl Systems Pvt. Ltd.
             > Customer.where(first_name: 'Lifo').take
 
         -----------------------------------------------------------------------------------------
+
+        -------------  Retrieving Multiple Objects in Batches ----------------
+
+    *- .all.each
+
+        - Itetrating over records.
+
+            > Blog.all.each do |blog|
+                puts blog.name
+            end
+            >>
+                Blog Load (1.1ms)  SELECT "blogs".* FROM "blogs"
+
+                Blog_1                                                                               
+                Blog_2                                                                               
+
+        - But this approach becomes increasingly impractical as the table size increases, 
+            since Customer.all.each instructs Active Record to fetch the entire table in a single pass            
+
+        - build a model object per row, and then keep the entire array of model objects in memory. 
+            Indeed, if we have a large number of records, the entire collection may exceed the amount of memory available.
+
+
+        ---> Rails provides two methods that address this problem by dividing records into memory-friendly batches for processing:
+
+            - find_each
+            - find_in_batches
+
+        -------------------------------------------------
+    
+    *- .find_each
+
+        - The find_each method retrieves records in batches and then yields each one to the block.
+
+        - Retrieves records in batches of 1000 and yields them to the block one by one:
+
+        Example:
+
+            Customer.find_each do |customer|
+                puts customer.name
+            
+            end
+
+
+            - Options in "find_each"
+                - :batche_size  -> specify the batch size
+                - :start        -> mention start position (:id)
+                - :finish       -> mention end position (:id)
+                - :error_on_ignore -> Overrides the application config to specify if an error should be raised when an order is present in the relation.
+
+
+        --------------------------------------------------------
+
+    * - .find_in_batches
+
+        - The find_in_batches method is similar to find_each, since both retrieve batches of records.
+
+        - The difference is that find_in_batches yields batches to the block as an array of models, instead of individually.
+
+        - Array Block size is here too 1000
+
+        Example :
+
+            Customer.find_in_batches do |customer|
+                customer do |c|
+                    puts c.name
+                end
+            end
+
+        - Options : :batchsize, ,:start, ,:finish, :error_on_ignore
+
+    -----------------------------------------------------------------------
