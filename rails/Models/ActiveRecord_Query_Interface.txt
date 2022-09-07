@@ -364,3 +364,65 @@ Organization    : Beryl Systems Pvt. Ltd.
         > Blog.limit(5).offset(2)   # will first skip 2 records then select 5 records
 
         --------------------------------------------------------------------------------------------------
+
+    7. GROUP :
+
+        - To apply a GROUP BY clause to the SQL fired by the finder, you can use the group method.
+
+        Example:
+
+            > Student.select("age").group("age")
+
+                Equivalent to : " SELECT age FROM students GROUP BY age; "
+
+            
+            > Student.group(:city).count    # gets the count of all the distinct cities
+
+                Equivalent to : " SELECT COUNT(city) FROM students GROUP BY city; "
+
+        ---------------------------------------------------------------------------------------------------
+
+    8. HAVING :
+
+        - You can add the HAVING clause to the SQL fired by the "Model.find" by adding the "having" method to the find.
+
+
+        > Student.select("city, COUNT(city) AS city_count")
+                 .group(:city)
+                 .having("COUNT(city) > ?", 5)
+
+            Equivalent to : SELECT 
+                                    city, 
+                                    COUNT(city) AS city_count 
+                            FROM 
+                                students 
+                            GROUP BY 
+                                city 
+                            HAVING 
+                                COUNT(city) > 5; "
+
+
+        --> Passing the above Object to a varibale :
+
+        > cities = Student.select("city, COUNT(city) AS city_count")
+                            .group(:city)
+                            .having("COUNT(city) > ?", 5)
+
+        > cities[0].city_count
+        >>      # will return first entry from "city_count" column of above query.
+
+        -----------------------------------------------------------------------------------------------------------------------------------
+
+        ---------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+            
+
+
+
+        
