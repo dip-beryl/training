@@ -183,7 +183,7 @@ Organization    : Beryl Systems Pvt. Ltd.
         Example :
 
             Customer.find_in_batches do |customer|
-                customer do |c|
+                customer.each do |c|
                     puts c.name
                 end
             end
@@ -655,4 +655,137 @@ Organization    : Beryl Systems Pvt. Ltd.
 
         - This is aDB concept but can be used witjh .with_lock
 
-    -------------------------------------------------------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------------------------------------
+
+13. JOINS :
+
+    NOTE : SQL Inner Join is same as JOIN
+
+    
+    13.1 String Format :
+
+        Author.joins("JOIN blogs ON (blogs.author_id = author.author_id)")
+
+            Equivalent to : SELECT * FROM authors JOIN blogs ON (blogs.author_id = author.author_id);
+
+        -----------------------------------------------
+    13.2 Array / Hash Format :
+
+
+        13.2.1. Single Association Joining :
+
+        - Active Record lets you use the names of the associations defined on the model as a shortcut for specifying JOIN clauses.
+             for those associations when using the joins method.
+
+        Example:
+            
+            $ rails g migration CreateComments title:string body:text student:references blog:references
+
+            Model :
+            ------------------------------------------------------
+                class Comment < ApplicationRecord
+                    belongs_to :blog 
+                end
+
+                class Blog < ApplicationRecord
+                    belongs_to :author
+                    has_many :comments
+                end
+            ------------------------------------------------------
+
+                *- Now, When we join tables who are associated to each other.
+                        We do not need to mention the column name on which the joinig is based.
+
+                
+        ------- > Blog.joins(:comments)
+                >>
+                    Blog Load (51.7ms)  SELECT "blogs".* FROM "blogs" 
+                    INNER JOIN "comments" ON "comments"."blog_id" = "blogs"."id"
+
+                
+                - Or, in English: "return a Blog object for all blogs with comments". 
+                - Note that you will see duplicate blogs if a blog has more than one comment. 
+                
+                --> If you want unique blogs, you can use Blog.joins(:comments).distinct.
+            
+            -----------------------------------------
+        13.2.2. Multiple Association Joining :
+
+                > Blog.joins(:author, :comments)
+                >>
+
+                    Blog Load (1.5ms)  
+                        SELECT "blogs".* FROM "blogs" 
+                            INNER JOIN "authors" ON "authors"."id" = "blogs"."author_id" 
+                            INNER JOIN "comments" ON "comments"."blog_id" = "blogs"."id" 
+
+
+                    *- Or, in English: "return all blogs with their author that have at least one comment". 
+                            Note again that blogs with multiple comments will show up multiple times.
+
+            ----------------------------------------
+        13.2.3. Nested Association Joining :
+
+            Model:
+            -------------------------------------------------------
+                class Comment < ApplicationRecord
+                    belongs_to :blog 
+                    belongs_to :student
+                end
+
+                class Student < ApplicationRecord
+                    has_many :comments
+                end
+            -------------------------------------------------------
+
+                > Blog.join(comments: :student)
+                >>
+                      Blog Load (1.1ms)  
+                        SELECT "blogs".* FROM "blogs" 
+                            INNER JOIN "comments" ON "comments"."blog_id" = "blogs"."id" 
+                            INNER JOIN "students" ON "students"."id" = "comments"."student_id"
+
+                        *- Or, in English: "return all blogs that have a comment by a student."
+
+            --------------------------------------------------------------------
+
+        13.2.4. Nested Association Joining (Multiple Level) :
+
+        
+        ------------------------------------------------------------------
+
+    13.3 Specifying Conditions(.where) on JOINS :
+
+        - Using String :
+
+            > Blog.joins(:comments).where('comments.created_at' => "2022-05-01")
+
+                OR
+
+        - Using Hash :
+
+            > Blog.joins(:comments).where(comments: {created_at: "2022-05-01"})
+
+
+            >> Blog Load (1.2ms)  
+                SELECT "blogs".* FROM "blogs" 
+                    INNER JOIN "comments" ON "comments"."blog_id" = "blogs"."id" 
+                WHERE "comments"."created_at" = $1  [["created_at", "2022-05-01 00:00:00"]]
+
+        -----------------------------------------------------------------------------------------------
+
+    13.4 LEFT OUTER JOIN :
+
+        - If you want to select a set of records whether or not they have associated records you can use the left_outer_joins method.
+
+            > Customer.left_outer_joins(:reviews).distinct.select('customers.*, COUNT(reviews.*) AS reviews_count').group('customers.id')
+
+            >>  SELECT DISTINCT customers.*, 
+                                COUNT(reviews.*) AS reviews_count 
+                FROM customers
+                LEFT OUTER JOIN reviews 
+                        ON reviews.customer_id = customers.id 
+                GROUP BY customers.id
+
+
+    -------------------------------------------------------------------------------------------------------------------------------
