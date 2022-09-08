@@ -1346,3 +1346,106 @@ Organization    : Beryl Systems Pvt. Ltd.
             -- Then it will pluck that new column's records as ids in result
 
     -----------------------------------------------------------------------------------------------------------------------------------------
+
+21. Existance of Objects :
+
+    21.1 .exists?()
+
+        - If you simply want to check for the existence of the object there's a method called exists?
+
+        - The exists? method also takes multiple values, but the catch is that it will return true if " any " one of those records exists.
+
+        - It's even possible to use exists? without any arguments for a model or a relation.
+
+        - Returns false for empty tables / models.
+
+
+            > Blog.exists?
+            >> true
+
+            > Student.exists?       # false because students table is empty
+            >> false
+
+            > Blog.exists?(1)       # searches only in :id column
+            >> true
+
+            > Blog.exists?("Blog_2")    # valid :name in the records but it only searches i :id
+            >> false
+
+            > Blog.where(name: 'Blog_2').exists?    # because "Blog_2" iskio
+            >> true
+
+
+        -----------------------------------------------------
+    21.2 .any 
+
+        - true when even any one record is avialable.
+
+        --------------------------------------------------
+    21.3 .many
+
+        - true when 2 or more recordes are available.
+
+
+    --------------------------------------------------------------------------------------------------------------------------------------------
+
+22. Calculations :
+
+    22.1 .count()
+
+        - If you want to see how many records are in your model's table you could call ".count" for it.
+
+            > Blog.count
+            >> 3
+
+
+            > Blog.where("id < ?", 3).count
+            >> 2
+
+
+        - If you want to be more specific :
+
+            > Blog.count(:name)
+            >> 3
+
+                *- returns the count of records where :name value is present.
+                *- If any record have :name values as nil or null then it will not counted.
+        
+        ----------------------------------------------------------------------------------------------------
+
+    22.2 .average()
+
+        - If you want to see the average of a certain number in one of your tables you can call the average method on the class that relates to the table.
+
+        Syntax :
+
+            > Blog.average("id")
+                OR
+            > Blog.average(:id)
+
+                *- Returns a floating point number.
+
+    22.3 .sum()
+
+        - If you want to find the sum of a field for all records in your table you can call the sum method on the class that relates to the table.
+
+            > Blog.sum("id")
+                OR
+            > Blog.sum(:id)
+
+
+    22.4 .maximum()
+
+        - If you want to find the maximum value of a field in your table you can call the maximum method on the class that relates to the table.
+
+            > Blog.maximum("id")
+                OR
+            > Blog.maximum(:id)
+
+    22.5 .minimum()
+
+        - If you want to find the minimum value of a field in your table you can call the minimum method on the class that relates to the table.
+
+            > Blog.minimum("id")
+                OR
+            > Blog.minimum(:id)
