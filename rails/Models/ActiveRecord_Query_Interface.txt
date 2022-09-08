@@ -789,3 +789,156 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 
     -------------------------------------------------------------------------------------------------------------------------------
+
+14 Eager Loading Associations :
+
+    - Eager loading is the mechanism for loading the associated records of the objects returned by Model.find using as few queries as possible.
+
+    **** N + 1 queries problem ****
+
+    ----------------------------------
+        > books = Book.limit(10)
+
+        > books.each do |book|
+            puts book.author.last_name
+          end
+    ----------------------------------
+
+        - This code looks fine at the first sight. But the problem lies within the total number of queries executed. 
+        
+        - The above code executes 1 (to find 10 books) + 10 (one per each book to load the author) = 11 queries in total.
+
+
+    Solution :
+
+    Active Record lets you specify in advance all the associations that are going to be loaded.
+
+    The methods are:
+
+        * includes
+        * preload
+        * eager_load
+
+    14.1. includes
+
+        - With includes, Active Record ensures that all of the specified associations are loaded using the minimum possible number of queries.
+
+        ----------------------------------------------
+            > books = Book.includes(:author).limit(10)          # loading
+
+            > books.each do |book|
+                puts book.author.last_name
+              end
+        ----------------------------------------------
+
+            - The above code will execute just 2 queries, as opposed to the 11 queries from the original case:
+
+                Equivalent to : SELECT `books`.* FROM `books` LIMIT 10
+
+                                SELECT `authors`.* FROM `authors`
+                                WHERE `authors`.`book_id` IN (1,2,3,4,5,6,7,8,9,10)
+
+            
+            -------------------------------------------------------
+        14.1.1 Eager Loading With Multiple Associatons :
+
+            - Active Record lets you eager load any number of associations with a single Model.find call by using:
+            
+                - array 
+                - hash
+                - nested hash of array/hash with the includes method
+
+            1. Array of Multiple Associations :
+
+                > Blog.includes(:comments, :author)
+                >>
+                    Blog Load (170.0ms)  SELECT "blogs".* FROM "blogs"
+                    Comment Load (28.0ms)  SELECT "comments".* FROM "comments" WHERE "comments"."blog_id" IN ($1, $2)  [["blog_id", 2], ["blog_id", 1]]                           
+                    Author Load (46.3ms)  SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1  [["id", 2]] 
+
+                        *- This loads all the blogs and the associated comments and authors for each.
+
+                --------------------------------------------------------------------------------------
+            2. Nested Associations Hash
+
+                > Customer.includes(orders: {books: [:supplier, :author]}).find(1)
+
+                        *- This will find the customer with id 1 and eager load all of the associated orders for it, 
+                                the books for all of the orders, and the author and supplier for each of the books.
+
+            ------------------------------------------------------------
+        14.1.2 Conditions on Eager Load :
+
+            - Even though Active Record lets you specify conditions on the eager loaded associations just like joins, the recommended way is to use joins instead
+
+            - However if you must do this, you may use "where" as you would normally.
+
+        -------------------------------------------------------------------------------------------------
+
+    14.2 preload :
+
+        - Rails has 2 ways of avoiding the n+1 problem. 
+            
+            - eager_load : One involves creating a "big (LEFT outer)join based query" to pull in your associations, 
+            - preload    : The other involves "making a separate query per association". (2 query solution)
+
+        - When you do "includes" rails automatically decides which strategy to use for you. [Default is 2 Query i.e., Preload in itself ]
+
+        - With preload, Active Record loads each specified association using one query per association.
+
+        Example:
+
+            ----------------------------------------------
+            > books = Book.preload(:author).limit(10)          # loading
+
+            > books.each do |book|
+                puts book.author.last_name
+              end
+            ----------------------------------------------
+                *- Output will be same as above includes example as both is using same method.
+
+        ---------------------------------------------------------------------------------------
+
+    14.3 eager_load :
+
+        - With eager_load, Active Record loads all specified associations using a LEFT OUTER JOIN.
+
+        Example: "same but with eager_load"
+
+            ------------------------------------------------------------
+                books = Book.eager_load(:author).limit(10)
+
+                books.each do |book|
+                    puts book.author.last_name
+                end
+            ------------------------------------------------------------
+
+                    SELECT DISTINCT `books`.`id` FROM `books` 
+                    LEFT OUTER JOIN `authors` 
+                        ON `authors`.`book_id` = `books`.`id` 
+                    LIMIT 10
+
+                    SELECT `books`.`id` AS t0_r0, `books`.`last_name` AS t0_r1, ...
+                    FROM `books` 
+                        LEFT OUTER JOIN `authors` 
+                            ON `authors`.`book_id` = `books`.`id`
+                    WHERE `books`.`id` IN (1,2,3,4,5,6,7,8,9,10)
+
+    NOTE : It is not possible to specify conditions for "preloaded" associations.
+                BUT,
+           You can specify conditions for "eager loaded" associations.
+
+           When you specify conditions in "include loaded" associations it automatically uses "eager_load"
+
+                - Here conditions means : .where()
+                
+                - Loaded Associations means the table you pass in the arguments of preload() or eager_load()
+
+
+
+
+
+
+
+
+
