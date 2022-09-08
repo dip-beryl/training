@@ -934,6 +934,172 @@ Organization    : Beryl Systems Pvt. Ltd.
                 
                 - Loaded Associations means the table you pass in the arguments of preload() or eager_load()
 
+    
+    -----------------------------------------------------------------------------------------------------------------------
+
+15 .Scopes :
+
+
+    ----------------------------------------------------------------------------------------------------------------------
+
+16. Dynamic Finders :
+
+    - For every field / column (also known as an attribute) you define in your table 
+    
+            - Active Record provides a finder method.
+
+    Example:
+
+        Model : Blog
+        Field : name
+
+        There will be a method automatically defined for Blog model ie., "find_by_name"
+
+            > Blog.find_by_name("Blog_2")
+            >>
+                Blog Load (76.9ms)  SELECT "blogs".* FROM "blogs" WHERE "blogs"."name" = $1 LIMIT $2  [["name", "Blog_2"], ["LIMIT", 1]]
+
+                => 
+                #<Blog:0x00007f41d40945f8
+                id: 2,
+                name: "Blog_2",
+                author_id: 2,
+                created_at: Mon, 05 Sep 2022 12:14:39.092795000 UTC +00:00,
+                updated_at: Mon, 05 Sep 2022 12:17:36.728128000 UTC +00:00,
+                lock_version: 0> 
+
+
+    - You can specify an exclamation point (!) on the end to get them to raise an "ActiveRecord::RecordNotFound" error, if they do not return any records.
+
+            > Blog.find_by_name("Blog_16")
+
+    
+    - You can go even one step further by chaining these dynamic finders with the help of "_and_"
+
+            .find_by_name  +  .find_by_creted_at
+
+            > Blog.find_by_name_and_created_at("Bolg_15", 2020-12-20)
+
+    ---------------------------------------------------------------------------------------------------------------------------------
+
+17. Enums :
+
+    - An enum lets you define an Array of values for an attribute and refer to them by name. 
+
+    - The actual value stored in the database is an "integer that has been mapped" to one of the values.
+
+        Understand This :
+                            1. Enum acts as a inclusion validator in itself
+                            2. Enum's integer starts from 0 index.
+                            3. While inserting values in the column that we have mapped with an Enum.
+                                    - we can either pass the indexes, string values from enum, or symbols from enum.
+                            4. But the d-type of the column / field in the migration must be Integer.
+
+        Example : ("status" is the enum column here)
+
+        $ rails g migration CreateOrders date:date status:integer total:float customer:references
+
+        $ rails db:migrate
+
+        Model :
+        ----------------------------------------------------
+            class Order < ApplicationRecord
+                belongs_to :customer
+
+                enum :status, [:shipped, :processing, :cancelled, :delivered]
+            end
+
+            class Customer < ApplicationRecord
+                has_many :orders
+            end
+        ----------------------------------------------------
+
+            > c1 = Customer.create(name: "Ajay", contact: "8792371112")
+            > c2 = Customer.create(name: "Vijay", contact: "9898291828")
+            > c3 = Customer.create(name: "Sanjay", contact: "8889128372")
+
+            > c1.orders.create(date: Time.now, status: "shipped", total: 105.5)     # passing value for "status" in string from Enum
+            
+            > c2.orders.create(date: Time.now, status: 0, total: 105.5)             # passing value for "status" as an integer that is mapped to ENum
+            >>
+                TRANSACTION (0.5ms)  
+                BEGIN
+                Order Create (1.2ms)  
+                    INSERT INTO "orders" ("date", "status", "total", "customer_id", "created_at", "updated_at") 
+                        VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"  [["date", "2022-09-08"], ["status", 0], ["total", 105.5], ["customer_id", 2], ["created_at", "2022-09-08 06:45:40.142458"], ["updated_at", "2022-09-08 06:45:40.142458"]]
+                TRANSACTION (29.3ms)  
+                COMMIT
+                
+                => 
+                #<Order:0x000055ae8561c388
+                id: 2,
+                date: Thu, 08 Sep 2022,
+                status: "shipped",
+                total: 105.5,
+                customer_id: 2,
+                created_at: Thu, 08 Sep 2022 06:45:40.142458000 UTC +00:00,
+                updated_at: Thu, 08 Sep 2022 06:45:40.142458000 UTC +00:00> 
+
+            
+            > c2.orders.create(date: Time.now, status: :delivered, total: 35.5)    # passing value for "status" in symbol from Enum
+            
+            > c3.orders.create(date: Time.now, status: 1, total: 335.5)
+
+
+        Example of Enum fetching:
+
+            > Order.shipped
+            >>
+                Order Load (0.9ms)  SELECT "orders".* FROM "orders" WHERE "orders"."status" = $1  [["status", 0]]
+                
+                =>                                                          
+                [#<Order:0x000055ae84f9ed80                                  
+                id: 1,                                                     
+                date: Thu, 08 Sep 2022,                                    
+                status: "shipped",                                         
+                total: 105.5,                                              
+                customer_id: 1,                                            
+                created_at: Thu, 08 Sep 2022 06:45:19.549168000 UTC +00:00,
+                updated_at: Thu, 08 Sep 2022 06:45:19.549168000 UTC +00:00>,
+                
+                #<Order:0x000055ae84f9ec68                                  
+                id: 2,                                                     
+                date: Thu, 08 Sep 2022,                                    
+                status: "shipped",                                         
+                total: 105.5,                                              
+                customer_id: 2,
+                created_at: Thu, 08 Sep 2022 06:45:40.142458000 UTC +00:00,
+                updated_at: Thu, 08 Sep 2022 06:45:40.142458000 UTC +00:00>] 
+
+
+                    *- we can fetch all the records from enum values also 
+                     do not need to write whole query like :
+                        > Order.where(status: :shipped)
+
+            NOTE: 
+                    - We can pass values in an form int, string or symbol.
+                    - But the DB will save values only in integer form.
+                    - But, Whenever we fetch record with the help of ActiveRecord it also fetches the value of integer values from ENum in the model.
+                    - Thats why we can see [ status: "shipped" ] instead of [ status: 0 ].
+
+
+            - There are dynamic options too. Like
+
+                > Order.shipped!        (!)
+
+                > order_obj.shipped?        (?)
+
+                > Order.not_shipped         (not_)
+                    
+                        - problem with above query is that it will also show "delivered" products
+
+                > Order.not_shipped.not_delivered
+                        
+                        - this query will show products that are not yet shipped also that are not yet delivered.
+
+
+
+
 
 
 
