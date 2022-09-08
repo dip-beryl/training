@@ -8,6 +8,8 @@ end
 
 
 class Student < ApplicationRecord
+
+    has_many :comments
     
     validates :name, length: {maximum: 25}
 
