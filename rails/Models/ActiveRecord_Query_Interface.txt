@@ -939,6 +939,156 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 15 .Scopes :
 
+    - Scoping allows you to specify commonly-used queries which can be referenced as method calls on the association objects or models.
+
+    - All scope bodies should return an ActiveRecord::Relation or nil to allow for further methods to be called on it.
+
+
+    15.1 Simple Sope :
+
+        - To define a simple scope, we use the "scope method" inside the model class, passing the query that we'd like to run when this scope is called:
+
+        Example:
+
+            Model:
+            ------------------------------------------
+            class Order < ApplicationRecord
+                belongs_to :customer
+
+                enum :status, [:shipped, :processing, :cancelled, :delivered]
+
+                scope :in_process, -> { where(status: 1)}
+            end
+            ------------------------------------------
+                *- To Understand Enum first Jump to Enum at 17.
+
+
+                > Order.in_process
+                >>
+                    Order Load (1.1ms)  SELECT "orders".* FROM "orders" WHERE "orders"."status" = $1  [["status", 1]]
+                    
+                    =>                                                          
+                    [#<Order:0x0000563335903350                                  
+                    id: 4,                                                    
+                    date: Thu, 08 Sep 2022,                                   
+                    status: "processing",
+                    total: 335.5,
+                    customer_id: 3,
+                    created_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00,
+                    updated_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00>]
+
+        ----------------------------------------------------------------------------------------
+    15.2 Chianing Scopes :
+
+        - Scopes are chainable with scopes.
+
+        Example:
+
+            Model:
+            ------------------------------------------
+            class Order < ApplicationRecord
+                belongs_to :customer
+
+                enum :status, [:shipped, :processing, :cancelled, :delivered]
+
+                scope :in_process, -> { where(status: 1)}
+
+                scope :in_process_and_very_old, -> { in_process.where("created_at > '2022-07-01'")}
+            end
+            ------------------------------------------
+                
+                > Order.in_process_and_very_old
+                >>
+                    Order Load (1.6ms)  
+                        SELECT "orders".* FROM "orders" 
+                            WHERE "orders"."status" = $1 AND (created_at > '2022-07-01')  [["status", 1]]
+
+                    =>                         
+                    [#<Order:0x00007fe4e8ac0b28 
+                    id: 4,                    
+                    date: Thu, 08 Sep 2022,   
+                    status: "processing",     
+                    total: 335.5,             
+                    customer_id: 3,           
+                    created_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00,
+                    updated_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00>]
+
+        ---------------------------------------------------------------------------------------------------
+    15.3 Passing in Arguments :
+
+        - We can even create a scope that accepts arguments.
+
+        Model:
+        ------------------------------------------
+            class Order < ApplicationRecord
+                belongs_to :customer
+
+                enum :status, [:shipped, :processing, :cancelled, :delivered]
+
+                scope :costs_more_than, ->(amount) { where("total > ?", amount) }
+            end
+            ------------------------------------------
+
+                > Order.costs_more_than(200)
+                >>
+
+                    Order Load (1.1ms)  SELECT "orders".* FROM "orders" WHERE (total > 200)
+
+                    => 
+                    [#<Order:0x0000556d24d41070
+                    id: 4,
+                    date: Thu, 08 Sep 2022,
+                    status: "processing",
+                    total: 335.5,
+                    customer_id: 3,
+                    created_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00,
+                    updated_at: Thu, 08 Sep 2022 06:50:04.593743000 UTC +00:00>]
+
+        ----------------------------------------------------------------------------------------------
+    15.4 Using Conditionals :
+
+        class Order < ApplicationRecord
+            scope :created_before, ->(time) { where("created_at < ?", time) if time.present? }
+        end
+
+        -------------------------------------------------------------------------------------------------
+    15.5 Default Scope :
+
+           ------------------------------------------
+            class Order < ApplicationRecord
+                belongs_to :customer
+
+                enum :status, [:shipped, :processing, :cancelled, :delivered]
+
+                default_scope { where(status: 1)}
+            end
+            ------------------------------------------
+
+                Every Query Will be Equivalent to :
+
+                    - SELECT * FROM orders WHERE status = 1;
+        -------------------------------------------------------------------------------------
+    15.6 Merging of Scopes :
+
+        - Just like where clauses, scopes are merged using AND conditions.
+
+        Syntax:
+
+            > Model.scope_1.scope_2
+            >>
+                In SQL Query Both the scope conditions will be joined with AND.
+
+        ------------------------------------------------------------------------------------
+    15.7 Removing all Scopes :
+
+        - If we wish to remove scoping for any reason we can use the unscoped method. 
+        
+        - This is especially useful if a default_scope is specified in the model and should not be applied for this particular query.
+
+            > Order.unscoped.load
+
+            > Blog.where(status: 1).unscoped.all
+
 
     ----------------------------------------------------------------------------------------------------------------------
 
