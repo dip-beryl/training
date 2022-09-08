@@ -664,9 +664,9 @@ Organization    : Beryl Systems Pvt. Ltd.
     
     13.1 String Format :
 
-        Author.joins("JOIN blogs ON (blogs.author_id = author.author_id)")
+        Author.joins("JOIN blogs ON ("blogs.author_id = author.id")
 
-            Equivalent to : SELECT * FROM authors JOIN blogs ON (blogs.author_id = author.author_id);
+            Equivalent to : SELECT * FROM authors JOIN blogs ON (blogs.author_id = author.id);
 
         -----------------------------------------------
     13.2 Array / Hash Format :
@@ -976,7 +976,7 @@ Organization    : Beryl Systems Pvt. Ltd.
     
     - You can go even one step further by chaining these dynamic finders with the help of "_and_"
 
-            .find_by_name  +  .find_by_creted_at
+            .find_by_name  +  .find_by_created_at
 
             > Blog.find_by_name_and_created_at("Bolg_15", 2020-12-20)
 
@@ -1097,14 +1097,122 @@ Organization    : Beryl Systems Pvt. Ltd.
                         
                         - this query will show products that are not yet shipped also that are not yet delivered.
 
+    
+    ------------------------------------------------------------------------------------------------------------------------
+
+18. Method Chaining :
+
+    - The Active Record pattern implements Method Chaining, which allow us to use multiple Active Record methods together in a simple and straightforward way.
+    
+    - You can chain methods in a statement when the previous method called 
+    
+        returns an "ActiveRecord::Relation", like:
+            - all
+            - where, and 
+            - joins.
+
+    - If there are Methods that return a single object (see Retrieving a Single Object Section) have to be at the end of the statement.
+
+    Syntax / Example :
+
+        > Customer
+                .select('customers.id, customers.last_name, reviews.body')
+                .joins(:reviews)
+                .where('reviews.created_at > ?', 2020-12-31)
 
 
+        > Book
+            .select('books.id, books.title, authors.first_name')
+            .joins(:author)
+            .find_by(title: 'Abstraction and Specification in Program Development')
 
 
+    ----------------------------------------------------------------------------------------------------------------------------------------
 
+19. Find or Build a New Object :  (.find_or_create_by)
 
+    - It's common that you need to find a record or create it if it doesn't exist
 
+    - we can do this by :
 
+    19.1   [ - .find_or_create_by ]
 
+    Example :
 
+            > Blog.find_or_create_by(name: "Windows 11 : New Age", author_id: 2)
+            >>
+                Blog Load (18.3ms)  
+                    SELECT "blogs".* FROM "blogs" 
+                    WHERE "blogs"."name" = $1 AND "blogs"."author_id" = $2 LIMIT $3  [["name", "Windows 11 : New Age"], ["author_id", 2], ["LIMIT", 1]]
+                
+                TRANSACTION (0.5ms)  BEGIN
+                
+                Author Load (0.6ms)  SELECT "authors".* FROM "authors" WHERE "authors"."id" = $1 LIMIT $2  [["id", 2], ["LIMIT", 1]]
+                Blog Create (21.9ms)  INSERT INTO "blogs" ("name", "author_id", "created_at", "updated_at", "lock_version") 
+                                            VALUES ($1, $2, $3, $4, $5) RETURNING "id"  [["name", "Windows 11 : New Age"], ["author_id", 2], ["created_at", "2022-09-08 07:43:36.786869"], ["updated_at", "2022-09-08 07:43:36.786869"], ["lock_version", 0]]
+                
+                TRANSACTION (23.8ms)  COMMIT                                              
+                
+                =>                                                                         
+                #<Blog:0x000055b19b8c9d60                                 
+                id: 4,                                       
+                name: "Windows 11 : New Age",                
+                author_id: 2,                                
+                created_at: Thu, 08 Sep 2022 07:43:36.786869000 UTC +00:00,
+                updated_at: Thu, 08 Sep 2022 07:43:36.786869000 UTC +00:00,
+                lock_version: 0> 
+
+                    *- Record did not exist. So ".find_or_create_by" method created it.
+
+            > Blog.find_or_create_by(name: "Windows 11 : New Age", author_id: 2)
+            >>
+                Blog Load (1.0ms)  
+                    SELECT "blogs".* FROM "blogs" 
+                    WHERE "blogs"."name" = $1 AND "blogs"."author_id" = $2 LIMIT $3  
+                        [["name", "Windows 11 : New Age"], ["author_id", 2], ["LIMIT", 1]]
+
+                => 
+                #<Blog:0x00007f1ac49d4168
+                id: 4,
+                name: "Windows 11 : New Age",
+                author_id: 2,
+                created_at: Thu, 08 Sep 2022 07:43:36.786869000 UTC +00:00,
+                updated_at: Thu, 08 Sep 2022 07:43:36.786869000 UTC +00:00,
+                lock_version: 0> 
+
+                    *- Record was present. So i returned the record.
+
+        -------------------------------------------
+    
+    19.2    .find_or_create_by!
+
+            - You can also use find_or_create_by! to "raise an exception" if the new record is invalid.
+
+                - New record is invalid
+                - Validation Error
+
+        -------------------------------------
+    
+    19.3    .find_or_initialize_by
+
+            - This is also completely similar to ".find_or_create_by"
+
+                -- only difference is that it initializes a ".new" object instead of ".create".
+
+                -- So, we need to pass this methods return value to a variable.
+
+                -- And, then call (.save) on that variable object to save the new record / data
+
+                    -- But, If it finds the mentioned record it will pass the record to the variable.
+                        And then you don't need to save it also you cannot save it unless you change its attributes' value.
+
+        
+        NOTE : 
+                .persisted?
+
+                    --> Returns "true" - if the record is persisted, 
+                                    
+                                        - persisted => it’s not a new record and it was not destroyed
+
+    ------------------------------------------------------------------------------------------------------------------------------
 
