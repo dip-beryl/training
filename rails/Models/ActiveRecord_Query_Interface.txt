@@ -1216,3 +1216,133 @@ Organization    : Beryl Systems Pvt. Ltd.
 
     ------------------------------------------------------------------------------------------------------------------------------
 
+20. Finding by SQL :
+
+    20.1 .find_by_sql
+
+        - If you'd like to use your own SQL to find records in a table you can use "find_by_sql". 
+        
+        - The "find_by_sql" method will return an array of objects even if the underlying query returns just a single record.
+
+            
+            > Blog.find_by_sql("SELECT * FROM blogs where id = 2")
+            >>
+                Blog Load (1.0ms)  SELECT * FROM blogs where id = 2
+
+                    =>                                                                                    
+                    [#<Blog:0x000055b19b293248                                                             
+                    id: 2,                                                                               
+                    name: "Blog_2",                                                                      
+                    author_id: 2,                                                                        
+                    created_at: Mon, 05 Sep 2022 12:14:39.092795000 UTC +00:00,                          
+                    updated_at: Mon, 05 Sep 2022 12:17:36.728128000 UTC +00:00,                          
+                    lock_version: 0>]                                                                    
+
+        ---------------------------------------------------------------------------------------------------------
+
+    20.2 .connection.select_all
+
+        - ".connection.select_all" also take SQL Query as argument.
+
+        - This method will return an instance of "ActiveRecord::Result" class 
+
+        - But, on calling ".to_a" on the above result we get "An Array of Hashes" of the result as output.
+
+            
+            > Blog.connection.select_all("SELECT * FROM blogs where id = 2")
+            >>
+                @column_types={},                                                                    
+                @columns=["id", "name", "author_id", "created_at", "updated_at", "lock_version"],    
+                @hash_rows=nil,                                                                      
+                @rows=[[2, "Blog_2", 2, 2022-09-05 12:14:39.092795 UTC, 2022-09-05 12:17:36.728128 UTC, nil]]> 
+
+                        *- this is a "ActiveRecord::Result" class object.
+
+
+        - Calling ".to_a" on this :
+
+            > Blog.connection.select_all("SELECT * FROM blogs where id = 2").to_a
+            >>
+
+                [{"id"=>2,                                                                                                                           
+                "name"=>"Blog_2",                                                                                                                  
+                "author_id"=>2,                                                                                                                    
+                "created_at"=>2022-09-05 12:14:39.092795 UTC,                                                                                      
+                "updated_at"=>2022-09-05 12:17:36.728128 UTC,                                                                                      
+                "lock_version"=>nil}]                                                                                                              
+
+                        *- This is an array of hashes of the result.
+
+        ---------------------------------------------------------------------------------------------------------------
+
+    20.3 pluck :
+
+        -  It accepts a list of column names as an argument and returns an array of values of the specified columns with the corresponding data type
+
+        --> Arguments : columns
+        --> Returns   : array of values(according to their d-type)   
+
+        Examples:
+
+        1. Simple Example :
+
+            > Blog.pluck(:id)
+            >>
+                [2, 1, 4]
+
+
+        2. Multiple Columns :
+
+            > Blog.pluck(:id, :name)
+            >>
+                [[2, "Blog_2"], [1, "Laptop Blog"], [4, "Windows 11 : New Age"]]
+
+
+        3. Querying Multiple Tables :
+
+            > Blog.join(:author, :comments).pluck("authors.name, blogs.name, comments.body")
+            >>
+                Blog Pluck (12.4ms)  
+                    SELECT authorS.name, blogs.name, comments.body 
+                    FROM "blogs" 
+                        INNER JOIN "authors" ON "authors"."id" = "blogs"."author_id" 
+                        INNER JOIN "comments" ON "comments"."blog_id" = "blogs"."id" 
+
+
+        -- pluck makes it possible to replace codes like :
+
+            > Blog.select(:id).map { |record| record.id }
+
+        
+        NOTE :
+                1. Unlike select, pluck "directly converts" a database result "into a Ruby Array", without constructing ActiveRecord objects.
+                    (This Increses performance)
+
+                2. Unlike select and other Relation scopes, pluck triggers an immediate query, and thus "cannot be chained" with any further scopes,
+                    (Although it can work with scopes already constructed earlier)
+
+                3. Using pluck will trigger "eager loading" if the relation object "contains include values".
+                    
+                    - Even if the eager loading is not necessary for the query.
+                    - One way to avoid this is to unscope the includes
+
+                            > assoc.unscope(:includes).pluck(:id)
+        
+        -------------------------------------------------------------------------------------------------------------------------------
+
+    20.4 ids
+
+        - ids can be used to pluck all the IDs for the relation using the table's primary key.
+
+
+            > Customer.ids
+            >>
+                Customer Pluck (0.8ms)  SELECT "customers"."id" FROM "customers"
+                => [1, 2, 3]  
+
+
+        - If primary column is any other column instead of ":id" (changed in the model file)
+
+            -- Then it will pluck that new column's records as ids in result
+
+    -----------------------------------------------------------------------------------------------------------------------------------------
