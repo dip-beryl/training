@@ -1,0 +1,123 @@
+File Name       : RESTfull_with_ruby.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------
+
+
+1. Creating a project with API enabled :
+
+
+    $ rails new school_erp -d postgresql --api
+
+    ------------------------------------------------------------------------------------
+
+2. Scaffold  (generator)
+
+    - Scaffolds an entire resource, from model and migration to controller and views, along with a full test suite. 
+    
+    - The resource is ready to use as a starting point for your RESTful, resource-oriented application.
+
+    Syntax :
+
+        $  rails generate scaffold NAME [field[:type][:index] field[:type][:index]] [options]
+
+    In Project :
+
+        $ rails g scaffold Student first_name:string last_name:string gender:integer dob:date contact:string status:integer
+
+        >>
+
+            create    db/migrate/20220909105915_create_students.rb
+            create    app/models/student.rb
+
+            create      test/models/student_test.rb
+            create      test/fixtures/students.yml
+
+            route    resources :students
+
+            create    app/controllers/students_controller.rb
+
+
+            create      test/controllers/students_controller_test.rb
+
+    ------------------------------------------------------------------------------------------------
+
+3. Moving Controller to "api" folder :
+
+    3.1. The scaffold already made controller "students_controller.rb" for us.
+
+    3.2. But we are making an api enabled app so we need to move the controller to "api/v[n]" folder.
+            (Where n is version number starting from 1
+
+    3.3. So that we can keep track of our api.
+
+        >> > create app/controller/api/v1/
+        >> > move "students_controller.rb" to above path.
+
+
+    --------------------------------------------------------------------------------------------
+
+4. Chaning Cotroller File for modules :
+
+    4.1 As we have changed the path of controller so the resorcefull routes will not be able to get to them.
+
+    4.2 so we need to put all the code of the controller inside the nested module of [Api and V1]
+
+        >> > create two modeules nested
+        >> > move all the controller code inside it
+
+            "app/controller/api/v1/students_controller.rb"
+            -------------------------------------------------------
+                module Api
+                    modeule V1
+
+                        [old controller code]
+                    
+                    end
+                end
+            -------------------------------------------------------
+
+    -----------------------------------------------------------------------------------------------------------
+
+5. Changing resorcefull routes according to api :
+
+
+    "routes.rb"
+    -------------------------------------------------------
+        namespace 'api' do
+            namespace 'v1' do
+                resources :students
+            end
+        end
+    -------------------------------------------------------
+
+    $ rails routes
+    >>
+
+        Prefix              Verb           URI Pattern                                  Controller#Action
+
+        api_v1_students     GET    /api/v1/students(.:format)                              api/v1/students#index
+                            POST   /api/v1/students(.:format)                              api/v1/students#create
+        api_v1_student      GET    /api/v1/students/:id(.:format)                          api/v1/students#show
+                            PATCH  /api/v1/students/:id(.:format)                          api/v1/students#update
+                            PUT    /api/v1/students/:id(.:format)                          api/v1/students#update
+                            DELETE /api/v1/students/:id(.:format)                          api/v1/students#destroy
+
+    -----------------------------------------------------------------------------------------------------------------
+
+6. Making POST request from postman.
+
+    POSTMAN : postman is an app used to Send or Receive HTTP requests.
+
+        6.1. Create a request.
+
+        6.2 GET request "http://localhost:3000/api/v1/students".
+
+                -- You will receive the data from DB.
+
+        6.3 POST request
+
+
+
+
