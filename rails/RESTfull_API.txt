@@ -1,0 +1,227 @@
+File Name       : basics_RESTfull_API.txt
+Author          : Dipanshu Ranga (@dip-beryl)
+Organization    : Beryl Systems Pvt. Ltd.
+
+----------------------------------------------------------------------------------------------------------------
+
+RESTfull API :
+
+    - RESTful API is an interface that two computer systems use to exchange information securely over the internet.
+
+    - Most business applications have to communicate with other internal and third-party applications to perform various tasks.
+
+    ------------------------------------------
+
+API :
+
+    - An Application Programming Interface (API) defines the "rules" that you must follow to communicate with other software systems.
+
+    - Developers expose or create APIs so that other applications can communicate with their applications programmatically. 
+
+    - You can think of a web API as a gateway between clients and resources on the web.
+
+        * Clients :
+
+                    -- Clients are users who want to access information from the web. 
+                    
+                    -- The client can be a person or a software system that uses the API.
+
+        * Resources :
+
+                    -- Resources are the information that different applications provide to their clients. 
+
+                    -- Resources can be images, videos, text, numbers, or any type of data. 
+
+                    -- The machine that gives the resource to the client is also called the server. 
+                    
+    
+    - Organizations use APIs to share resources and provide web services while maintaining security, control, and authentication. 
+
+
+    ------------------------------------------------
+
+REST :
+
+    - Representational State Transfer (REST) is a software architecture that imposes conditions on how an API should work. 
+
+        (REST was initially created as a guideline to manage communication on a complex network like the internet. )
+
+
+    --> API developers can design APIs using several different architectures. 
+    --> APIs that follow the REST architectural style are called REST APIs. 
+    --> Web services that implement REST architecture are called RESTful web services
+
+
+    -------------------------------------------------------------------------------
+
+Constraints / Principles of Architecture :
+
+    - The following are some of the principles / constraintsof the REST architectural style:
+
+        1. Uniform Interface
+
+        2. Stateless
+
+        3. Cacheable 
+
+        4. Client - Server
+
+        5. Layered System
+
+        6. Code on Demand
+
+
+
+        1. Uniform Interface :
+
+                - The uniform interface is fundamental to the design of any RESTful webservice.
+                - It is a key constraint that differentiate between a REST API and Non-REST API.
+
+                - It suggests that there should be an uniform way / standard fromat of interacting with a given server irrespective of device or type of application (website, mobile app)
+
+                - The formatted resource is called a "representation" in REST.
+
+                Uniform Interface imposes 4 architectural constraints / principles:
+
+                    1.1 Resource Based : 
+
+                            - Requests should identify resources. 
+                            - They do so by using a uniform resource identifier.
+                            - Eg : API/resources
+
+                        --------------------------------------------------------------------
+
+                    1.2 Manipulation of Resources Through Representations :
+
+                            - Client has "representation" of resource.
+
+                            - These representations contains enough information to modify or delete the resource on the server
+                                    (if it has permission)
+                                
+                            - Eg : Example: Usually user get a "user_id" when user request for a list of users 
+                                    and, then use that id to delete or modify that particular user.
+
+                        ----------------------------------------------------------------------------------------
+
+                    1.3 Self - Descriptive Message :
+
+                            - Clients receive information about how to process the representation further. 
+                            
+                            - The server achieves this by sending self-descriptive messages that contain metadata about how the client can best use them.
+
+                        ----------------------------------------------------------------------------------------
+
+                    1.4 Hypermedia as the Engine of Application State (HATEOAS):
+
+                            - Clients receive information about all other related resources they need to complete a task. 
+                            
+                            - The server achieves this by sending hyperlinks in the representation so that clients can dynamically discover more resources.
+
+            
+            ---------------------------------------------------------------------------------------------------------------------------------------------------
+
+        2. Stateless :
+
+            - Clients can request resources in any order, and every request is stateless or isolated from other requests. 
+            
+            - This REST API design constraint implies that the server can completely understand and fulfill the request every time. 
+
+            - In REST, the client must include all information for the server to fulfill the request whether as a part of query params, headers or URI
+
+            - Server would not store anything related to the session.
+
+            - Statelessness enables greater availability since the server does not have to maintain, update or communicate that session state.
+
+            
+            - Drawback : when the client need to send too much data to the server 
+
+                Overview : Do not store anything, clint sends data everytime, each req. is independednt.
+            
+            -----------------------------------------------------------------------------------------------------------------------------------------------
+
+        3. Cacheable :
+
+            - RESTful web services support caching, which is the process of storing some responses on the client or on an intermediary to improve server response time.
+
+            - Every response should include whether the response is cacheable or not and for how much duration responses can be cached at the client side. 
+
+            - But sometime there are chances that user may receive stale data. 
+
+            ----------------------------------------------------------------
+
+        4. Client - Server :
+
+            - REST application should have a client-server architecture.
+
+            - Client doesn’t need to know anything about business logic and;
+            
+                -- server doesn’t need to know anything about frontend UI. 
+
+            --------------------------------------------------------------------------------
+
+        5. Layered System :
+
+            - An application architecture needs to be composed of multiple layers.
+
+            - In a layered system architecture, 
+                                    
+                        the client can connect to other authorized intermediaries between the client and server, and it will still receive responses from the server. 
+            
+            - Servers can also pass on requests to other servers. 
+            
+            - You can design your RESTful web service to run on several servers with multiple layers such as 
+            
+                security, 
+                application, and 
+                business logic, 
+                
+                    working together to fulfill client requests. 
+                    
+            - These layers remain invisible to the client.
+
+            - Each layer doesn’t know any thing about any layer other than that of immediate layer and there can be lot of intermediate servers between client and the end server.
+
+            --------------------------------------------------------------------------------------
+
+        6. Code on Demand :
+
+            - It is an optional feature. 
+            
+            - According to this, servers can also provide executable code to the client.
+
+            - Eg :
+                    When you fill a registration form on any website, your browser immediately highlights any mistakes you make, 
+                    such as incorrect phone numbers. It can do this because of the code sent by the server.
+
+    
+    ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Working :
+
+    1. The client sends a request to the server. The client follows the API documentation to format the request in a way that the server understands.
+
+    2. The server authenticates the client and confirms that the client has the right to make that request.
+
+    3. The server receives the request and processes it internally. 
+
+    4. The server returns a response to the client. 
+        
+        The response contains information that tells the client whether the request was successful. 
+        
+        The response also includes any information that the client requested.
+
+            and  a resource which can be anything like HTML, XML, Image, or JSON. But now JSON is the most popular format being used in Web Services. 
+
+    
+
+    - In HTTP there are five methods that are commonly used in a REST-based Architecture i.e., 
+            
+            POST, 
+            GET, 
+            PUT, 
+            PATCH, and 
+            DELETE. 
+            
+    - These correspond to create, read, update, and delete (or CRUD) operations respectively. 
+    
+    - There are other methods which are less frequently used like OPTIONS and HEAD.  
