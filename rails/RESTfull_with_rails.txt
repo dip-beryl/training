@@ -82,6 +82,8 @@ Organization    : Beryl Systems Pvt. Ltd.
 
 5. Changing resorcefull routes according to api :
 
+    - namespacing and versioning
+
 
     "routes.rb"
     -------------------------------------------------------
@@ -110,13 +112,19 @@ Organization    : Beryl Systems Pvt. Ltd.
 
     POSTMAN : postman is an app used to Send or Receive HTTP requests.
 
+    CURL : is a command line tool to send HTTP requests
+
         6.1. Create a request.
 
         6.2 GET request "http://localhost:3000/api/v1/students".
 
                 -- You will receive the data from DB.
 
-        6.3 POST request
+        6.3 POST request "http://localhost:3000/api/v1/students".
+
+                -- then fill the params for values.
+
+            $ curl --header "Content-Type: application/json" --request POST --data '{"first_name": "Varun"}' http://localhost:3000/api/v1/students -v
 
 
 
