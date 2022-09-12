@@ -4,19 +4,19 @@ module Api
     class
       StudentsController < ApplicationController
 
-        # because of this you do not need to call ".find(params[:id])"" again and again
+        # because of this you do not need to call ".find(params[:id])" again and again
       before_action :set_student, only: %i[ show update destroy ]
    
       # GET api/v1/students
       def index
         @students = Student.all
    
-        render json: @students
+        render json: @students, status: :ok
       end
    
       # GET api/v1/students/1
       def show
-        render json: @student
+        render json: {status: 'SUCCESS', message: 'Loaded Student', data: @student}, status: :ok
       end
    
       # POST api/v1/students
@@ -33,7 +33,7 @@ module Api
       # PATCH/PUT api/v1/students/1
       def update
         if @student.update(student_params)
-          render json: @student
+          render json: @student, status: :ok
         else
           render json: @student.errors, status: :unprocessable_entity #422
         end
@@ -42,9 +42,11 @@ module Api
       # DELETE api/v1/students/1
       def destroy
         if @student.destroy
-          head(:ok)
+          render json: @student, status: :ok
+          #head(:ok)
         else
-          head(:unprocessable_entity)
+          #head(:unprocessable_entity)
+          render json: {status: 'Nothing DELETED', message: 'Record Not Found'}, status: :unprocessable_entity
         end
 
       end
@@ -57,7 +59,6 @@ module Api
    
         # Only allow a list of trusted parameters through.
         def student_params
-
           params.require(:student).permit(:first_name, :last_name, :gender, :dob, :contact, :status)
         end
     end
