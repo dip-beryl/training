@@ -1,0 +1,65 @@
+/* This is a comment */
+
+h1 {
+    color: aqua;
+    background-color: blue;
+    opacity: 0.5;
+    border: 2px solid Tomato;
+}
+
+.frame_class_1{
+    background-image: url("resources/img1.jpg");
+}
+
+.border_class_1 {
+    /* chronology always .. border > border-style > border-* */
+    border-style: dotted;
+    border-top-color: green;
+    border-top-style: double;
+
+    /* margin is outer space */
+    margin-left: 1in;
+    margin-right: 2cm; 
+
+    /* padding is around space inside borders*/
+    padding-top: 20px;
+    padding-bottom: 30px;
+
+    /* An outline is a line drawn outside the element's border. */
+    outline-color: yellow;
+    outline-width: 10px;
+    outline-offset: 15px;
+
+}
+
+.div_class_1 {
+    height: 70px;
+    width: 50%;
+    border: 1px solid #e46718; /* hax code of color */
+}
+
+.div_text_fromatting_class {
+    border: 2px black;
+    border-style: dotted;
+    padding: 5px;
+    width: 200px;
+    height: 200px;
+
+    /* text fromatting */
+    text-align: justify;
+    text-decoration: underline dotted;
+    /* text-decoration-line: underline; */
+    /* text-decoration-style: wavy; */
+    text-transform: capitalize;
+    font-family: "Lucida Console", "Courier New", monospace;
+
+
+}
+
+
+
+
+
+
+/* css support colors codes like rgb HEX and HSL */
+/* css support 140 color names too */
