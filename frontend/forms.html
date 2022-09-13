@@ -1,0 +1,103 @@
+<html>
+    <head>
+        <title> Form Example </title>
+    </head>
+
+    <body>
+
+        <h1 style="text-align: center; color: green">Student Form :</h1>
+    <div style="margin-left: 530px;">
+        <form action="" target="_self" method="GET" id="student_form">
+
+                <!-- first and last name -->
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" id="first_name" value="Name_1" required> <br> <br>
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" id="last_name"> <br> <br>
+
+                <!-- gender selection -->
+            <label for="gender">Gender:</label>
+                <input type="radio" name="Gender" id="male" value="male">
+                <label for="male"> Male</label>
+                <input type="radio" name="Gender" id="female" value="female">
+                <label for="female"> Female</label> <br> <br>
+
+                <!-- contact Information -->
+            <label for="contact">Contact No:</label>
+            <input type="number" name="contact" id="contact" maxlength="12" size="12" required> <br> <br>
+
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email"> <br> <br>
+
+                <!-- subjects selection -->
+            <label for="subjects"> Subjects :-</label> <br> <br>
+                <div style="margin-left: 30px;">
+                    <label for="hindi"> Hindi </label>
+                    <input type="checkbox" name="subjects" id="hindi"> <br>
+                    <label for="english"> English </label>
+                    <input type="checkbox" name="subjects" id="english"> <br>
+                    <label for="maths"> Maths </label>
+                    <input type="checkbox" name="subjects" id="maths"> <br> <br>
+                </div>
+            
+            
+                <!-- date of birth -->
+            <label for="dob">Date of Birth :</label>
+            <input type="date" name="dob" id="dob" min="2000-01-01" max="2020-12-31" required> <br><br>
+            
+                <!-- address -->
+            <label for="address">Address:</label>
+            <textarea name="address" id="address" cols="30" rows="7"></textarea> <br> <br>
+
+            <label for="city">City :</label>
+            <select name="city" id="city" >
+                <option value="delhi">Delhi</option>
+                <option value="faridabad" selected>Faridabad</option>
+                <option value="mumbai">Mumbai</option>
+                <option value="Gurgaon">Gurgaon</option>
+            </select> <br> <br>
+
+                <!-- create user name and password -->
+            <label for="user_name">User Name :</label>
+            <input type="text" name="user_name" id="user_name"> <br> <br>
+            <label for="pwd">Password :</label>
+            <input type="password" name="pwd" id="pwd"> <br><br>
+
+            <label for="social_media">Social Media Profile (Anyone):</label>
+            <input type="url" name="social_media" id="social_media"> <br><br>
+
+            <label for="profile_pic">Profile Picture :</label>
+            <input type="file" name="profile_pic" id="profile_pic"><br><br>
+
+            <label for="house_color">Hosue Color :</label>
+            <input type="color" name="house_color" id="house_color"> <br><br>
+
+
+            <fieldset>
+                <legend>Parents Information :</legend>
+                <label for="father_name">Father Name:</label>
+                <input type="text" name="father_name" id="father_name"> 
+
+                <label for="mother_name">Mother Name:</label>
+                <input type="text" name="mother_name" id="mother_name"> <br> <br>
+
+                <label for="contact_1">Contact Number:</label>
+                <input type="text" name="contact_1" id="contact_1">
+                <label for="contact_2">Alternate Contact Number:</label>
+                <input type="text" name="contact_2" id="contact_2"> <br><br>
+
+                <label for="annual_income">Family Annual Income :</label>
+                <input type="range" name="annual_income" id="annual_income" min="100000" max="5000000" disabled>
+            </fieldset> <br> <br>
+
+
+            <input type="reset" value="Reset"> 
+            <button type="button" onclick="alert('Form Cancelled')">Cancel</button>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    </body>
+</html>
+
+color .. number .. file .. image .. .. family annual income .. url .. search .. 
