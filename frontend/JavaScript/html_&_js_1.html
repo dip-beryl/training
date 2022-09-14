@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+    <body>
+        
+        <p id="demo"> Hi, I am HTML. </p>
+        <button type="button" id="demo" onclick="document.getElementById('demo').innerHTML = 'But now, I am JavaScript.'"> 
+            Try Clicking on me!
+        </button>
+
+
+        <br> <hr>
+
+        <p id="demo_2"> </p>
+        <script> document.getElementById('demo_2').innerHTML='This Text is sent through JavaScript.' </script>
+
+        <br><hr>
+
+        <p id="demo_3"> </p>
+        <button id="demo_3" onclick="function_1()"> Load Script</button>
+        
+
+        <!-- always try to place scripts in the end of the document -->
+        <!-- they are here just beacause of understanding purpose -->
+        <script>
+            function function_1(){
+                document.getElementById('demo_3').innerHTML='This text is loaded through a JS Function.';
+            };
+        </script>
+
+        <br><hr>
+
+        <script>
+            document.write(55 + 60);  //use only for testing purpose
+        </script>
+
+        <br><hr>
+
+        <button type="button" onclick="window.alert('Alert is created')"> Lets create an alert through JS</button>
+        <!-- window keyword is optional beacause window is aglobel object in JS -->
+
+        <br><hr>
+
+        <button type="button" onclick="window.print()"> Print this page</button>
+
+
+
+        <br><hr>
+
+        <button type="button" onclick="document.write('All the HTML is deleted because document.write() is loaded in END.')">Try me too</button>
+
+
+    </body>
+
+</html>
+

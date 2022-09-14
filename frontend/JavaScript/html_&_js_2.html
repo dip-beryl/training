@@ -1,0 +1,35 @@
+<html>
+    <body>
+        <p id="demo_1"></p> <br>
+        <button type="button" id="demo_2" onclick="getDate();"> Click to know date and time</button> <br>
+        <button type="button" id="demo_3" onclick="genRandom();"> Click to generate a random number</button> <br>
+
+
+        <script>
+            let hundred = ""
+
+            arr = ['one', 'two', 'three']
+            arr.forEach(makeHundred)
+
+            document.getElementById('demo_1').innerHTML = hundred
+
+            function makeHundred(value, index, array){
+                hundred += value + "-Hundred" + "<br>"
+            }
+
+        </script>
+
+        <script>
+            function getDate(){
+                document.getElementById('demo_2').innerHTML = new Date()
+            }
+        </script>
+
+        <script>
+            function genRandom(){
+                document.getElementById('demo_3').innerHTML = Math.floor(Math.random() * 100)
+            }
+        </script>
+        
+    </body>
+</html>

@@ -1,0 +1,418 @@
+JavaScript :
+
+    JavaScript is the world's most popular programming language.
+
+    JavaScript is the programming language of the Web.
+
+    JavaScript is easy to learn.
+
+
+
+Why JavaScript ?
+
+    JavaScript is one of the 3 languages all web developers must learn:
+
+        1. HTML to define the content of web pages.
+
+        2. CSS to specify the layout of web pages.
+
+        3. JavaScript to program the behavior of web pages.
+
+
+Changing the content of HTML tags :
+
+    JavaScript can change the content of any HTML element's attribute by their ID.
+
+    --------------------------------------------------------------------------
+        <p id="demo">JavaScript can change HTML content.</p>
+        
+        document.getElementById("demo").innerHTML = "I am JavaScript";
+    --------------------------------------------------------------------------        
+
+            - if you execute the above JS the content of element who has ID = "demo" will get changed to above text
+
+
+
+            another example :
+
+                            document.getElementById("demo").src = "";
+
+
+Inside HTML :
+
+    In HTML, JavaScript code is inserted between <script> and </script> tags.
+
+
+    Placing scripts at the bottom of the <body> element improves the display speed, because script interpretation slows down the display.
+
+
+Referencing External .js :
+
+    - <script> src = 'script.js' </script>
+
+
+
+JavaScript Display :
+
+    JavaScript can "display" data in different ways:
+
+        1. Writing into an HTML element, using :
+                                                    innerHTML.
+        2. Writing into the HTML output using :
+                                                    document.write().
+        3. Writing into an alert box, using :
+                                                    window.alert().
+        4. Writing into the browser console, using :
+                                                    console.log().
+
+        
+Variables :
+            var -	Declares a variable
+
+            let	-   Declares a block variable
+         
+            const - 
+
+            Using nothing
+            Eg.: 
+
+                var x;      // single declaration
+
+                let x, y, z  //multiple declaration
+
+                - JaveScript is Case Sensitive.
+
+   -> When to Use JavaScript var?
+
+        - The var keyword is used in all JavaScript code from 1995 to 2015.
+
+        - The let and const keywords were added to JavaScript in 2015.
+
+        - If you want your code to run in older browser, you must use var.
+
+    
+    -> let cannot be re-declared.
+
+    const :
+    
+        const cannot be re-assigned.
+
+        It does not define a constant value. It defines a constant reference to a value.
+
+        value for a const must be given while declaration.
+
+            
+            You can use const when you declare:
+
+                A new Array
+                A new Object
+                A new Function
+                A new RegExp
+
+
+    NOTE: const and let have block scope.
+
+            If declared inside a block {} then they are non-existent outside the block
+
+
+
+JavaScript Values
+
+        - The JavaScript syntax defines two types of values:
+
+                1. Fixed values
+                2. Variable values
+        
+        
+            *- Fixed values are called "Literals".
+
+            *- Variable values are called "Variables".
+
+
+Concat :
+
+        > "John" + "Kumar" + "Doe"
+
+
+
+        > var name = "Kumar"
+        > "John" + name + "Doe"
+
+
+typeof:
+
+        (inside console)
+
+        >typeof 5
+        >> number
+
+instanceof :
+
+        > fruits = ['mango', 'apple', 'banana']
+        
+        > fruits instanceof Array
+        >> True
+
+
+Examples :
+
+            > let x = 16 + "Volvo";
+            >> 16Volvo
+
+            > let y = 123e5;      
+            >> 12300000
+
+            > let z = 123e-5; 
+            >> 0.00123
+
+
+    NOTE : a declared but unassigned variable is 'undefined'.
+
+            We can make defined variable undefined too.
+
+            > x = undefined
+
+
+Funtion :
+
+        Syntax:
+
+            function function_name(parameter_1, parameter_2, .... ){
+                        
+                        code
+                        ....
+
+                        return ....
+            };
+
+
+Objects :
+
+        Objects are declared like hashs / dictionary in JS.
+
+        > const car = {name:"Maruti Swift", weight:100, price:"500000"};
+
+
+            object properties ==> name, weight, price
+            (car properties)
+
+            property values  ==> "Maruti Swift", 100, "500000"
+
+
+    Access Methdos :
+
+        > car.name
+        >> "Maruti Swift"
+
+        > car["price"]
+        >> 500000
+
+
+    Object Methods :
+
+        A method is a function stored as a property.
+
+            > const car = {            
+                            name: "Maruti Swift", 
+                            weight: 100, 
+                            price: "500000",
+
+                            discounted_price: function(rate){
+                                                        
+                                                        return (this.price - (this.price * (rate/100)))
+                                                        }
+                            };
+
+            
+                *- in above code property "discounted_price" is an object_method
+
+                *- rate is a parameter taking percentage of discount as argument.
+
+            > car.discounted_price(20)
+            >> 400000
+
+
+    NOTE : [ this ]
+
+            - this is a keyword. Like self in many p. languages.
+
+            - Value of this :
+
+                -- In an object method, this refers to the object.
+                -- Alone, this refers to the global object.
+                -- In a function, this refers to the global object.
+                -- In a function, in strict mode, this is undefined.
+                -- In an event, this refers to the element that received the event.
+                - -Methods like call(), apply(), and bind() can refer this to any object.
+
+
+Events :
+
+        HTML events are "things" that happen to HTML elements.
+
+        When JavaScript is used in HTML pages, JavaScript can "react" on these events.
+
+        An HTML event can be something the browser does, or something a user does.
+
+        Here are some examples of HTML events:
+
+            - An HTML web page has finished loading
+            - An HTML input field was changed
+            - An HTML button was clicked
+
+
+        HTML ->  <button onclick="document.getElementById('demo').innerHTML = Date()">The time is?</button>
+
+        HTML ->  <button onclick="this.innerHTML = Date()">The time is?</button>
+
+
+    Event	            Description
+
+    onchange	        An HTML element has been changed
+    onclick	            The user clicks an HTML element
+    onmouseover	        The user moves the mouse over an HTML element
+    onmouseout	        The user moves the mouse away from an HTML element
+    onkeydown	        The user pushes a keyboard key
+    onload	            The browser has finished loading the page
+
+
+Arrays :
+
+        const num = [1,2,3,4,5]
+
+        num[0] = 11
+
+        > num
+        >> [11,2,3,4,5]
+
+
+Arrays are Objects :
+    
+    - Arrays are a special type of objects. The typeof operator in JavaScript returns "object" for arrays.
+
+    - JavaScript variables can be objects. Arrays are special kinds of objects.
+
+    - Because of this, you can have variables of different types in the same Array.
+
+    - You can have objects in an Array. You can have functions in an Array. You can have arrays in an Array:
+
+            myArray[0] = Date.now;
+            myArray[1] = myFunction;
+            myArray[2] = myCars;
+
+    NOTE : to check if an object is array or not we can use "instanceof" instead of "typeof" as typeof returns 'object'.
+
+
+If- Else :
+
+    Syntax :
+
+        if  (condition) {
+
+        }
+
+        ---------------------------------
+
+        if      (condition)   { }
+        else if (condition 2) { }
+        else    { }
+
+
+Loops :
+
+    1. for - loops through a block of code a number of times
+    
+    2. for/in - loops through the properties of an "object"
+    
+    3. for/of - loops through the values of an "iterable object"
+    
+    4. while - loops through a block of code while a specified condition is true
+    
+    5. do/while - also loops through a block of code while a specified condition is true
+
+
+
+    Syntax :
+
+        for (decleration;, comparison;, increment){
+            }
+
+    
+        1.  
+            let sum = 0
+            for (let i = 0; i < 5; i++) {
+                sum += i;
+            }
+
+
+        2. 
+            for (key in object) {
+                     // code block to be executed
+                }
+
+            for (variable in array) {
+                    code
+                }
+            
+            person={fname: "Arun", age:25}
+            for(let x in person){
+                
+                x;  //is fname
+                person[x];    //is "Arun"
+            }
+
+        
+        3. 
+            for (variable of iterable) {
+                   // code block to be executed
+                }
+
+ 
+            const cars = ["BMW", "Volvo", "Mini"];
+
+            for (let x of cars) {
+                x;      //is "BMW"
+            }
+
+
+sets :
+
+    > new Set([1,2,3,3,4,1])
+    >> Set(4) {1, 2, 3, 4}
+
+        .add() method to add items
+
+
+
+JAON:
+
+        {
+            "employees":[
+                {"firstName":"John", "lastName":"Doe"},
+                {"firstName":"Anna", "lastName":"Smith"},
+                {"firstName":"Peter", "lastName":"Jones"}
+            ]
+        }
+
+
+    JSON Syntax Rules :
+
+        - Data is in name/value pairs
+
+        - Data is separated by commas
+        
+        - Curly braces hold objects
+        - Square brackets hold arrays
+
+
+    NOTE: The JSON format is syntactically identical to the code for creating JavaScript objects.
+
+          Because of this similarity, a JavaScript program can easily convert JSON data into native JavaScript objects.
+
+
+          Converting JASON to JavaScript Object :
+
+          > const obj = JSON.parse(text);
+
+                - where "text" have JASON data
+
