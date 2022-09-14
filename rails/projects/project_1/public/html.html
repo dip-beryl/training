@@ -1,0 +1,37 @@
+<div></div>
+
+<button type="button" id="pass_button">Show</button>
+
+<script>
+    function show_hide_pass(){
+        var pass_field = document.getElementById('password');
+
+        if (pass_field.type === "password"){
+                 pass_field.type = "text";
+                 document.getElementById('pass_button').innerHTML = "Hide";
+            }
+        
+        else {
+            pass_field.type = "password";
+            document.getElementById('pass_button').innerHTML = "Show";
+        }
+    }
+
+    function validations(){
+        var email_field = document.forms['sign_in']['email'].value;
+        var pass_field = document.forms['sign_in']['password'].value;
+        
+        if (email_field.match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)){
+            document.getElementById('email_error').innerHTML = "Email is Invalid.";
+        }
+
+        if (pass_field == ""){
+            document.getElementById('pass_error').innerHTML = "Please provide password.";
+        }
+    }
+</script>
+
+<p id="email_error"></p>
+<p id="pass_error"></p>
+
+<button type="submit" id="Submit" onclick="validations();">Create Account</button>
