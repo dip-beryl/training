@@ -1,0 +1,29 @@
+<div style="align: center;">
+
+<h1>Sign Up</h1>
+
+<% @user.attributes.keys.each do |attribute|%>
+    <div style= "color:red;"> <%= @user.errors.full_messages_for(attribute.to_sym).first%> </div>
+<% end %> <br>
+
+<%= form_with model: @user do |form|%>
+    <%= form.label :name, "Name" %> 
+    <%= form.text_field :name %> <br><br>
+
+    <%= form.label :contact, "Contact" %> 
+    <%= form.text_field :contact %> <br><br>
+
+    <%= form.label :email, "Email" %> 
+    <%= form.email_field :email %><br><br>
+
+    <%= form.label :password, "Password" %> 
+    <%= form.password_field :password %> <br><br>
+
+    <%= form.label :password_confirmation, "Confirm Password" %> 
+    <%= form.password_field :password_confirmation %> <br><br>
+
+
+    <%= form.submit "Create Account"%>
+
+</div>
+<%end%>
