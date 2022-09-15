@@ -13,3 +13,93 @@
  *= require_tree .
  *= require_self
  */
+h1{
+    color: #1f4037;
+    text-align:center;
+}
+
+/* signing form */
+.div_box_class{
+    margin: 0% 15% 5% 15%; /*T R B L*/
+    text-align: center;
+    padding: 2% 0 2% 0;
+    border: 0.5px solid lightblue;
+}
+
+.div_form_class{
+    margin: 0% 20% 5% 20%;
+    text-align: left;
+    border: 0.5px solid lightblue;
+}
+
+.form_label{
+    size: 50px;
+}
+
+.form_input{
+    width: 6cm;
+    padding: 10px 15px;
+    margin-left: 56%;
+    box-sizing: border-box;
+}
+
+.form_input:focus {
+    border: 3px solid #1f4037;
+}
+
+.form_submit_button{
+    background-color: #99f2c8;
+    border: none;
+    color: #1f4037;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+/* header */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #99f2c8;
+}
+
+li {
+    float: left;
+    border-right:2px solid #bbb;
+}
+
+/* 
+li:last-child {
+    border-right: none;
+} 
+*/
+
+li a {
+    display: block;
+    color: #1f4037;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover:not(.active) {
+    background-color: #1f4037;
+    color: white
+}
+
+.active {
+    background-color: #1f4037;
+    color: white;
+}
+
+
+/* footer */
+
+.footer_class{
+    background-color: #99f2c8;
+    text-align: center;
+    padding: 3px;
+}
