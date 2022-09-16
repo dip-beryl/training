@@ -1,0 +1,35 @@
+<%= form_with model: @product, local: true, class: "product_form" do |form| %>
+
+    <div align= "center">
+        <%= form.label :name %>* <br>
+        <%= form.text_field :name %> <br>
+        <p class="errors"> <%= @product.errors.full_messages_for(:name).first %> </p>
+
+    </div>
+
+    <div align= "center">
+        <%= form.label :category %>* <br>
+        <%= form.select :category, [["Electronics", 0], ["Cloths", 1], ["Toys", 2], ["Furniture", 3], ["Smart Phones", 4]], type: "number",class: "product_add_form" %>
+        
+        <p class="errors"> <%= @product.errors.full_messages_for(:category).first%> </p> 
+    </div>
+    
+    
+    <div align= "center">
+        <%= form.label :price %>* <br>
+        <%= form.number_field :price %>
+        <p class="errors"> <%= @product.errors.full_messages_for(:price).first%> </p>
+    </div>
+
+
+    <div align= "center">
+        <%= form.label :description %> <br>
+        <%= form.text_area :description %>
+    </div>
+
+
+    <div align= "center">
+        <%= form.submit "Save Product" %>
+    </div>
+<% end %>
+

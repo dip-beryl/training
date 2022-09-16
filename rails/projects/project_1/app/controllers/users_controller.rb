@@ -1,46 +1,57 @@
 class UsersController < ApplicationController
+	before_action :check_session?, only: %i[ index register ]
+	#before_action :set_user, only: %i[ show ]
 
-  #before_action :set_user, only: %i[ show ]
+	def index
+		if @session
 
-  def index
-    if session[:user_id]
-      @user = User.find_by(id: session[:user_id])  
-    
-    else
-      redirect_to sign_in_path, notice: "Please Sign In"
-    end
-  end
+		else
+			redirect_to log_in_path, alert: "Please Log in"
+		end
+	end
 
-  def sign_up
-    if session[:user_id]
-      redirect_to root_path, alert: "You are already Signed In"
-    end
-    @user = User.new
-  end
+	def register
+		if @session
+			redirect_to :index, alert: "You are already Signed In"
+		end
+		
+		@user = User.new
+	end
 
-  def create
-    @user = User.new(user_params)
+	def create
+		@user = User.new(user_params)
 
-    if @user.save
-      redirect_to sign_in_path, status: :created #201
-    
-    else
-      render :sign_up, status: :unprocessable_entity #422
-    end
-  end
+		if @user.save
+			redirect_to log_in_path, status: :created #201
 
-  def show
-    @user = User.find(params[:id])
-  end
+		else
+			render :register, status: :unprocessable_entity #422
+		end
+	end
 
-  private
-    # def set_user
-    #   @set_user = User.find(params[:id])
-    # end
+	private
+		def check_session?
+			if session[:user_id]
+				@user = User.find_by(id: session[:user_id])
+				@session = true
+				return true
+			else
+				@session = false
+				return false
+			end
+		end
 
-    def user_params
-      params.require(:user).permit(:name,  :contact, :email, :password, :password_confirmation)
-    end
+	def session_user
+		@user = User.find_by(id: session[:id])
+	end
+
+	# def set_user
+	#   @set_user = User.find(params[:id])
+	# end
+
+	def user_params
+		params.require(:user).permit(:name,  :contact, {category: []}, :email, :password, :password_confirmation)
+	end
 
 end
 

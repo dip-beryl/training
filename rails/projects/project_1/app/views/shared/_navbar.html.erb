@@ -1,0 +1,18 @@
+
+  <!-- Navbar content -->
+
+<div class="nav_class">
+  <ul>
+    <li> <%= link_to "Home", users_path %> </link_to></li>
+    <li> <%= link_to "Products", products_path %> </link_to></li>
+    <li> <%= link_to "Add Product", new_product_path %> </link_to></li>
+    
+    <% if session[:user_id] %>
+      <li class= "header_right_buttons"> <%= link_to "Log Out", log_out_path, data: {turbo_method: :delete}%> </li>
+    <% else %>
+      <li class= "header_right_buttons"> <%= link_to "Register", register_path %> </li>
+      <li class= "header_right_buttons"> <%= link_to "Log In", log_in_path %> </li>
+    <% end %>
+    
+  </ul>
+</div>

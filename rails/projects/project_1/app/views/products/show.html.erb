@@ -1,0 +1,11 @@
+<%= @product.name%>
+<%= @product.price%>
+<%= @product.category%>
+<%= @product.description %>
+
+
+
+<p align= "center"> <%= link_to("Edit This Product", edit_product_path(@product)) %> </p>
+<p align= "center"> <%= link_to "Delete This Blog", product_path(@product), data: 
+                                                                        {turbo_method: :delete,
+                                                                        turbo_confirm: "Are You Sure?\nYou want to delete '#{@product.name}' "}  %> </p>

@@ -53,8 +53,21 @@ h1{
     color: #1f4037;
     padding: 16px 32px;
     text-decoration: none;
-    margin: 4px 2px;
+    margin: 0px 2px;
     cursor: pointer;
+}
+
+.show_hide_button {
+    margin-left: 550px; 
+    margin-top: 10px;
+}
+
+.errors{
+    color:red;
+}
+
+.product_form{
+
 }
 
 /* header */
@@ -95,11 +108,22 @@ li a:hover:not(.active) {
     color: white;
 }
 
-
+.header_right_buttons {
+    float:right;
+}
 /* footer */
 
 .footer_class{
     background-color: #99f2c8;
     text-align: center;
     padding: 3px;
+    position: fixed; bottom: 0px; width: 100%; height: 60px;
+}
+
+#notice{
+    color: green;
+}
+
+#alert{
+    color: red;
 }
