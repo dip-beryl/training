@@ -18,7 +18,18 @@
   <body>
 
     <h1> Project Website</h1>
+
+    <% if admin_signed_in? %>
+      <p align="left"> You are signed in as Admin: <%= "#{current_admin.email}" %> <p>
+    <% elsif session[:user_id]%>
+      <p align="center"> You are signed in as User: <%= "#{User.find(session[:user_id]).name}" %> <p>
+    <%else%>
+      <p align="center"> You are not signed in. <p>
+    <% end %>
     <%= render partial: "shared/navbar"%>
+
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
 
     <%= yield %>
 

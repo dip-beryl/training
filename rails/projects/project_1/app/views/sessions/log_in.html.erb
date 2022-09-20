@@ -1,0 +1,72 @@
+<div class="form-outer-div">
+
+    <h1>Log in</h1>
+
+    <p id="email_error" class="errors"></p>
+    <p id="pass_error" class="errors"></p>
+
+
+    <%= form_with url: log_in_path, html: {id: "log_in", class: "form-class"} do |form| %>
+
+        <div class= "form-inner-div">
+            <%# form.label :email, "Email" %>
+            <%= form.email_field :email, placeholder: "Email" %> 
+
+            <%# form.label :password, "Password" %> 
+            <%= form.password_field :password, placeholder: "Password", class: "form-input" %> 
+            <button type="button" id="pass_button" onclick="show_hide_pass();" class="show-hide-button">Show</button> 
+            <%= form.submit "Log In", onclick: "validations();", class: "show-hide-button"%>
+
+            
+        </div>
+        
+        <p> Not having an Account? <%= link_to "Register", register_path %></p>
+    <%end%>
+</div>
+
+
+
+<%# Script %>
+<script>
+    function show_hide_pass(){
+        var pass_field = document.getElementById('password');
+
+        if (pass_field.type === "password"){
+                 pass_field.type = "text";
+                 document.getElementById('pass_button').innerHTML = "Hide";
+            }
+        
+        else {
+            pass_field.type = "password";
+            document.getElementById('pass_button').innerHTML = "Show";
+        }
+    }
+
+    function validations(){
+        var email_field = document.forms['log_in']['email'].value;
+        var pass_field = document.forms['log_in']['password'].value;
+        
+        
+        if (email_field == ""){
+            document.getElementById('email_error').innerHTML = "Please Enter an Email.";
+        }
+        else if (!email_field.match(/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/)){
+            document.getElementById('email_error').innerHTML = "Email is Invalid.";
+        }
+        else{
+            document.getElementById('email_error').innerHTML = "";
+
+        }
+    
+
+        if (pass_field == ""){
+            document.getElementById('pass_error').innerHTML = "Please provide a password.";
+        }
+        else{
+            document.getElementById('pass_error').innerHTML = "";
+
+        }
+    }
+</script>
+
+
