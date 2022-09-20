@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+	</head>
+	<body>
+		<h1>Welcome to GateCart.com, <%= @user.name %></h1>
+		
+		<p>You have successfully registered as a vendor on GateCart.com.<br>
+		
+			Your username is: <%= @user.email.to_s %>.</p>
+
+		<p>
+			To login to the site, just follow this link: <%= link_to "Log In", @url %>.
+		</p>
+
+		<p>Thanks for joining and have a great day!</p>
+	</body>
+</html>

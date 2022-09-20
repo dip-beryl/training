@@ -1,7 +1,7 @@
 <h1> Index Page </h1>
 
 <% if flash[:notice] %>
-      <div id="notice"">
+      <div id="notice">
          <%= flash[:notice] %> 
       </div>
 <% end %>
@@ -10,5 +10,6 @@
 
     Logged in as :<%= @user.email%>
 
-    <%= button_to "Log out", log_out_path, method: :delete%>
-<% end%>
+    <%= button_to "Log out", log_out_path, method: :delete %>
+<% end %>
+

@@ -1,25 +1,44 @@
-<% @name="products & Vlogs" %>
+<%# @name="products & Vlogs" %>
 
-<div align = "center">
-<table>
-    <tr>
-        <th> Product Name </th>
-        <th> Actions </th>
-    </tr>
-
+<div class="grid-container-product">
+    
     <% @product.each do |product| %>
-    <tr>
-        <td> <li> <%= product.name  %> </li> </td> 
-        <td> <%= link_to("Show", product) %> </td>
-        <td> <%= link_to("Edit", edit_product_path(product)) %></td>
-        <td> <%= link_to "Delete", product_path(product), data: {
-                                                            turbo_method: :delete,
-                                                            turbo_confirm: "Are You Sure?\nYou want to delete '#{product.name}'" } %></td>
-    </tr>
+        <div class="grid-item-product">
+
+            <%= image_tag product.image.url, class: "index-product-image-class" if product.image?%> <br> 
+            <%= product.name  %> <br>
+            Price: <%= product.price %> <br><br>
+            <%= link_to("Show", product) %>
+
+            <% if admin_signed_in? %>
+                <%= link_to("Edit", edit_product_path(product)) %>
+                <%= link_to "Delete", product_path(product), data: {
+                                                                    turbo_method: :delete,
+                                                                    turbo_confirm: "Are You Sure?\nYou want to delete '#{product.name}'" } %>
+            <% end %>
+
+        </div>
     <% end %>
-</table>
+</div>
+
+
+<div class="pagination">
+
+        <%= link_to "First", products_path(page: 1)%>
+        <%= link_to "<<", products_path(page: @page_number - 1)%>
+
+    <% @page_number.upto(@last_page) do |current_page| %>
+        <%= link_to "#{current_page}", products_path(page: current_page)%>
+    <% end %>
+
+    <% unless(@page_number == @last_page)%>
+        <%= link_to ">>", products_path(page: @page_number + 1)%>
+    <% end %>
+
+        <%= link_to "Last", products_path(page: @last_page)%>
 </div>
 
 <br>
-
-<p align= "center"> <%= link_to("Create New product", new_product_path) %> </p>
+<div class="add-product-button-bottom">
+    <%= link_to("Create New product", new_product_path) %>
+</div>

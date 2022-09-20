@@ -18,8 +18,8 @@
     }
 
     function validations(){
-        var email_field = document.forms['sign_in']['email'].value;
-        var pass_field = document.forms['sign_in']['password'].value;
+        var email_field = document.forms['log_in']['email'].value;
+        var pass_field = document.forms['log_in']['password'].value;
         
         if (email_field.match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/)){
             document.getElementById('email_error').innerHTML = "Email is Invalid.";

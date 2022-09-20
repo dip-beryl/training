@@ -1,41 +1,28 @@
-<div class="div_box_class">
+<div class="form-outer-div">
 
-<h1>Log in</h1>
+    <h1>Log in</h1>
 
-<% if flash[:notice] %>
-      <div id="notice">
-         <%= flash[:notice] %> 
-      </div>
-<% end %>
-
-<% if flash[:alert] %>
-      <div id="alert"">
-         <%= flash[:alert] %> 
-      </div>
-<% end %>
-
-<p id="email_error" style="color: red;"></p>
-<p id="pass_error" style="color: red;"></p>
+    <p id="email_error" class="errors"></p>
+    <p id="pass_error" class="errors"></p>
 
 
-<%= form_with url: log_in_path, html: {id: "log_in"} do |form|%>
-    <div class="div_form_class">
+    <%= form_with url: log_in_path, html: {id: "log_in", class: "form-class"} do |form| %>
 
-    <%= form.label :email, "Email", class: "form_label" %> <br>
-    <%= form.email_field :email, class: "form_input" %> <br><br>
+        <div class= "form-inner-div">
+            <%# form.label :email, "Email" %>
+            <%= form.email_field :email, placeholder: "Email" %> 
 
-    <%= form.label :password, "Password", class: "form_label" %> <br>
-    <%= form.password_field :password, class: "form_input" %> 
-    <button type="button" id="pass_button" onclick="show_hide_pass();" class="show_hide_button">Show</button> <br><br>
+            <%# form.label :password, "Password" %> 
+            <%= form.password_field :password, placeholder: "Password", class: "form-input" %> 
+            <button type="button" id="pass_button" onclick="show_hide_pass();" class="show-hide-button">Show</button> 
+            <%= form.submit "Log In", onclick: "validations();", class: "show-hide-button"%>
 
-    </div>
-
-    <p> Not having an Account? <%= link_to "Register", register_path %></p>
-    
-    <button type="submit" id="submit" onclick="validations();" class="form_submit_button">Log in</button>
-<%end%>
+            
+        </div>
+        
+        <p> Not having an Account? <%= link_to "Register", register_path %></p>
+    <%end%>
 </div>
-
 
 
 

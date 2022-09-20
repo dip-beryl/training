@@ -22,6 +22,10 @@ class UsersController < ApplicationController
 		@user = User.new(user_params)
 
 		if @user.save
+			
+			# UserMailer.new_registration(@user).deliver_later
+			UserMailer.with(user: @user).new_registration.deliver_later
+
 			redirect_to log_in_path, status: :created #201
 
 		else

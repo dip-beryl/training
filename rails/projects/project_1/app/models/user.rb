@@ -9,7 +9,7 @@ class User < ApplicationRecord
     validates :password, presence: true, confirmation: true, length: {minimum: 6}
     validates :password_confirmation, presence: true
 
-    has_many :products, dependent: :destroy
+    
 
     private
         def remove_hidden_value_from_check_box

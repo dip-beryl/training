@@ -9,7 +9,7 @@
 
     <div align= "center">
         <%= form.label :category %>* <br>
-        <%= form.select :category, [["Electronics", 0], ["Cloths", 1], ["Toys", 2], ["Furniture", 3], ["Smart Phones", 4]], type: "number",class: "product_add_form" %>
+        <%= form.select :category, [["Electronics", 0], ["Cloths", 1], ["Toys", 2], ["Furniture", 3], ["Smart Phones", 4]],class: "product_add_form" %>
         
         <p class="errors"> <%= @product.errors.full_messages_for(:category).first%> </p> 
     </div>
@@ -27,6 +27,10 @@
         <%= form.text_area :description %>
     </div>
 
+    <div align= "center">
+        <%= form.label :image %> <br>
+        <%= form.file_field :image %>
+    </div>
 
     <div align= "center">
         <%= form.submit "Save Product" %>

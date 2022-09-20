@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
+  devise_for :admins
+  # devise_for :admins, path: 'auth', path_names: { sign_in: 'login', sign_out: 'logout', password: 'secret', confirmation: 'verification', unlock: 'unblock', registration: 'register', sign_up: 'cmon_let_me_in' }
+  
 
-  root "sessions#log_in"
+  root "homepage#index"
+
+  get "homepage/index"
 
   get 'register', to: 'users#register'
 #  post 'register', to: 'users#create'
@@ -18,4 +23,7 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
+
+  #custom help route
+  get "help", to: "help#help_page"
 end
