@@ -14,15 +14,15 @@
         <div class="form-inner-div">
             <%# form.label :name, "Name", class: "form-label" %> 
             <%= form.text_field :name, placeholder: "Full Name", class: "form-input" %>
-            <p class="errors"><%= @user.errors.full_messages_for(:name).first %></p>
+            <div class="errors"><%= @user.errors.full_messages_for(:name).first %></div>
 
             <%# form.label :contact, "Contact", class: "form-label" %> 
             <%= form.text_field :contact, placeholder: "Contact", class: "form-input" %>
-            <p class="errors"><%= @user.errors.full_messages_for(:contact).first%></p>
+            <div class="errors"><%= @user.errors[:contact].first%></div>
 
             <%# form.label :email, "Email", class: "form-label" %> 
             <%= form.email_field :email, placeholder: "Email", class: "form-input" %>
-            <p class="errors"><%= @user.errors.full_messages_for(:email).first%></p>
+            <div class="errors"><%= @user.errors.full_messages_for(:email).first%></div>
 
             <%= form.label :category, "Favourite Categories : " %>
             <%= form.collection_check_boxes( :category, {"Electronics"=> 0, "Cloths"=>1, "Toys"=>2, "Furniture"=>3, "Smart Phones"=>4}, :last, :first) do |category|%> 
@@ -30,14 +30,17 @@
                     <%= category.label class: "check_box_label_class"%>
                     <%= category.check_box class: "check_box_input_class"%>
                 </div>
+            
             <% end%>
     
             <%# form.label :password, "Password", class: "form-label" %> 
             <%= form.password_field :password, placeholder: "Password", class: "form-input" %>
-            <p class="errors"><%= @user.errors.full_messages_for(:password).first%></p>
+            <div class="errors"><%= @user.errors.full_messages_for(:password).first%></div>
 
             <%# form.label :password_confirmation, "Confirm Password", class: "form-label" %> 
-            <%= form.password_field :password_confirmation, placeholder: "Retype Password", class: "form-input" %>
+            <%= form.password_field :password_confirmation, placeholder: "Retype Password", class: "form-input"%>
+            <div class="errors"><%= @user.errors.full_messages_for(:password_confirmation).first%></div>
+
 
             <%= form.submit "Create Account", class: "form-submit-button"%>
         </div>

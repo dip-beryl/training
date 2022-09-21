@@ -5,7 +5,8 @@
     <% @product.each do |product| %>
         <div class="grid-item-product">
 
-            <%= image_tag product.image.url, class: "index-product-image-class" if product.image?%> <br> 
+            <%= image_tag product.image, class: "index-product-image-class" if product.image.attached?%> <br> 
+            <%# image_tag product.image.url, class: "index-product-image-class" if product.image?%>
             <%= product.name  %> <br>
             Price: <%= product.price %> <br><br>
             <%= link_to("Show", product) %>
