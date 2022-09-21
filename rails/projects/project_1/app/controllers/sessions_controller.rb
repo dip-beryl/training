@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
-    
+    before_action :check_admin_sesion
+
     def log_in
         if session[:user_id]
             redirect_to root_path, notice: "Welcome Back"
@@ -28,5 +29,11 @@ class SessionsController < ApplicationController
         redirect_to log_in_path, status: :see_other, notice: "Successfully Signed Out"
     end
 
+    private
+        def check_admin_sesion
+            if admin_signed_in?
+                redirect_to root_path
+            end
+        end
 
 end

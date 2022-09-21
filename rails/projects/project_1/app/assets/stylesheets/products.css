@@ -11,7 +11,8 @@
     text-align: center;
     font-size: 28px;
     padding: 10px;
-    height: 550px;
+    width: 520px;
+    height: 500px;
     /* background-color: lightgray;  */
     border: 0.5px solid;
     border-color: darkgreen;
@@ -30,7 +31,7 @@
 /* index product image */
 .index-product-image-class{
     border-radius: 8px;
-    width: fit-content;
+    width: inherit;
 }
 
 /* Pagination */

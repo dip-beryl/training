@@ -27,7 +27,7 @@ class ProductsController < ApplicationController
     end
 
     def show
-        @product = @admin.products.find_by(id: params[:id])
+        @product = Product.find_by(id: params[:id])
     end
 
     def new
@@ -69,7 +69,7 @@ class ProductsController < ApplicationController
     end
 
     def destroy
-        @product = Products.find_by(id: params[:id])
+        @product = Product.find_by(id: params[:id])
 
         @product.destroy
         

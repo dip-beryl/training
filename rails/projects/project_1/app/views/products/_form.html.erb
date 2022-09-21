@@ -9,7 +9,7 @@
 
     <div align= "center">
         <%= form.label :category %>* <br>
-        <%= form.select :category, [["Electronics", 0], ["Cloths", 1], ["Toys", 2], ["Furniture", 3], ["Smart Phones", 4]],class: "product_add_form" %>
+        <%= form.select :category, options_for_select(Product.categories.map {|key, value| [key.titleize, Product.categories.key(value)]}, @product.category) %>
         
         <p class="errors"> <%= @product.errors.full_messages_for(:category).first%> </p> 
     </div>
@@ -29,11 +29,23 @@
 
     <div align= "center">
         <%= form.label :image %> <br>
-        <%= form.file_field :image %>
+        <%= form.file_field :image, onchange: "loadImage(event);"%>    
+        <%= image_tag "", id: "preview"%>
     </div>
-
+    
     <div align= "center">
         <%= form.submit "Save Product" %>
     </div>
 <% end %>
+
+<script>
+    var loadImage = function(event){
+        var preview = document.getElementById("preview");
+        preview.src = URL.createObjectURL(event.target.files[0]);
+
+        preview.onload = function(){
+            URL.revokeObjectURL(preview.src) // free memory
+        }
+    };
+</script>
 

@@ -1,4 +1,4 @@
-<%= image_tag @product.image.url if @product.image?%> <br>
+<%= image_tag @product.image if @product.image.attached?%> <br>
 <%= @product.name%> <br>
 <%= @product.price%> <br>
 <%= @product.category%> <br>

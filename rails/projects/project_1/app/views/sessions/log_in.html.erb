@@ -26,22 +26,24 @@
 
 
 
-<%# Script %>
 <script>
-    function show_hide_pass(){
+    // in luser login password show hide button
+    var show_hide_pass = function(){
         var pass_field = document.getElementById('password');
 
         if (pass_field.type === "password"){
-                 pass_field.type = "text";
-                 document.getElementById('pass_button').innerHTML = "Hide";
+                pass_field.type = "text";
+                document.getElementById('pass_button').innerHTML = "Hide";
             }
         
         else {
             pass_field.type = "password";
             document.getElementById('pass_button').innerHTML = "Show";
         }
-    }
+    };
 
+
+    // user login validations
     function validations(){
         var email_field = document.forms['log_in']['email'].value;
         var pass_field = document.forms['log_in']['password'].value;
@@ -57,7 +59,7 @@
             document.getElementById('email_error').innerHTML = "";
 
         }
-    
+
 
         if (pass_field == ""){
             document.getElementById('pass_error').innerHTML = "Please provide a password.";
@@ -66,7 +68,5 @@
             document.getElementById('pass_error').innerHTML = "";
 
         }
-    }
+    };
 </script>
-
-
