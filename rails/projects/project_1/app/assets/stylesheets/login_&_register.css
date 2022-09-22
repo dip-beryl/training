@@ -13,7 +13,14 @@
     margin: auto;
     width: fit-content;
 }
-
+.add-product-form-class{
+    width: 400px;
+    padding: 40px;
+    border-radius: 8px;
+    background-color: #99f2c8;
+    /* font-family: 'system-ui'; */
+    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
 .form-class{
     width: 400px;
     padding: 40px;
@@ -32,7 +39,7 @@
 } */
 
 
-input, .form-input, .form-submit-button {
+input, .form-input, .form-submit-button, select{
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0px;
@@ -43,9 +50,18 @@ input, .form-input, .form-submit-button {
 }
 
 
-.show_hide_button {
-    margin-left: 550px; 
-    margin-top: 10px;
+.show-hide-button {
+    /* background-color: rgba(0,0,0,0); */
+    /* display: inline-block; */
+    cursor: pointer;
+    font-weight: 600;
+    color: #1f4037;
+    position: relative;
+    left: 340px;
+    top: 38px;
+    overflow: hidden;
+    
+    
 }
 
 .form-inner-div > input[type=submit]{
@@ -58,3 +74,8 @@ input, .form-input, .form-submit-button {
 /* .form-inner-div > input[type=submit]:hover{
 
 } */
+
+.trix-content{
+    background-color: white;
+    border-radius: 8px;
+}

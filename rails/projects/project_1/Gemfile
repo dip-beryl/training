@@ -75,7 +75,11 @@ gem "devise"
 
 gem 'carrierwave', '~> 2.0'
 
+# gem 'kaminari' #for pagination
+
 # for preview
 # gem 'imagedrop'
 
-gem 'sass-rails'
+# gem 'sass-rails'
+
+

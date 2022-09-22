@@ -1,13 +1,14 @@
-<%= form_with model: @product, local: true, class: "product_form" do |form| %>
+<div class="form-outer-div">
+<%= form_with model: @product, local: true, class: "add-product-form-class" do |form| %>
 
-    <div align= "center">
+    <div>
         <%= form.label :name %>* <br>
         <%= form.text_field :name %> <br>
         <p class="errors"> <%= @product.errors.full_messages_for(:name).first %> </p>
 
     </div>
 
-    <div align= "center">
+    <div>
         <%= form.label :category %>* <br>
         <%= form.select :category, options_for_select(Product.categories.map {|key, value| [key.titleize, Product.categories.key(value)]}, @product.category) %>
         
@@ -15,28 +16,29 @@
     </div>
     
     
-    <div align= "center">
+    <div>
         <%= form.label :price %>* <br>
         <%= form.number_field :price %>
         <p class="errors"> <%= @product.errors.full_messages_for(:price).first%> </p>
     </div>
 
 
-    <div align= "center">
+    <div>
         <%= form.label :description %> <br>
-        <%= form.text_area :description %>
+        <%= form.rich_text_area :description %>
     </div>
 
-    <div align= "center">
+    <div>
         <%= form.label :image %> <br>
         <%= form.file_field :image, onchange: "loadImage(event);"%>    
         <%= image_tag "", id: "preview"%>
     </div>
     
-    <div align= "center">
+    <div>
         <%= form.submit "Save Product" %>
     </div>
 <% end %>
+
 
 <script>
     var loadImage = function(event){
@@ -49,3 +51,4 @@
     };
 </script>
 
+<div>

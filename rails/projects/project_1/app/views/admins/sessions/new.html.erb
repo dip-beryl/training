@@ -14,8 +14,11 @@
 
     <div class="field">
       <%= f.label :password %><br />
-      <%= f.password_field :password, autocomplete: "current-password" %>
+      <span class="show-hide-button" role="button" tabindex="0">Show</span>
+      <%= f.password_field :password, autocomplete: "current-password", class: "password-field"%>
     </div>
+
+    <!--button type=button class="show-hide-button">Show</button -->
 
     <% if devise_mapping.rememberable? %>
       <div class="field">
@@ -32,3 +35,21 @@
   <%= render "devise/shared/links" %>
   </div>
 </div>
+
+<script>
+  
+  // jQuery code for password show hide
+  $(document).ready(function(){
+    $(".show-hide-button").click(function(){
+      if ($(".show-hide-button").text() == "Show"){
+        $(".show-hide-button").text("Hide");
+        $(".password-field").attr("type", "text");
+      }
+      else{
+        $(".show-hide-button").text("Show");
+        $(".password-field").attr("type", "password");
+      }
+    });
+  });
+
+</script>

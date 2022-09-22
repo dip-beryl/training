@@ -25,7 +25,8 @@
             <div class="errors"><%= @user.errors.full_messages_for(:email).first%></div>
 
             <%= form.label :category, "Favourite Categories : " %>
-            <%= form.collection_check_boxes( :category, {"Electronics"=> 0, "Cloths"=>1, "Toys"=>2, "Furniture"=>3, "Smart Phones"=>4}, :last, :first) do |category|%> 
+            <%# form.collection_check_boxes( :category, {"Electronics"=> 0, "Cloths"=>1, "Toys"=>2, "Furniture"=>3, "Smart Phones"=>4}, :last, :first) do |category|%> 
+            <%= form.collection_check_boxes :category, @categories.map {|value| [value]}, :first, :first do |category|%>
                 <div class="form-check-box-div">
                     <%= category.label class: "check_box_label_class"%>
                     <%= category.check_box class: "check_box_input_class"%>
@@ -39,7 +40,7 @@
 
             <%# form.label :password_confirmation, "Confirm Password", class: "form-label" %> 
             <%= form.password_field :password_confirmation, placeholder: "Retype Password", class: "form-input"%>
-            <div class="errors"><%= @user.errors.full_messages_for(:password_confirmation).first%></div>
+            <div class="errors"><%= @user.errors[:password_confirmation].first%></div>
 
 
             <%= form.submit "Create Account", class: "form-submit-button"%>

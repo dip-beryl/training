@@ -15,15 +15,13 @@
     <%= javascript_importmap_tags %>
 
     <!-- jQuery -->
-    <%# 
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
-    %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
   </head>
 
   <body>
 
-    <h1> Project Website</h1>
+    
 
     <% if admin_signed_in? %>
       <p align="left"> You are signed in as Admin: <%= "#{current_admin.email}" %> <p>
