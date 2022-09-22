@@ -1,0 +1,54 @@
+<div class="form-outer-div">
+<%= form_with model: @product, local: true, class: "add-product-form-class" do |form| %>
+
+    <div>
+        <%= form.label :name %>* <br>
+        <%= form.text_field :name %> <br>
+        <p class="errors"> <%= @product.errors.full_messages_for(:name).first %> </p>
+
+    </div>
+
+    <div>
+        <%= form.label :category %>* <br>
+        <%= form.select :category, options_for_select(Product.categories.map {|key, value| [key.titleize, Product.categories.key(value)]}, @product.category) %>
+        
+        <p class="errors"> <%= @product.errors.full_messages_for(:category).first%> </p> 
+    </div>
+    
+    
+    <div>
+        <%= form.label :price %>* <br>
+        <%= form.number_field :price %>
+        <p class="errors"> <%= @product.errors.full_messages_for(:price).first%> </p>
+    </div>
+
+
+    <div>
+        <%= form.label :description %> <br>
+        <%= form.rich_text_area :description %>
+    </div>
+
+    <div>
+        <%= form.label :image %> <br>
+        <%= form.file_field :image, onchange: "loadImage(event);"%>    
+        <%= image_tag "", id: "preview"%>
+    </div>
+    
+    <div>
+        <%= form.submit "Save Product" %>
+    </div>
+<% end %>
+
+
+<script>
+    var loadImage = function(event){
+        var preview = document.getElementById("preview");
+        preview.src = URL.createObjectURL(event.target.files[0]);
+
+        preview.onload = function(){
+            URL.revokeObjectURL(preview.src) // free memory
+        }
+    };
+</script>
+
+<div>

@@ -1,0 +1,16 @@
+<%= image_tag @product.image if @product.image.attached?%> <br>
+<%= @product.name%> <br>
+<%= @product.price%> <br>
+<%= @product.category%> <br>
+<div class="trix-content">
+    <%= @product.description %> <br>
+</div>
+
+
+
+<% if admin_signed_in? %>
+<div class="product-button-bottom"> <%= link_to("Edit This Product", edit_product_path(@product)) %> </div>
+<div class= "product-button-bottom"> <%= link_to "Delete This Product", product_path(@product), data: 
+                                                                        {turbo_method: :delete,
+                                                                        turbo_confirm: "Are You Sure?\nYou want to delete '#{@product.name}' "}  %> </div>
+<% end %>

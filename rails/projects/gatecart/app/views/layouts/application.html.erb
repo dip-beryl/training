@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Project1</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <!-- CSS only Bootstrap-->
+    
+    <%#
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  </head>
+
+  <body>
+
+    
+
+    <% if admin_signed_in? %>
+      <p align="left"> You are signed in as Admin: <%= "#{current_admin.email}" %> <p>
+    <% elsif session[:user_id]%>
+      <p align="center"> You are signed in as User: <%= "#{User.find(session[:user_id]).name}" %> <p>
+    <%else%>
+      <p align="center"> You are not signed in. <p>
+    <% end %>
+
+    <%= render partial: "shared/header"%>
+
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+
+    <%= yield %>
+
+    <%= render partial: "shared/footer"%>
+
+  </body>
+</html>
