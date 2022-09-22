@@ -1,0 +1,1 @@
+<%# form.collection_check_boxes( :category, {"Electronics"=> 0, "Cloths"=>1, "Toys"=>2, "Furniture"=>3, "Smart Phones"=>4}, :last, :first) do |category|%> 

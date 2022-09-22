@@ -4,12 +4,14 @@ class ProductsController < ApplicationController
     before_action :convert_category_to_integer
     PRODUCT_PER_PAGE = 3
 
+    
     def index
         if admin_signed_in?
             @last_page = total_pages(@admin.products.count)
         else
             @last_page = total_pages(Product.count)
         end
+
         @page_number = params.fetch(:page, 1).to_i
 
         if(@page_number <= 0 || @last_page <= 0)
@@ -20,9 +22,19 @@ class ProductsController < ApplicationController
         end
         
         if admin_signed_in?
-            @product = @admin.products.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            if params[:search]
+                @product = @admin.products.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
+                @product = @product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            else
+                @product = @admin.products.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            end
         else
-            @product = Product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            if params[:search]
+                @product = Product.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
+                @product = @product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            else
+                @product = Product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+            end
         end
     end
 
@@ -102,6 +114,6 @@ class ProductsController < ApplicationController
         end
 
         def product_params
-            params.require(:product).permit(:name, :category, :price, :description, :image)#, :page_number)
+            params.require(:product).permit(:name, :category, :price, :description, :image, :search)#, :page_number)
         end
 end

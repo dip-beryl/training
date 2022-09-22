@@ -10,7 +10,7 @@ class Product < ApplicationRecord
     # mount_uploader :image, ImageUploader #also you need to add column :image (sring) to products 
 
     has_one_attached :image, dependent: :destroy
-
+    has_rich_text :description
     # after_destroy :delete_images
 
     private

@@ -31,3 +31,13 @@
 
 en:
   hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password:
+              confirmation: "Password does not match"
+            password_confirmation:
+              blank: "Please Retype your Password"
+              confirmation: "Password does not match"

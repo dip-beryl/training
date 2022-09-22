@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 	before_action :check_session?, only: %i[ index register ]
+	before_action :category, only: %i[ register create ]
 	#before_action :set_user, only: %i[ show ]
 
 	def index
@@ -15,10 +16,12 @@ class UsersController < ApplicationController
 			redirect_to :index, alert: "You are already Signed In"
 		end
 		
+		
 		@user = User.new
 	end
 
 	def create
+		
 		@user = User.new(user_params)
 
 		if @user.save
@@ -47,6 +50,10 @@ class UsersController < ApplicationController
 
 	def session_user
 		@user = User.find_by(id: session[:id])
+	end
+
+	def category
+		@categories = [:Electronics, :Cloths, :Toys, :Furniture, :"Smart Phones", :Cosmetics, :Kitchen, :Appliance]
 	end
 
 	# def set_user

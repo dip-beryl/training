@@ -1,21 +1,24 @@
+
 .grid-container-product{
     display: grid;
     grid-template-columns: auto auto auto;
     /* background-color: lightgray;  */
-    padding: 35px;
-    grid-row-gap: 20px;
-    grid-column-gap: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 35px;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px; 
 }
 
 .grid-item-product{
     text-align: center;
-    font-size: 28px;
+    font-size: 18px;
     padding: 10px;
-    width: 520px;
-    height: 500px;
+    width: 375px;
+    height: 300px;
     /* background-color: lightgray;  */
-    border: 0.5px solid;
-    border-color: darkgreen;
+    /* border: 0.5px solid; */
+     /* border-color: darkgreen; */
 
 }
 
@@ -28,10 +31,15 @@
     }
 } */
 
+/* .index-product-image-div{
+    width: inherit;
+    height: 200px;
+} */
 /* index product image */
 .index-product-image-class{
     border-radius: 8px;
-    width: inherit;
+    width: 200px;
+    height: 200px;
 }
 
 /* Pagination */
@@ -58,12 +66,13 @@
 
 
 /* Buttons */
-.add-product-button-bottom{
+.product-button-bottom{
     margin: 10px auto auto auto;
     width: fit-content;
+    margin-top: 25px;
 }
 
-.add-product-button-bottom a, .grid-item-product a{
+.product-button-bottom a, .grid-item-product a{
     color: black;
     background-color: #99f2c8;
     padding: 10px;
@@ -71,6 +80,29 @@
     font-size: 15px;
 }
 
-.add-product-button-bottom a:hover, .grid-item-product a:hover{
+.product-button-bottom a:hover, .grid-item-product a:hover{
     background-color: lightgray;
+}
+
+.search-form{
+    float: right;
+}
+.search-form input {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: auto;
+    width: auto;
+}
+
+.search-form button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: auto;
+  cursor: pointer;
+  width: auto;
 }
