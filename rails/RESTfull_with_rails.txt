@@ -124,7 +124,37 @@ Organization    : Beryl Systems Pvt. Ltd.
 
                 -- then fill the params for values.
 
-            $ curl --header "Content-Type: application/json" --request POST --data '{"first_name": "Varun"}' http://localhost:3000/api/v1/students -v
+        
+            POSTMAN -> POST -> "http://localhost:3000/api/v1/students/?student[first_name]=Varun"
+            
+            
+            CURL ->    $ curl --header "Content-Type: application/json" --request POST --data '{"first_name": "Varun"}' http://localhost:3000/api/v1/students -v
+
+        6.4 UPDATE :
+
+            POSTMAN -> PATCH -> "http://localhost:3000/api/v1/students/6?student[last_name]=Singh&student[gender]=male"
+
+                *- Will update the record for student with id: 6
+
+        6.5 DELETE :
+
+            POSTMAN -> DELETE : "http://localhost:3000/api/v1/students/2"
+
+                *- Will delete student with id: 2
+
+    ------------------------------------------------------------------------------------------------------------------------------------
+
+7. Adding a seperate column for api_token in students table :
+
+    $ rails g migration AddApiTokenToStudnets api_token:string
+
+
+        
+        
+        
+        
+        arr=("a".."z").to_a.concat((0..9).to_a)
+        arr.sample(15).join
 
 
 
