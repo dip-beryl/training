@@ -1,0 +1,35 @@
+/* footer */
+
+footer{
+    background-image: linear-gradient(#033747, #012733);
+    height: auto;
+    width: 100%;
+    padding-top: 5px;
+    margin-top: 40px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    /* top: 100%; */
+}
+
+.footer-content{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.footer-content h3{
+    font-size: 30px;
+    font-weight: 400;
+    /* text-transform: capitalize; */
+    line-height: 3rem;
+}
+
+/* .footer-content p{
+    max-width: 500px;
+    margin: 10px auto;
+    line-height: 28px;
+    font-size: 14px;
+} */

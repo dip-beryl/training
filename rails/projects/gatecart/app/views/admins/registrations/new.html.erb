@@ -1,40 +1,49 @@
+<%= render "admins/shared/error_messages", resource: resource %>
+
 <div class="form-outer-div">
 
-
-	<h2>Admin Sign up</h2>
+	<h1>Vendor Sign up</h1>
 
 	<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: "form-class"}) do |f| %>
-		<%= render "devise/shared/error_messages", resource: resource %>
+		
 		
 		<div class= "form-inner-div">
 
 		
-			<%= f.label :first_name,"First Name", autofocus: true %>
-			<%= f.text_field :first_name, placeholder: "First Name" %>
+			<%# f.label :first_name,"First Name", autofocus: true %>
+			<%= f.text_field :first_name, placeholder: "First Name",autofocus: true %>
+			<div class="errors"><%= resource.errors.full_messages_for(:first_name).first%></div>
 
-			<%= f.label :last_name, "Last Name" %>
+			<%# f.label :last_name, "Last Name" %>
 			<%= f.text_field :last_name, placeholder: "Last Name" %>
+			<div class="errors"><%= resource.errors.full_messages_for(:last_name).first%></div>
 
-			<%= f.label :contact, "Contact"%> 
+			<%# f.label :contact, "Contact"%> 
 			<%= f.text_field :contact, placeholder: "Contact"%>
-			<p class="errors"><%= @admin.errors.full_messages_for(:contact).first%></p>
+			<div class="errors"><%= resource.errors.full_messages_for(:contact).first%></div>
 
-			<%= f.label :email %>
+			<%# f.label :email %>
 			<%= f.email_field :email, autocomplete: "email", placeholder: "Email" %>
+			<div class="errors"><%= resource.errors.full_messages_for(:email).first%></div>
+			
 
-			<%= f.label :password %>
+			<%# f.label :password %>
 				<% if @minimum_password_length %>
-					<em>(<%= @minimum_password_length %> characters minimum)</em>
+					<!-- <em>(<%= @minimum_password_length %> characters minimum)</em> -->
 				<% end %>
 			<%= f.password_field :password, autocomplete: "new-password", placeholder: "Password" %>
+			<div class="errors"><%= resource.errors.full_messages_for(:password).first%></div>
 
-			<%= f.label :password_confirmation %>
+			<%# f.label :password_confirmation %>
 			<%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm Password" %>
+			<div class="errors"><%=resource.errors.full_messages_for(:password_confirmation).first%></div>
 
 			<%= f.submit "Create Account" %>
 		
+		<%= render "admins/shared/links" %>		
 	<% end %>
 
-	<%= render "devise/shared/links" %>
 	</div>
 </div>
+
+

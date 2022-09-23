@@ -1,9 +1,4 @@
-
-  <!-- Navbar content -->
-
-<div class="nav_class">
-  <ul>
-      <li> <%= link_to "Home", products_path %> </li>
+     <li> <%= link_to "Home", products_path %> </li>
       <li> <%= link_to "Products", products_path %> </li>
 
     <% if admin_signed_in? %>
@@ -16,6 +11,29 @@
         <li class= "header_right_buttons"> <%= link_to "Register", root_path %> </li>
         <li class= "header_right_buttons"> <%= link_to "Log In", root_path	 %> </li>
     <% end %>
-    
-  </ul>
-</div>
+
+
+
+
+
+
+
+
+
+
+     <% if admin_signed_in? %>
+      <p align="left"> You are signed in as Admin: <%= "#{current_admin.email}" %> <p>
+    <% elsif session[:user_id]%>
+      <p align="center"> You are signed in as User: <%= "#{User.find(session[:user_id]).name}" %> <p>
+    <%else%>
+      <p align="center"> You are not signed in. <p>
+    <% end %>
+
+
+
+
+    background-color: #99f2c8;
+    text-align: center;
+    padding: 3px;
+    margin-top: 70px;
+    /* position: fixed; bottom: 00%; width: 100%; height: 60px;  */

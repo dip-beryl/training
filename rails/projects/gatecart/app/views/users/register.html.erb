@@ -10,15 +10,15 @@
 -->
 
     <%= form_with model: @user, html: {class: "form-class"} do |form|%>
-
-        <div class="form-inner-div">
+  
             <%# form.label :name, "Name", class: "form-label" %> 
-            <%= form.text_field :name, placeholder: "Full Name", class: "form-input" %>
+            <%= form.text_field :name, placeholder: "Full Name",autofocus: true, class: "form-input" %>
             <div class="errors"><%= @user.errors.full_messages_for(:name).first %></div>
 
             <%# form.label :contact, "Contact", class: "form-label" %> 
             <%= form.text_field :contact, placeholder: "Contact", class: "form-input" %>
             <div class="errors"><%= @user.errors[:contact].first%></div>
+            
 
             <%# form.label :email, "Email", class: "form-label" %> 
             <%= form.email_field :email, placeholder: "Email", class: "form-input" %>
@@ -44,9 +44,9 @@
 
 
             <%= form.submit "Create Account", class: "form-submit-button"%>
-        </div>
 
-            <p> <%= link_to "Login", log_in_path %> Instead ?</p>
+
+            <div class="form-below-links"><p> <%= link_to "Login", log_in_path %> Instead ?</p></div>
 
     <%end%>
 </div>

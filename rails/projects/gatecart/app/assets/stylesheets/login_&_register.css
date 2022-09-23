@@ -1,81 +1,65 @@
-/* body{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 75vh;
-    width: 100%;
-    background: url(https://upload.wikimedia.org/wikipedia/commons/thumb/0/0b/Mountains-1412683.svg/1280px-Mountains-1412683.svg.png) no-repeat center center;
-    background-size: cover;
-    background-color: #99f2c8;
-} */
-
 .form-outer-div{
-    margin: auto;
+    margin:auto;
     width: fit-content;
+    margin-top: 40px;
 }
-.add-product-form-class{
-    width: 400px;
-    padding: 40px;
-    border-radius: 8px;
-    background-color: #99f2c8;
-    /* font-family: 'system-ui'; */
-    box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+
+.form-outer-div h1{
+    text-align:center;
+    font-size: 22pt;
+    margin-bottom: 5px;
 }
+
 .form-class{
     width: 400px;
-    padding: 40px;
-    border-radius: 8px;
-    background-color: #99f2c8;
-    /* font-family: 'system-ui'; */
+    padding: 30px;
+    border-radius: 6px;
+    background-color: white;
     box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+    position: relative;
 }
 
-/* .form-inner-div{
-    text-transform: uppercase;
-} */
-
-/* .form-inner-div > label {
-    font-size: 20px;
-} */
-
-
-input, .form-input, .form-submit-button, select{
+.form-class input, .form-submit-button{
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0px;
-    display: inline-block;
+    /* display: inline-block; */
     border: 1px solid #ccc;
     border-radius: 8px;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
 }
 
-
-.show-hide-button {
-    /* background-color: rgba(0,0,0,0); */
-    /* display: inline-block; */
+.show-hide-button{
     cursor: pointer;
-    font-weight: 600;
-    color: #1f4037;
-    position: relative;
-    left: 340px;
-    top: 38px;
-    overflow: hidden;
-    
-    
+    font-weight: 550;
+    color: #022E3C;
+    position: absolute;
+    left: 315px;
+    top: 108px;
 }
 
-.form-inner-div > input[type=submit]{
-    background-color: white;
-    color: #1f4037;
+.form-class input[type=submit]{
+    background-color: #022E3C;
+    color: white;
     text-decoration: none;
     cursor: pointer;
+    font-size: 16px;
 }
 
-/* .form-inner-div > input[type=submit]:hover{
+.form-class input[type=submit]:hover{
+    background-color: #155165;
+}
 
-} */
+.form-check-box-div label{
+    display: inline;
+}
 
-.trix-content{
-    background-color: white;
-    border-radius: 8px;
+.form-below-links{
+    margin: 10px auto auto auto;
+    width: fit-content;
+}
+.form-below-links a{
+    margin: 5px 0px;
+    color: blue;
+    /* text-decoration: none; */
 }
