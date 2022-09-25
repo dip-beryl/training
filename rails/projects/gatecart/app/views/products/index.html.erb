@@ -1,13 +1,14 @@
 <%# @name="products & Vlogs" %>
-
+<div class="search-div">
 <%= form_with url: products_path, method: :get, class: "search-form" do |form| %>
     <%= form.text_field :search, placeholder: "Search...", class: "search-bar" %>
     <%= form.submit "Search", class: "search-button"%>
 <% end %>
+</div> <br>
 
 <div class="grid-container-product">
     
-    <% @product.each do |product| %>
+    <% @products.each do |product| %>
         <div class="grid-item-product">
             
             <%= image_tag product.image, class: "index-product-image-class" if product.image.attached?%> <br> 
@@ -28,21 +29,5 @@
     <% end %>
 </div>
 
+<%= paginate @products %>
 
-<div class="pagination">
-
-        <%= link_to "First", products_path(page: 1)%>
-        <%= link_to "<<", products_path(page: @page_number - 1)%>
-
-    <% @page_number.upto(@last_page) do |current_page| %>
-        <%= link_to "#{current_page}", products_path(page: current_page)%>
-    <% end %>
-
-    <% unless(@page_number == @last_page)%>
-        <%= link_to ">>", products_path(page: @page_number + 1)%>
-    <% end %>
-
-        <%= link_to "Last", products_path(page: @last_page)%>
-</div>
-
-<br>

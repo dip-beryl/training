@@ -1,6 +1,6 @@
 /* header */
 
-nav{
+.header-class{
     width: 100%;
     height: 75px;
     line-height: 75px;
@@ -10,7 +10,7 @@ nav{
     background-image: linear-gradient(#033747, #012733);
 }
 
-nav .logo p{
+.header-class .logo p{
     font-size: 30px;
     font-weight: bold;
     float: left;
@@ -20,17 +20,17 @@ nav .logo p{
     cursor: pointer;
 }
 
-nav ul{
+.header-class ul{
     float: right;
 }
 
-nav li{
+.header-class li{
     
     display: inline-block;
     list-style: none;
 }
 
-nav li a{
+.header-class li a{
     font-size: 18px;
     text-transform: uppercase;
     padding: 30px 20px; /* top-bottom, left-right */
@@ -38,7 +38,7 @@ nav li a{
     text-decoration: none;
 }
 
-nav li a:hover{
+.header-class li a:hover{
     color: #ff8c69;
     transition: all 0.4% ease 0s;
 }

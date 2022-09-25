@@ -2,50 +2,39 @@ class ProductsController < ApplicationController
     before_action :authenticate_admin!, only: %i[ new create edit update destroy]
     before_action :set_admin, only: %i[ index show new create edit update destroy]
     before_action :convert_category_to_integer
-    PRODUCT_PER_PAGE = 3
+    # PRODUCT_PER_PAGE = 3
 
     
     def index
-        if admin_signed_in?
-            @last_page = total_pages(@admin.products.count)
-        else
-            @last_page = total_pages(Product.count)
-        end
 
-        @page_number = params.fetch(:page, 1).to_i
-
-        if(@page_number <= 0 || @last_page <= 0)
-            @page_number = 1
-        elsif(@page_number > @last_page)
-            @page_number = @last_page
-        
-        end
-        
         if admin_signed_in?
             if params[:search]
-                @product = @admin.products.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
-                @product = @product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+                @products = @admin.products.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
+                @products = @products.page(params[:page])
             else
-                @product = @admin.products.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+                @products = @admin.products.page(params[:page])
             end
         else
             if params[:search]
-                @product = Product.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
-                @product = @product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+                @products = Product.where("name LIKE ?", Product.sanitize_sql_like(params[:search])+"%")
+                @products = @products.page(params[:page])
             else
-                @product = Product.limit(PRODUCT_PER_PAGE).offset((@page_number-1) * PRODUCT_PER_PAGE)
+                @products = Product.all.page(params[:page])
             end
-        end
+        end        
     end
+
 
     def show
         @product = Product.find_by(id: params[:id])
     end
 
+
     def new
         @product = @admin.products.new
 
     end
+
 
     def create
         @product = @admin.products.new(product_params)
@@ -101,13 +90,13 @@ class ProductsController < ApplicationController
             @admin = current_admin
         end
 
-        def total_pages(product_count)
-            if( (product_count % PRODUCT_PER_PAGE) == 0)
-                return (product_count / PRODUCT_PER_PAGE)
-            else
-                return (product_count / PRODUCT_PER_PAGE) + 1
-            end
-        end
+        # def total_pages(product_count)
+        #     if( (product_count % PRODUCT_PER_PAGE) == 0)
+        #         return (product_count / PRODUCT_PER_PAGE)
+        #     else
+        #         return (product_count / PRODUCT_PER_PAGE) + 1
+        #     end
+        # end
 
         def convert_category_to_integer
             params[:category] = params[:category].to_i

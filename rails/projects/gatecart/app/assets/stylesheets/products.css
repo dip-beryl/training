@@ -1,25 +1,51 @@
+/* search bar */
+.search-div{
+    float: right;
+    /* align-items: flex-end;
+    width: fit-content;
+    border: 1px solid black; */
+} 
 
+.search-div input {
+    padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    border: none;
+    /* width: auto; */
+}
+
+.search-div button {
+  float: right;
+  padding: 6px 10px;
+  margin-top: 8px;
+  margin-right: 16px;
+  background: #ddd;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  width: auto;
+}
+
+/* products grid */
 .grid-container-product{
     display: grid;
     grid-template-columns: auto auto auto;
     /* background-color: lightgray;  */
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-left: 35px;
-    grid-row-gap: 10px;
-    grid-column-gap: 10px; 
+    /* padding-top: 20px; */
+    /* padding-bottom: 20px; */
+    /* margin-left: 35px; */
+    /* grid-row-gap: 10px; */
+    /* grid-column-gap: 10px;  */
 }
 
 .grid-item-product{
     text-align: center;
     font-size: 18px;
-    padding: 10px;
-    width: 375px;
-    height: 300px;
+    /* padding: 10px; */
+    /* width: 375px; */
+    /* height: 300px; */
+    border: 0.5px solid black;
     /* background-color: lightgray;  */
-    /* border: 0.5px solid; */
-     /* border-color: darkgreen; */
-
 }
 
 /* Responsive */
@@ -35,35 +61,13 @@
     width: inherit;
     height: 200px;
 } */
+
 /* index product image */
 .index-product-image-class{
     border-radius: 8px;
     width: 200px;
     height: 200px;
 }
-
-/* Pagination */
-.pagination{
-    margin: auto;
-    width: fit-content;
-
-}
-
-.pagination a {
-    color: black;
-    padding: 8px 16px;
-    text-decoration: none;
-}
-  
-.pagination a.active {
-    background-color: #1f4037;
-    color: white;
-}
-  
-.pagination a:hover:not(.active) {
-    background-color: lightgray;
-}
-
 
 /* Buttons */
 .product-button-bottom{
@@ -84,25 +88,3 @@
     background-color: lightgray;
 }
 
-.search-form{
-    float: right;
-}
-.search-form input {
-    padding: 6px;
-    margin-top: 8px;
-    font-size: 17px;
-    border: auto;
-    width: auto;
-}
-
-.search-form button {
-  float: right;
-  padding: 6px 10px;
-  margin-top: 8px;
-  margin-right: 16px;
-  background: #ddd;
-  font-size: 17px;
-  border: auto;
-  cursor: pointer;
-  width: auto;
-}
