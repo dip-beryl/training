@@ -1,0 +1,39 @@
+
+<div class="search-div">
+  <%= form_with url: products_one_view_path,  method: :get, remote: true, class: "search-form" do |form| %>
+      <%= form.text_field :search%>
+      <%= form.submit "Search"%>
+      <%= form.submit "Reset"%>
+  <% end %>
+</div> <br>
+
+<div class="products-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th> - </th>
+        <th>Price</th>
+      </tr>
+    </thead>
+
+    <tbody id="products-list">
+      <%= render "products_list"%>
+    </tbody> 
+
+  </table> <br>
+
+ <center> <%= link_to 'New Product', new_product_path, remote: true %> </center>
+</div>
+
+<div class="form-container">
+  <%= render "form"%>
+</div>
+
+<br><br><br>
+
+<div class="show-container" id="show-box">
+  
+  <%= render "show"%>
+
+</div>

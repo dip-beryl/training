@@ -1,0 +1,23 @@
+.products-container{
+    float:left;
+    margin: 10px 20px;
+    margin-right: 40px;
+    padding: 15px;
+    border: 0.5px solid black;
+    
+}
+
+.form-container{
+    float: right;
+    margin: 10px 40px;
+    border: 0.5px solid black;
+    padding: 30px;
+    
+}
+
+.show-container{
+    /* float: right; */
+    margin: 10px 20px;
+    margin-right: 40px;
+    /* border: 0.5px solid black; */
+}

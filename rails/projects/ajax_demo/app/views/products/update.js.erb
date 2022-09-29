@@ -1,0 +1,8 @@
+<%# render list %>
+document.getElementById("products-list").innerHTML = "<%= escape_javascript(render "products_list") %>";
+
+<%# render show %>
+document.getElementById("show-box").innerHTML = "<%= escape_javascript(render "show") %>";
+
+<%# render new form %>
+document.querySelector(".form-container").innerHTML = "<%= escape_javascript(render "form") %>";
