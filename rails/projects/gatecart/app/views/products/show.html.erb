@@ -1,16 +1,27 @@
-<%= image_tag @product.image if @product.image.attached?%> <br>
-<%= @product.name%> <br>
-<%= @product.price%> <br>
-<%= @product.category%> <br>
-<div class="trix-content">
-    <%= @product.description %> <br>
+
+<div class="grid-container">
+
+    <div class="grid-item-product-image"> 
+        <%= image_tag @product.image if @product.image.attached?%> <br>
+    </div>
+
+    <div class="grid-item-product-text">
+        <div class= "product-name"> <%= @product.name%> </div>
+        <div class= "product-price"><b>Price: </b> <%= @product.price%> </div>
+        <div class= "product-category"><b>Category: </b><%= @product.category%></div>
+
+        <div class="trix-content"> <%= @product.description %> </div>
+    </div>
+
 </div>
 
 
 
 <% if admin_signed_in? %>
-<div class="product-button-bottom"> <%= link_to("Edit This Product", edit_product_path(@product)) %> </div>
-<div class= "product-button-bottom"> <%= link_to "Delete This Product", product_path(@product), data: 
-                                                                        {turbo_method: :delete,
-                                                                        turbo_confirm: "Are You Sure?\nYou want to delete '#{@product.name}' "}  %> </div>
+<div class= "grid-item-product-buttons">
+    <div class="product-button-bottom"> <%= link_to("Edit This Product", edit_product_path(@product)) %> </div>
+    <div class= "product-button-bottom"> <%= link_to "Delete This Product", product_path(@product), data: 
+                                                                            {turbo_method: :delete,
+                                                                            turbo_confirm: "Are You Sure?\nYou want to delete '#{@product.name}' "}  %> </div>
+<div>
 <% end %>

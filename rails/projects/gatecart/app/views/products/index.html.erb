@@ -1,6 +1,7 @@
 <%# @name="products & Vlogs" %>
 <div class="search-div">
-<%= form_with url: products_path, method: :get, class: "search-form" do |form| %>
+<%= form_with url: products_path,  method: :get, local: false, class: "search-form" do |form| %>
+<%# form_with url: products_path,  method: :post, remote: true, class: "search-form" do |form| %>
     <%= form.text_field :search, placeholder: "Search...", class: "search-bar" %>
     <%= form.submit "Search", class: "search-button"%>
 <% end %>

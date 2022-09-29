@@ -1,13 +1,46 @@
 .add-product-form-class{
-    width: 400px;
-    padding: 40px;
+    width: 700px;
+    padding: 20px;
     border-radius: 8px;
-    background-color: #99f2c8;
-    /* font-family: 'system-ui'; */
+    background-color: white;
     box-shadow: 5px 5px 10px rgb(0,0,0,0.3);
+}
+
+.add-product-form-class label{
+    font-size: 18px;
+    margin-top: 10px;
+
+}
+
+.add-product-form-class input, select{
+    width: 100%;
+    padding: 12px 20px;
+    margin: 10px 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.add-product-form-class img{
+    height: 150px;
+    width: 150px;
+
 }
 
 .trix-content{
     background-color: white;
     border-radius: 8px;
+    height: 150px;
+}
+
+.add-product-form-class input[type=submit]{
+    color: white;
+    background-color: #022E3C;
+    padding: 10px;
+    text-decoration: none;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.add-product-form-class input[type=submit]:hover{
+    background-color: #155165;
 }
